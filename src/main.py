@@ -1,6 +1,7 @@
 import math
 import time
 import customtkinter
+import mysql.connector
 
 # -------------------------------------------------------------------------- #
 

@@ -1,0 +1,41 @@
+GIT terminal commands
+Getting the repo on your machine - easier to do without git commands,
+just grab the repo url on github and select clone git repo when you open
+a new vs code window then paste in the url, NOTE: this will put you straight
+on master branch which should NOT be edited, before doing any coding you should
+make a new branch or switch to an existing one.
+
+
+git pull
+gets info on new branches and updates current branch if there is changes
+ (should be used if multiple people are working on same branch or if you are switching branch)
+
+git add -A
+adds all uncommitted files with differences to the next commit
+(stages them) (replace -A with file path for specific file)
+
+git commit -a -m ""
+commits all staged changes, put commit is message in the quotes
+(what you have done) (again replace -a with path for specific file)
+
+git push
+pushes all local commits to the branch you are working on
+(Note: first time you commit to a branch you may have to do
+git push -u origin newBranchName, after that just git push is fine)
+
+NOTE: not a typo it is -A for add and -a for commit
+
+git branch X
+makes new branch named X
+(note: doesn't automatically switch to this new branch)
+
+git checkout X
+switches to branch X
+(can also make a new branch with this by doing git checkout -b X)
+
+git status
+shows what files have uncommitted changes and files that
+have been committed not pushed - also shows if everything is up to date
+
+Various other git commands that may be helpful like different git diff
+commands but likely the above should be fine to cover everything you need.
