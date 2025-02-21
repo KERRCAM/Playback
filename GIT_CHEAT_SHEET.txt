@@ -19,7 +19,7 @@ commits all staged changes, put commit is message in the quotes
 
 git push
 pushes all local commits to the branch you are working on
-(Note: first time you commit to a branch you may have to do
+(Note: First time you commit to a branch you HAVE to do
 git push -u origin newBranchName, after that just git push is fine)
 
 NOTE: not a typo it is -A for add and -a for commit
