@@ -17,6 +17,40 @@ class JsonValidator:
     - No json files present in the folder
     - Unexpected JSON file name
     - Invalid JSON structure in file X at line X - (REASON)
+
+    Expected file name formats:
+    "Streaming_History_Audio_YYYY.json"
+    "Streaming_History_Audio_YYYY_X.json"
+    "Streaming_History_Audio_YYYY-YYYY.json"
+    "Streaming_History_Audio_YYYY-YYYY_X.json"
+
+    Expected JSON structure:
+    List of elements each related to an individual stream
+    [
+        {
+            "ts": "YYYY-MM-DDThh:mm:ssZ",
+            "platform": "Any string",
+            "ms_played": 0+,
+            "conn_country": "XX",
+            "ip_addr": "IGNORED",
+            "master_metadata_track_name": "Any string or null",
+            "master_metadata_album_artist_name": "Any string or null",
+            "master_metadata_album_album_name": "Any string or null",
+            "spotify_track_uri": "spotify:track:CODE",
+            "episode_name": "Any string or null",
+            "episode_show_name": "Any string or null",
+            "spotify_episode_uri": "Any string or null",
+            "reason_start": "trackdone" OR "fwdbtn" OR "backbtn" OR "clickrow",
+            "reason_end": "trackdone" OR "fwdbtn" OR "backbtn" OR "remote" OR "endplay",
+            "shuffle": true OR false,
+            "skipped": true OR false,
+            "offline": true OR false,
+            "offline_timestamp": 1683231370,
+            "incognito_mode": true OR false
+        },
+        ....
+    ]
+    Note: if song name information null episode should not and vice versa.
     """
 
 # -------------------------------------------------------------------------- #
