@@ -70,6 +70,8 @@ class JsonValidator:
         :return: returns a list of the JSON files as strings
         """
 
-        pass
+        fileNames = []
+
+        return fileNames
 
     # ---------------------------------------------------------------------- #
