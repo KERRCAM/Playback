@@ -85,7 +85,7 @@ class JsonValidator:
 
     def charAdvance(self, ):
         """
-
+        moves curr char pointer to next char in input
         """
 
         pass
