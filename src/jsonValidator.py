@@ -1,4 +1,7 @@
 # LIBRARY IMPORTS
+import os
+from os import listdir
+from os.path import isfile, join
 
 
 # LOCAL IMPORTS
@@ -61,17 +64,92 @@ class JsonValidator:
         """
 
         self.folderName = folderName
+        self.fileNames = self.getFiles(folderName)
+
+        print(self.fileNames)
 
     # ---------------------------------------------------------------------- #
 
-    def getFiles(self):
+    def getFiles(self, dir):
         """
         Gets all the JSON files names given in the uploaded folder
         :return: returns a list of the JSON files as strings
         """
 
-        fileNames = []
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        fileNames = [f for f in listdir(dir_path) if isfile(join(dir_path, f))]
 
         return fileNames
 
     # ---------------------------------------------------------------------- #
+
+    def charAdvance(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def cosumeDateTime(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def cosumeNumber(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def cosumeString(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def comesumeValue(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def consumeList(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+    def validateFile(self, ):
+        """
+
+        """
+
+        pass
+
+    # ---------------------------------------------------------------------- #
+
+
+# FOR TESTING ONLY
+def main():
+    v = JsonValidator("src")
+
+if __name__ == "__main__":
+    main()
