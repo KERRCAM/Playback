@@ -92,7 +92,7 @@ class JsonValidator:
 
     # ---------------------------------------------------------------------- #
 
-    def cosumeDateTime(self, ):
+    def consumeDateTime(self, ):
         """
 
         """
@@ -101,7 +101,7 @@ class JsonValidator:
 
     # ---------------------------------------------------------------------- #
 
-    def cosumeNumber(self, ):
+    def consumeNumber(self, ):
         """
 
         """
@@ -110,7 +110,7 @@ class JsonValidator:
 
     # ---------------------------------------------------------------------- #
 
-    def cosumeString(self, ):
+    def consumeString(self, ):
         """
 
         """
@@ -119,7 +119,7 @@ class JsonValidator:
 
     # ---------------------------------------------------------------------- #
 
-    def comesumeValue(self, ):
+    def consumeValue(self, ):
         """
 
         """
