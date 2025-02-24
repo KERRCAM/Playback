@@ -83,6 +83,15 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
+    def validateFileNames(self, fileNames):
+        """
+        Checks all file names in the uploaded folder are of the expected format.
+        """
+
+        pass
+
+    # ------------------------------------------------------------------------------------------- #
+
     def charAdvance(self, ):
         """
         moves curr char pointer to next char in input
