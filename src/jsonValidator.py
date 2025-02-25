@@ -1,5 +1,6 @@
 # LIBRARY IMPORTS
 import os
+from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
 
@@ -64,8 +65,15 @@ class JsonValidator:
         """
 
         self.fileNames = self.getFiles(folderName)
+        self.validateFileNames()
+        self.validateFiles()
 
-        print(self.fileNames)
+
+
+        self.currFile = None
+        self.currContents = None
+        self.pos = 0
+        self.currChar = ''
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -83,21 +91,13 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFileNames(self, fileNames):
-        """
-        Checks all file names in the uploaded folder are of the expected format.
-        """
-
-        pass
-
-    # ------------------------------------------------------------------------------------------- #
-
-    def charAdvance(self, ):
+    def charAdvance(self):
         """
         moves curr char pointer to next char in input
         """
 
-        pass
+        self.pos += 1
+        self.currChar = contents[self.pos]
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -146,12 +146,37 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
+    def validateFileNames(self):
+        """
+        REWRITE
+        Expected file name formats:
+        "Streaming_History_Audio_YYYY.json"
+        "Streaming_History_Audio_YYYY_X.json"
+        "Streaming_History_Audio_YYYY-YYYY.json"
+        "Streaming_History_Audio_YYYY-YYYY_X.json"
+        """
+
+        # temporary - only checks for json files rn
+        for file in reversed(self.fileNames):
+            if not file.endswith(".json"):
+                self.fileNames.remove(file)
+
+    # ------------------------------------------------------------------------------------------- #
+
     def validateFile(self, ):
         """
 
         """
 
         pass
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def validateFiles(self):
+        """
+
+        """
+
 
     # ------------------------------------------------------------------------------------------- #
 
