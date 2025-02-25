@@ -15,7 +15,7 @@ class JsonValidator:
         Constructor takes input of uploaded folder name
         """
 
-        self.folderName = folderName
+        pass
 
     # ------------------------------------------------------------------------------------------- #
 
