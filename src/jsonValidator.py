@@ -163,10 +163,13 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFile(self, ):
+    def validateFile(self, file):
         """
 
         """
+
+        self.pos = 0
+        # read file - probably buffered?
 
         pass
 
@@ -176,6 +179,9 @@ class JsonValidator:
         """
 
         """
+
+        for file in self.fileNames:
+            self.validateFile(file)
 
 
     # ------------------------------------------------------------------------------------------- #
