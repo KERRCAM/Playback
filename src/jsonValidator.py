@@ -64,21 +64,20 @@ class JsonValidator:
         Constructor takes input of uploaded folder name
         """
 
-        self.fileNames = self.__getFiles(folderName)
-        self.__validateFileNames()
-        self.__validateFiles()
-
+        self.fileNames = self.getFiles(folderName)
+        self.validateFileNames()
+        self.validateFiles()
 
 
         self.currFile = None
         self.currContents = None
-        self.pos = 0
-        self.currChar = ''
+        self.pos = None
+        self.currChar = None
 
     # ------------------------------------------------------------------------------------------- #
 
     @staticmethod
-    def __getFiles(folderName): # not used rn but will be needed when a folder is uploaded
+    def getFiles(folderName): # not used rn but will be needed when a folder is uploaded
         """
         Gets all the JSON files names given in the uploaded folder
         :return: returns a list of the JSON files as strings
@@ -91,17 +90,17 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __charAdvance(self):
+    def charAdvance(self):
         """
         moves curr char pointer to next char in input
         """
 
         self.pos += 1
-        self.currChar = contents[self.pos]
+        self.currChar = self.currContents[self.pos]
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeDateTime(self, ):
+    def consumeDateTime(self, ):
         """
 
         """
@@ -110,7 +109,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeNumber(self, ):
+    def consumeNumber(self, ):
         """
 
         """
@@ -119,7 +118,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeString(self, ):
+    def consumeString(self, ):
         """
 
         """
@@ -128,7 +127,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeValue(self, ):
+    def consumeValue(self, ):
         """
 
         """
@@ -137,7 +136,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeObject(self, ):
+    def consumeObject(self, ):
         """
 
         """
@@ -146,7 +145,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __consumeArray(self, ):
+    def consumeArray(self, ):
         """
 
         """
@@ -155,7 +154,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __validateFileNames(self):
+    def validateFileNames(self):
         """
         REWRITE
         Expected file name formats:
@@ -172,7 +171,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __validateFile(self, file):
+    def validateFile(self, file):
         """
 
         """
@@ -184,13 +183,13 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __validateFiles(self):
+    def validateFiles(self):
         """
 
         """
 
         for file in self.fileNames:
-            self.__validateFile(file)
+            self.validateFile(file)
 
 
     # ------------------------------------------------------------------------------------------- #
