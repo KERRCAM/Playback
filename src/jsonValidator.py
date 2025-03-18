@@ -65,15 +65,13 @@ class JsonValidator:
         Constructor takes input of uploaded folder name
         """
 
-        self.fileNames = self.getFiles(folderName)
-        self.validateFileNames()
-        self.validateFiles()
+        fileNames, dirPath = self.getFiles(folderName)
+        #fileNames = self.validateFileNames(fileNames)
+        self.validateFiles(fileNames, dirPath)
 
 
-        self.currFile = None
-        self.currContents = None
-        self.pos = None
-        self.currChar = None
+
+
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -96,7 +94,7 @@ class JsonValidator:
             if file[-5:] == ".json":
                 jsonFiles.append(file)
 
-        return jsonFiles
+        return jsonFiles, dirPath
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -164,7 +162,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFileNames(self):
+    def validateFileNames(self, fileNames):
         """
         REWRITE
         Expected file name formats:
@@ -174,32 +172,48 @@ class JsonValidator:
         "Streaming_History_Audio_YYYY-YYYY_X.json"
         """
 
+        validFileNames = []
+
         # temporary - only checks for json files rn
-        for file in reversed(self.fileNames):
+        for file in reversed(fileNames):
             if not file.endswith(".json"):
-                self.fileNames.remove(file)
+                fileNames.remove(file)
+
+        return validFileNames
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFile(self, file):
+    def validateFile(self, fileName):
         """
 
         """
 
-        self.pos = 0
+
+
         # read file - probably buffered?
 
-        pass
+        with open(fileName, 'r') as file:
+            file_content = ''
+            line = file.readline()
+
+            while line:
+                file_content += line
+                line = file.readline()
+
+        print(file_content)
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFiles(self):
+    def validateFiles(self, fileNames, dirPath):
+        """
+        include handing for return
         """
 
-        """
-
-        for file in self.fileNames:
-            self.validateFile(file)
+        for file in fileNames:
+            if system() == "Windows":
+                self.validateFile(dirPath + "\\\\" + file)
+            else:
+                self.validateFile(dirPath + "/" +file)
 
 
     # ------------------------------------------------------------------------------------------- #
