@@ -200,7 +200,7 @@ class JsonValidator:
                 file_content += line
                 line = file.readline()
 
-        print(file_content)
+        print(len(file_content))
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -214,7 +214,6 @@ class JsonValidator:
                 self.validateFile(dirPath + "\\\\" + file)
             else:
                 self.validateFile(dirPath + "/" +file)
-
 
     # ------------------------------------------------------------------------------------------- #
 
