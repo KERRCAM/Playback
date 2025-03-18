@@ -1,5 +1,6 @@
-    # LIBRARY IMPORTS
+# LIBRARY IMPORTS
 import os
+import sys
 from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
@@ -200,7 +201,7 @@ class JsonValidator:
                 file_content += line
                 line = file.readline()
 
-        print(len(file_content))
+        print(sys.getsizeof(file_content))
 
     # ------------------------------------------------------------------------------------------- #
 
