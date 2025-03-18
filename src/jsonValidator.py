@@ -3,6 +3,7 @@ import os
 from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
+from platform import system
 
 
 # LOCAL IMPORTS
@@ -83,10 +84,19 @@ class JsonValidator:
         :return: returns a list of the JSON files as strings
         """
 
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        fileNames = [f for f in listdir(dir_path) if isfile(join(dir_path, f))]
+        filePath = os.path.dirname(os.path.realpath(__file__))
+        if system() == "Windows":
+            dirPath = os.path.relpath("..\\testFiles", filePath)
+        else:
+            dirPath = os.path.relpath("../testFiles" ,filePath)
+        fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
 
-        return fileNames
+        jsonFiles = []
+        for file in fileNames:
+            if file[-5:] == ".json":
+                jsonFiles.append(file)
+
+        return jsonFiles
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -197,7 +207,7 @@ class JsonValidator:
 
 # FOR TESTING ONLY
 def main():
-    v = JsonValidator("src")
+    v = JsonValidator("testFiles")
 
 if __name__ == "__main__":
     main()
