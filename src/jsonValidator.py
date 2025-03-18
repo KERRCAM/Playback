@@ -57,6 +57,9 @@ class JsonValidator:
         ....
     ]
     Note: if song name information null episode should not and vice versa.
+
+    Disclaimer: Portion of this class is translated and modified version of a json validator I
+    have written in C and is a public repository on my GitHub profile - Kerr Cameron
     """
 
 # ----------------------------------------------------------------------------------------------- #
@@ -68,11 +71,15 @@ class JsonValidator:
 
         fileNames, dirPath = self.getFiles(folderName)
         #fileNames = self.validateFileNames(fileNames)
-        self.validateFiles(fileNames, dirPath)
+        validFiles = self.validateFiles(fileNames, dirPath)
 
-
-
-
+        self.pos = 0
+        self.currChar = ''
+        self.currContents = ""
+        self.line = 0
+        self.column = 0
+        self.errorFlag = False
+        self.errorMessage = ""
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -106,6 +113,22 @@ class JsonValidator:
 
         self.pos += 1
         self.currChar = self.currContents[self.pos]
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def consumeWhitespace(self):
+        """
+
+        """
+
+        while ( self.currChar == ' '
+                or self.currChar == '\n'
+                or self.currChar == '\r'
+                or self.currChar == '\t' ):
+            if self.currChar == '\n':
+                self.line += 1
+                self.column = 0
+            self.charAdvance()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -163,7 +186,8 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def validateFileNames(self, fileNames):
+    @staticmethod
+    def validateFileNames(fileNames):
         """
         REWRITE
         Expected file name formats:
@@ -189,19 +213,35 @@ class JsonValidator:
 
         """
 
-
-
-        # read file - probably buffered?
-
         with open(fileName, 'r') as file:
-            file_content = ''
+            fileContent = ''
             line = file.readline()
 
             while line:
-                file_content += line
+                fileContent += line
                 line = file.readline()
 
-        print(sys.getsizeof(file_content))
+        # print(sys.getsizeof(file_content))
+
+        self.errorFlag = False
+        self.currContents = fileContent
+        self.pos, self.column, self.line = 0, 0, 0
+        self.currChar = self.currContents[self.pos]
+
+        self.consumeWhitespace()
+
+        if self.currChar == '{':
+            self.consumeObject()
+        elif self.currChar == '[':
+            self.consumeArray()
+
+        self.consumeWhitespace()
+
+        if self.errorFlag:
+            print(self.errorMessage) # obviously needs to be converted to UI display later
+            return False
+        else:
+            return True
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -212,9 +252,15 @@ class JsonValidator:
 
         for file in fileNames:
             if system() == "Windows":
-                self.validateFile(dirPath + "\\\\" + file)
+                valid = self.validateFile(dirPath + "\\\\" + file)
             else:
-                self.validateFile(dirPath + "/" +file)
+                valid = self.validateFile(dirPath + "/" +file)
+
+        for file in reversed(fileNames):
+            if not valid:
+                fileNames.remove(file)
+
+        return fileNames
 
     # ------------------------------------------------------------------------------------------- #
 
