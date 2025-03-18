@@ -141,12 +141,62 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
+    def consumeKeyword(self):
+        """
+
+        """
+
+        length = 4 if (self.currChar == 't' or self.currChar == 'n') else 5
+
+        for i in range(length):
+            self.charAdvance()
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def consumeInt(self):
+        """
+
+        """
+
+        while self.currChar.isdigit():
+            if self.currChar == '\t':
+                self.errorFlag = True
+                self.errorMessage = "Number never closed"
+                return
+
+    # ------------------------------------------------------------------------------------------- #
+
     def consumeNumber(self, ):
         """
 
         """
 
-        pass
+        if self.currChar == '-':
+            self.charAdvance()
+
+            if not self.currChar.isdigit():
+                self.errorFlag = True
+                self.errorMessage = "Invalid number"
+                return
+            else:
+                self.consumeInt()
+
+        self.consumeInt()
+
+        if self.currChar == 'e' or self.currChar == 'E':
+            if self.currChar != '+' or self.currChar != '-':
+                self.errorFlag = True
+                self.errorMessage = "Invalid number"
+                return
+            else:
+                self.charAdvance()
+
+            if not self.currChar.isdigit():
+                self.errorFlag = True
+                self.errorMessage = "Invalid number"
+                return
+            else:
+                self.consumeInt()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -155,7 +205,17 @@ class JsonValidator:
 
         """
 
-        pass
+        self.charAdvance()
+
+        while True:
+            if self.currChar == '\t':
+                self.errorFlag = True
+                self.errorMessage = "String never closed"
+                return
+            if self.currChar != '"':
+                self.charAdvance()
+            else:
+                return
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -164,7 +224,20 @@ class JsonValidator:
 
         """
 
-        pass
+        self.consumeWhitespace()
+
+        if self.currChar == '"':
+            self.consumeString()
+        elif self.currChar == '{':
+            self.consumeObject()
+        elif self.currChar == '[':
+            self.consumeArray()
+        elif self.currChar == 't' or self.currChar == 'n' or self.currChar == 'f':
+            self.consumeKeyword()
+        else:
+            self.consumeNumber()
+
+        self.consumeWhitespace()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -173,7 +246,38 @@ class JsonValidator:
 
         """
 
-        pass
+        self.charAdvance()
+        self.consumeWhitespace()
+
+        if self.currChar == '}':
+            self.charAdvance()
+            return
+
+        while True:
+            self.consumeString()
+            self.consumeWhitespace()
+
+            if self.currChar == ':':
+                self.charAdvance()
+            else:
+                self.errorFlag = True
+                self.errorMessage = "Invalid object"
+
+            self.consumeWhitespace()
+            self.consumeValue()
+
+            if self.currChar == ',':
+                self.charAdvance()
+                self.consumeWhitespace()
+            elif self.currChar == '}':
+                self.charAdvance()
+                self.consumeWhitespace()
+                return
+            else:
+                self.errorFlag = True
+                self.errorMessage = "Invalid object"
+
+
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -182,7 +286,19 @@ class JsonValidator:
 
         """
 
-        pass
+        self.charAdvance()
+        self.consumeWhitespace()
+        while True:
+            self.consumeValue()
+            if self.currChar == ',':
+                self.charAdvance()
+                self.consumeWhitespace()
+            if self.currChar == ']':
+                return
+            else:
+                self.errorFlag = True
+                self.errorMessage = "Array never closed" # COULD BE BROKEN AS ITS NOT CURRENTLY WORKING GREAT IN C VERSION
+                return
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -224,7 +340,7 @@ class JsonValidator:
         # print(sys.getsizeof(file_content))
 
         self.errorFlag = False
-        self.currContents = fileContent
+        self.currContents = fileContent + '\t'
         self.pos, self.column, self.line = 0, 0, 0
         self.currChar = self.currContents[self.pos]
 
