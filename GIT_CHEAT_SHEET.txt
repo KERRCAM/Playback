@@ -5,7 +5,7 @@ a new vs code window (or other code editor) then paste in the url, NOTE: this wi
 put you straight on master branch which should NOT be edited, before doing any
 coding you should make a new branch or switch to an existing one.
 
-git pull
+git fetch + git pull
 gets info on new branches and updates current branch if there is changes
  (should be used if multiple people are working on same branch or if you are switching branch)
 
@@ -19,7 +19,7 @@ commits all staged changes, put commit is message in the quotes
 
 git push
 pushes all local commits to the branch you are working on
-(Note: first time you commit to a branch you may have to do
+(Note: First time you commit to a branch you HAVE to do
 git push -u origin newBranchName, after that just git push is fine)
 
 NOTE: not a typo it is -A for add and -a for commit

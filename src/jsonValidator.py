@@ -64,6 +64,7 @@ class JsonValidator:
     have written in C and is a public repository on my GitHub profile - Kerr Cameron.
     """
 
+
 # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, folderName):
@@ -350,6 +351,7 @@ class JsonValidator:
         :return: list of the valid file names
         """
 
+
         validFileNames = []
 
         # temporary - only checks for json files rn, will just use a regex later probably
@@ -435,8 +437,17 @@ def main():
     v = JsonValidator("testFiles")
     end = time.time()
     print("Program run time = ", end - start, " seconds")
+=======
+        pass
+
+    # ------------------------------------------------------------------------------------------- #
+
 
 if __name__ == "__main__":
     main()
 
+
 # ----------------------------------------------------------------------------------------------- #
+=======
+    # ------------------------------------------------------------------------------------------- #
+
