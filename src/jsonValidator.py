@@ -1,6 +1,7 @@
 # LIBRARY IMPORTS
 import os
 import sys
+import time
 from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
@@ -160,6 +161,8 @@ class JsonValidator:
             if self.currChar == '\0':
                 self.errorMessage = "Number never closed"
                 return True
+            else:
+                self.charAdvance()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -205,9 +208,17 @@ class JsonValidator:
             if self.currChar == '\0':
                 self.errorMessage = "String never closed"
                 return True
+            if self.currChar == '\\':
+                self.charAdvance()
+                if self.currChar == '"':
+                    self.charAdvance()
+                else:
+                    self.errorMessage = "Invalid string"
+                    return True
             if self.currChar != '"':
                 self.charAdvance()
             else:
+                self.charAdvance()
                 return
 
     # ------------------------------------------------------------------------------------------- #
@@ -253,6 +264,7 @@ class JsonValidator:
             if self.currChar == ':':
                 self.charAdvance()
             else:
+                print("1")
                 self.errorMessage = "Invalid object"
                 return True
 
@@ -293,7 +305,7 @@ class JsonValidator:
             self.charAdvance()
             return
         else:
-            self.errorMessage = "Array never closed"  # COULD BE BROKEN AS ITS NOT CURRENTLY WORKING GREAT IN C VERSION
+            self.errorMessage = "Array never closed"
             return True
 
 
@@ -313,7 +325,7 @@ class JsonValidator:
 
         validFileNames = []
 
-        # temporary - only checks for json files rn
+        # temporary - only checks for json files rn, will just use a regex later probably
         for file in reversed(fileNames):
             if not file.endswith(".json"):
                 fileNames.remove(file)
@@ -327,7 +339,7 @@ class JsonValidator:
 
         """
 
-        fileContent = ''
+        fileContent = ""
 
         with open(fileName, 'r') as file:
             line = file.readline()
@@ -353,7 +365,10 @@ class JsonValidator:
         self.consumeWhitespace()
 
         if not valid:
+            print(self.currChar)
             print(self.errorMessage, " at line ", self.line, ", column ", self.column) # obviously needs to be converted to UI display later
+        else:
+            print("Input JSON is valid")
         return valid
 
     # ------------------------------------------------------------------------------------------- #
@@ -380,7 +395,10 @@ class JsonValidator:
 
 # FOR TESTING ONLY
 def main():
+    start = time.time()
     v = JsonValidator("testFiles")
+    end = time.time()
+    print("Program run time = ", end - start, " seconds")
 
 if __name__ == "__main__":
     main()
