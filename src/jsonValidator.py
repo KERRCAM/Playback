@@ -6,6 +6,7 @@ from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
 from platform import system
+import re
 
 
 # LOCAL IMPORTS
@@ -71,7 +72,7 @@ class JsonValidator:
         """
 
         fileNames, dirPath = self.getFiles(folderName)
-        #fileNames = self.validateFileNames(fileNames)
+        # validFileNames = self.validateFileNames(fileNames)
         validFiles = self.validateFiles(fileNames, dirPath)
 
         self.pos = 0
@@ -353,7 +354,8 @@ class JsonValidator:
 
         # temporary - only checks for json files rn, will just use a regex later probably
         for file in reversed(fileNames):
-            if not file.endswith(".json"):
+            found = re.search("Streaming_History_Audio_[0-9]", file)
+            if found is None or len(file) != len(found):
                 fileNames.remove(file)
 
         return validFileNames
@@ -399,6 +401,7 @@ class JsonValidator:
             print(self.errorMessage, " at line ", self.line, ", column ", self.column)
         else:
             print("Input JSON is valid")
+
         return valid
 
     # ------------------------------------------------------------------------------------------- #
