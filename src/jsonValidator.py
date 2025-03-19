@@ -74,12 +74,11 @@ class JsonValidator:
         validFiles = self.validateFiles(fileNames, dirPath)
 
         self.pos = 0
-        self.currChar = ''
-        self.currContents = ""
+        self.currChar = None
+        self.currContents = None
         self.line = 0
         self.column = 0
-        self.errorFlag = False
-        self.errorMessage = ""
+        self.errorMessage = None
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -125,19 +124,15 @@ class JsonValidator:
                 or self.currChar == '\n'
                 or self.currChar == '\r'
                 or self.currChar == '\t' ):
+
             if self.currChar == '\n':
                 self.line += 1
                 self.column = 0
+
+            if self.currChar == '\0':
+                return
+
             self.charAdvance()
-
-    # ------------------------------------------------------------------------------------------- #
-
-    def consumeDateTime(self, ):
-        """
-
-        """
-
-        pass
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -149,6 +144,9 @@ class JsonValidator:
         length = 4 if (self.currChar == 't' or self.currChar == 'n') else 5
 
         for i in range(length):
+            if self.currChar == '\0':
+                self.errorMessage = "Incomplete JSON"
+                return True
             self.charAdvance()
 
     # ------------------------------------------------------------------------------------------- #
@@ -159,14 +157,13 @@ class JsonValidator:
         """
 
         while self.currChar.isdigit():
-            if self.currChar == '\t':
-                self.errorFlag = True
+            if self.currChar == '\0':
                 self.errorMessage = "Number never closed"
-                return
+                return True
 
     # ------------------------------------------------------------------------------------------- #
 
-    def consumeNumber(self, ):
+    def consumeNumber(self):
         """
 
         """
@@ -175,9 +172,8 @@ class JsonValidator:
             self.charAdvance()
 
             if not self.currChar.isdigit():
-                self.errorFlag = True
                 self.errorMessage = "Invalid number"
-                return
+                return True
             else:
                 self.consumeInt()
 
@@ -185,22 +181,20 @@ class JsonValidator:
 
         if self.currChar == 'e' or self.currChar == 'E':
             if self.currChar != '+' or self.currChar != '-':
-                self.errorFlag = True
                 self.errorMessage = "Invalid number"
-                return
+                return True
             else:
                 self.charAdvance()
 
             if not self.currChar.isdigit():
-                self.errorFlag = True
                 self.errorMessage = "Invalid number"
-                return
+                return True
             else:
                 self.consumeInt()
 
     # ------------------------------------------------------------------------------------------- #
 
-    def consumeString(self, ):
+    def consumeString(self):
         """
 
         """
@@ -208,10 +202,9 @@ class JsonValidator:
         self.charAdvance()
 
         while True:
-            if self.currChar == '\t':
-                self.errorFlag = True
+            if self.currChar == '\0':
                 self.errorMessage = "String never closed"
-                return
+                return True
             if self.currChar != '"':
                 self.charAdvance()
             else:
@@ -219,7 +212,7 @@ class JsonValidator:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def consumeValue(self, ):
+    def consumeValue(self):
         """
 
         """
@@ -227,21 +220,21 @@ class JsonValidator:
         self.consumeWhitespace()
 
         if self.currChar == '"':
-            self.consumeString()
+            if self.consumeString(): return True
         elif self.currChar == '{':
-            self.consumeObject()
+            if self.consumeObject(): return True
         elif self.currChar == '[':
-            self.consumeArray()
+            if self.consumeArray(): return True
         elif self.currChar == 't' or self.currChar == 'n' or self.currChar == 'f':
-            self.consumeKeyword()
+            if self.consumeKeyword(): return True
         else:
-            self.consumeNumber()
+            if self.consumeNumber(): return True
 
         self.consumeWhitespace()
 
     # ------------------------------------------------------------------------------------------- #
 
-    def consumeObject(self, ):
+    def consumeObject(self):
         """
 
         """
@@ -254,17 +247,17 @@ class JsonValidator:
             return
 
         while True:
-            self.consumeString()
+            if self.consumeString(): return True
             self.consumeWhitespace()
 
             if self.currChar == ':':
                 self.charAdvance()
             else:
-                self.errorFlag = True
                 self.errorMessage = "Invalid object"
+                return True
 
             self.consumeWhitespace()
-            self.consumeValue()
+            if self.consumeValue(): return True
 
             if self.currChar == ',':
                 self.charAdvance()
@@ -274,14 +267,14 @@ class JsonValidator:
                 self.consumeWhitespace()
                 return
             else:
-                self.errorFlag = True
                 self.errorMessage = "Invalid object"
+                return True
 
 
 
     # ------------------------------------------------------------------------------------------- #
 
-    def consumeArray(self, ):
+    def consumeArray(self):
         """
 
         """
@@ -289,16 +282,21 @@ class JsonValidator:
         self.charAdvance()
         self.consumeWhitespace()
         while True:
-            self.consumeValue()
+            if self.consumeValue(): return True
             if self.currChar == ',':
                 self.charAdvance()
                 self.consumeWhitespace()
-            if self.currChar == ']':
-                return
             else:
-                self.errorFlag = True
-                self.errorMessage = "Array never closed" # COULD BE BROKEN AS ITS NOT CURRENTLY WORKING GREAT IN C VERSION
-                return
+                break
+
+        if self.currChar == ']':
+            self.charAdvance()
+            return
+        else:
+            self.errorMessage = "Array never closed"  # COULD BE BROKEN AS ITS NOT CURRENTLY WORKING GREAT IN C VERSION
+            return True
+
+
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -329,8 +327,9 @@ class JsonValidator:
 
         """
 
+        fileContent = ''
+
         with open(fileName, 'r') as file:
-            fileContent = ''
             line = file.readline()
 
             while line:
@@ -339,25 +338,23 @@ class JsonValidator:
 
         # print(sys.getsizeof(file_content))
 
-        self.errorFlag = False
-        self.currContents = fileContent + '\t'
+        self.currContents = fileContent + '\0'
         self.pos, self.column, self.line = 0, 0, 0
         self.currChar = self.currContents[self.pos]
 
         self.consumeWhitespace()
 
+        valid = True
         if self.currChar == '{':
-            self.consumeObject()
+            if self.consumeObject(): valid = False
         elif self.currChar == '[':
-            self.consumeArray()
+            if self.consumeArray(): valid = False
 
         self.consumeWhitespace()
 
-        if self.errorFlag:
-            print(self.errorMessage) # obviously needs to be converted to UI display later
-            return False
-        else:
-            return True
+        if not valid:
+            print(self.errorMessage, " at line ", self.line, ", column ", self.column) # obviously needs to be converted to UI display later
+        return valid
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -366,17 +363,17 @@ class JsonValidator:
         include handing for return
         """
 
+        validFiles = []
+
         for file in fileNames:
             if system() == "Windows":
-                valid = self.validateFile(dirPath + "\\\\" + file)
+                if self.validateFile(dirPath + "\\\\" + file):
+                    validFiles.append(file)
             else:
-                valid = self.validateFile(dirPath + "/" +file)
+                if self.validateFile(dirPath + "/" + file):
+                    validFiles.append(file)
 
-        for file in reversed(fileNames):
-            if not valid:
-                fileNames.remove(file)
-
-        return fileNames
+        return validFiles
 
     # ------------------------------------------------------------------------------------------- #
 
