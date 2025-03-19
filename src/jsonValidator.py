@@ -60,14 +60,14 @@ class JsonValidator:
     Note: if song name information null episode should not and vice versa.
 
     Disclaimer: Portion of this class is translated and modified version of a json validator I
-    have written in C and is a public repository on my GitHub profile - Kerr Cameron
+    have written in C and is a public repository on my GitHub profile - Kerr Cameron.
     """
 
 # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, folderName):
         """
-        Constructor takes input of uploaded folder name
+        Constructor takes input of uploaded folder name.
         """
 
         fileNames, dirPath = self.getFiles(folderName)
@@ -87,6 +87,7 @@ class JsonValidator:
     def getFiles(folderName): # not used rn but will be needed when a folder is uploaded
         """
         Gets all the JSON files names given in the uploaded folder
+
         :return: returns a list of the JSON files as strings
         """
 
@@ -108,17 +109,21 @@ class JsonValidator:
 
     def charAdvance(self):
         """
-        moves curr char pointer to next char in input
+        Moves curr char pointer to next char in input and increments current column.
         """
 
         self.pos += 1
         self.currChar = self.currContents[self.pos]
+        self.column += 1
 
     # ------------------------------------------------------------------------------------------- #
 
     def consumeWhitespace(self):
         """
+        Eats all leading whitespace from current point in file.
+        Whitespace = (space* linefeed* carriageReturn* horizontalTab*)*
 
+        :return: None if valid, True if error occurs
         """
 
         while ( self.currChar == ' '
@@ -139,7 +144,10 @@ class JsonValidator:
 
     def consumeKeyword(self):
         """
+        Eats set JSON keywords
+        Can be -> true | false | null
 
+        :return: None if valid, True if error occurs
         """
 
         length = 4 if (self.currChar == 't' or self.currChar == 'n') else 5
@@ -154,7 +162,10 @@ class JsonValidator:
 
     def consumeInt(self):
         """
+        Eats int all leading integer values.
+        [0..9]*
 
+        :return: None if valid, True if error occurs
         """
 
         while self.currChar.isdigit():
@@ -168,7 +179,10 @@ class JsonValidator:
 
     def consumeNumber(self):
         """
+        Eats valid JSON number.
+        Number = -? [1..9] [0..9]* (. [0..9]*)? (e or E - or + [0..9]*)
 
+        :return: None if valid, True if error occurs
         """
 
         if self.currChar == '-':
@@ -199,7 +213,10 @@ class JsonValidator:
 
     def consumeString(self):
         """
+        Eats JSON string.
+        startQuote (anyCharBut\* (\ any of -> quotes / \ b n f r t (u 4 hex digits)))  endQuote
 
+        :return: None if valid, True if error occurs
         """
 
         self.charAdvance()
@@ -225,7 +242,10 @@ class JsonValidator:
 
     def consumeValue(self):
         """
+        Eats JSON value.
+        Value = whitespace? object or array or string or number or bool or null whitespace?
 
+        :return: None if valid, True if error occurs
         """
 
         self.consumeWhitespace()
@@ -247,7 +267,11 @@ class JsonValidator:
 
     def consumeObject(self):
         """
+        Eats JSON object.
+        object = startCurly (whitespace)
+        or (whitespace string whitespace? colon whitespace? value comma object*) endCurly
 
+        :return: None if valid, True if error occurs
         """
 
         self.charAdvance()
@@ -282,13 +306,14 @@ class JsonValidator:
                 self.errorMessage = "Invalid object"
                 return True
 
-
-
     # ------------------------------------------------------------------------------------------- #
 
     def consumeArray(self):
         """
+        Eats JSON array.
+        Array = startSquare whitespace or (value comma)* endSquare
 
+        :return: None if valid, True if error occurs
         """
 
         self.charAdvance()
@@ -308,19 +333,20 @@ class JsonValidator:
             self.errorMessage = "Array never closed"
             return True
 
-
-
     # ------------------------------------------------------------------------------------------- #
 
     @staticmethod
     def validateFileNames(fileNames):
         """
-        REWRITE
+        Validates that the names of the input JSON files are as expected.
         Expected file name formats:
         "Streaming_History_Audio_YYYY.json"
         "Streaming_History_Audio_YYYY_X.json"
         "Streaming_History_Audio_YYYY-YYYY.json"
         "Streaming_History_Audio_YYYY-YYYY_X.json"
+
+        :param fileNames: list of file names to validate
+        :return: list of the valid file names
         """
 
         validFileNames = []
@@ -336,7 +362,10 @@ class JsonValidator:
 
     def validateFile(self, fileName):
         """
+        Validates the input JSON file.
 
+        :param fileName: JSON file name to be checked
+        validJSON = whitespace? (array or object) whitespace? validJSON*
         """
 
         fileContent = ""
@@ -364,9 +393,10 @@ class JsonValidator:
 
         self.consumeWhitespace()
 
+        # Obviously needs to be converted to UI display later
         if not valid:
             print(self.currChar)
-            print(self.errorMessage, " at line ", self.line, ", column ", self.column) # obviously needs to be converted to UI display later
+            print(self.errorMessage, " at line ", self.line, ", column ", self.column)
         else:
             print("Input JSON is valid")
         return valid
@@ -375,7 +405,11 @@ class JsonValidator:
 
     def validateFiles(self, fileNames, dirPath):
         """
-        include handing for return
+        Calls correct validation on each of the input JSON files.
+
+        :param fileNames : list of all input JSON files
+        :param dirPath : directory path to the JSON files
+        :return: list of the valid JSON files
         """
 
         validFiles = []
@@ -390,8 +424,7 @@ class JsonValidator:
 
         return validFiles
 
-    # ------------------------------------------------------------------------------------------- #
-
+# ----------------------------------------------------------------------------------------------- #
 
 # FOR TESTING ONLY
 def main():
@@ -402,3 +435,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ----------------------------------------------------------------------------------------------- #
