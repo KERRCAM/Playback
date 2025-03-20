@@ -1,4 +1,5 @@
 # LIBRARY IMPORTS
+import copy
 import json
 import time
 from platform import system
@@ -8,6 +9,8 @@ from jsonValidator import JsonValidator
 from stream import Stream
 
 # ----------------------------------------------------------------------------------------------- #
+
+# TODO - NEED TO MAKE VALIDATOR UPDATE TO ONLY ACCEPT ARRAY -> OBJECTS
 
 class JsonParser:
     """
@@ -31,6 +34,23 @@ class JsonParser:
         self.currContents = None
 
         self.streams = []
+
+        self.streamTemplate = {
+            "ts": None,
+            "platform": None,
+            "ms_played": None,
+            "conn_country": None,
+            "master_metadata_track_name": None,
+            "master_metadata_album_artist_name": None,
+            "master_metadata_album_album_name": None,
+            "spotify_track_uri": None,
+            "episode_name": None,
+            "episode_show_name": None,
+            "spotify_episode_uri": None,
+            "reason_start": None,
+            "reason_end": None,
+        }
+
         self.currStream = None
 
         self.parseFiles(validFiles, dirPath)
@@ -47,7 +67,50 @@ class JsonParser:
 
     # ------------------------------------------------------------------------------------------- #
 
+    def skipWhitespace(self):
+        """
+        Skips all leading whitespace from current point in file.
+        Whitespace = (space* linefeed* carriageReturn* horizontalTab*)*
+        """
+
+        while ( self.currChar == ' '
+                or self.currChar == '\n'
+                or self.currChar == '\r'
+                or self.currChar == '\t' ):
+
+            if self.currChar == '\0':
+                return
+
+            self.charAdvance()
+
     # ------------------------------------------------------------------------------------------- #
+
+    def getNextString(self):
+
+        string = ""
+
+        self.charAdvance()
+        while self.currChar != '"':
+            string += self.currChar
+            self.charAdvance()
+
+        return string
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def parseStream(self):
+
+        self.charAdvance()
+        self.skipWhitespace()
+        while self.currChar == '"':
+            key = self.getNextString()
+            self.charAdvance()
+            self.charAdvance()
+            value = self.getNextString()
+            if self.currChar == ',':
+                self.charAdvance()
+
+            # add key value pair to current stream dictionary
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -62,9 +125,15 @@ class JsonParser:
                 fileContent += line
                 line = file.readline()
 
-        self.currContents = fileContent
+        self.currContents = fileContent + '\0'
         self.pos = 0
         self.currChar = self.currContents[self.pos]
+        self.currStream = copy.deepcopy(self.streamTemplate)
+
+        self.charAdvance()
+        self.skipWhitespace()
+        while self.currChar == '{':
+            self.parseStream()
 
     # ------------------------------------------------------------------------------------------- #
 
