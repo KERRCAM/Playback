@@ -1,5 +1,7 @@
 # LIBRARY IMPORTS
+import json
 import time
+from platform import system
 
 # LOCAL IMPORTS
 from jsonValidator import JsonValidator
@@ -19,13 +21,62 @@ class JsonParser:
 
 # ----------------------------------------------------------------------------------------------- #
 
-    def __init__(self, validFiles):
+    def __init__(self, validFiles, dirPath):
         """
         Constructor for the parser
         """
 
+        self.pos = 0
+        self.currChar = None
+        self.currContents = None
 
         self.streams = []
+        self.currStream = None
+
+        self.parseFiles(validFiles, dirPath)
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def charAdvance(self):
+        """
+        Moves curr char pointer to next char in input.
+        """
+
+        self.pos += 1
+        self.currChar = self.currContents[self.pos]
+
+    # ------------------------------------------------------------------------------------------- #
+
+    # ------------------------------------------------------------------------------------------- #
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def parseFile(self, fileName):
+
+        fileContent = ""
+
+        with open(fileName, 'r') as file:
+            line = file.readline()
+
+            while line:
+                fileContent += line
+                line = file.readline()
+
+        self.currContents = fileContent
+        self.pos = 0
+        self.currChar = self.currContents[self.pos]
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def parseFiles(self, validFiles, dirPath):
+
+        for file in validFiles:
+            if system() == "Windows":
+                file = dirPath + "\\\\" + file
+            else:
+                file = dirPath + "/" + file
+
+            self.parseFile(file)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -33,7 +84,7 @@ class JsonParser:
 def main():
     start = time.time()
     v = JsonValidator("testFiles")
-    p = JsonParser(v.validFiles)
+    p = JsonParser(v.validFiles, v.dirPath)
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 

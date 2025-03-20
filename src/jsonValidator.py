@@ -72,9 +72,9 @@ class JsonValidator:
         Constructor takes input of uploaded folder name.
         """
 
-        fileNames, dirPath = self.getFiles(folderName)
+        fileNames, self.dirPath = self.getFiles(folderName)
         # validFileNames = self.validateFileNames(fileNames)
-        self.validFiles = self.validateFiles(fileNames, dirPath)
+        self.validFiles = self.validateFiles(fileNames, self.dirPath)
 
         self.pos = 0
         self.currChar = None
