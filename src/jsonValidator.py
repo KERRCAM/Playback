@@ -74,7 +74,7 @@ class JsonValidator:
 
         fileNames, dirPath = self.getFiles(folderName)
         # validFileNames = self.validateFileNames(fileNames)
-        validFiles = self.validateFiles(fileNames, dirPath)
+        self.validFiles = self.validateFiles(fileNames, dirPath)
 
         self.pos = 0
         self.currChar = None
