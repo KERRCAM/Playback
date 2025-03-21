@@ -29,6 +29,8 @@ class JsonParser:
         Constructor for the parser
         """
 
+        # self.dubug = 0
+
         self.pos = 0
         self.currChar = None
         self.currContents = None
@@ -98,6 +100,40 @@ class JsonParser:
 
     # ------------------------------------------------------------------------------------------- #
 
+    def getNextInt(self):
+
+        number = 0
+        while self.currChar.isdigit():
+            number *= 10
+            number += ord(self.currChar) - ord('0')
+            self.charAdvance()
+
+        return number
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def getNextKeyword(self):
+
+        keyword = ""
+        while self.currChar != ',':
+            keyword += self.currChar
+            self.charAdvance()
+
+        return keyword
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def getNextValue(self):
+
+        if self.currChar == '"':
+            return self.getNextString()
+        elif self.currChar.isdigit():
+            return self.getNextInt()
+        else:
+            return self.getNextKeyword()
+
+    # ------------------------------------------------------------------------------------------- #
+
     def parseStream(self):
 
         self.charAdvance()
@@ -106,11 +142,21 @@ class JsonParser:
             key = self.getNextString()
             self.charAdvance()
             self.charAdvance()
-            value = self.getNextString()
+            self.charAdvance()
+
+            value = self.getNextValue()
+
+            self.charAdvance()
             if self.currChar == ',':
                 self.charAdvance()
+            self.skipWhitespace()
+
+            print(key, value)
 
             # add key value pair to current stream dictionary
+            if key in self.currStream:
+                self.currStream[key] = value
+            print(self.currStream)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -134,6 +180,7 @@ class JsonParser:
         self.skipWhitespace()
         while self.currChar == '{':
             self.parseStream()
+            # self.dubug += 1
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -154,6 +201,7 @@ def main():
     start = time.time()
     v = JsonValidator("testFiles")
     p = JsonParser(v.validFiles, v.dirPath)
+    # print(p.dubug)
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 
