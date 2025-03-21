@@ -29,8 +29,6 @@ class JsonParser:
         Constructor for the parser
         """
 
-        # self.dubug = 0
-
         self.pos = 0
         self.currChar = None
         self.currContents = None
@@ -93,8 +91,14 @@ class JsonParser:
 
         self.charAdvance()
         while self.currChar != '"':
-            string += self.currChar
-            self.charAdvance()
+            if self.currChar == '\\':
+                string += self.currChar
+                self.charAdvance()
+                string += self.currChar
+                self.charAdvance()
+            else:
+                string += self.currChar
+                self.charAdvance()
 
         return string
 
@@ -151,12 +155,10 @@ class JsonParser:
                 self.charAdvance()
             self.skipWhitespace()
 
-            print(key, value)
 
             # add key value pair to current stream dictionary
             if key in self.currStream:
                 self.currStream[key] = value
-            print(self.currStream)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -180,7 +182,8 @@ class JsonParser:
         self.skipWhitespace()
         while self.currChar == '{':
             self.parseStream()
-            # self.dubug += 1
+            self.debug += 1
+        print(self.currStream)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -201,7 +204,7 @@ def main():
     start = time.time()
     v = JsonValidator("testFiles")
     p = JsonParser(v.validFiles, v.dirPath)
-    # print(p.dubug)
+    print(p.dubug)
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 
