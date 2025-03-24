@@ -20,6 +20,8 @@ class JsonParser:
     Python object only retains the relevant information that we need.
 
     Finally resulting in a list of stream objects, containing the data from all the files.
+
+    Parses ~19362 streams per file.
     """
 
 # ----------------------------------------------------------------------------------------------- #
@@ -29,7 +31,6 @@ class JsonParser:
         Constructor for the parser
         """
 
-        self.debug = 0
         self.pos = 0
         self.currChar = None
         self.currContents = None
@@ -141,8 +142,6 @@ class JsonParser:
 
     def parseStream(self):
 
-        self.debug += 1
-
         self.charAdvance()
         self.skipWhitespace()
         while self.currChar == '"':
@@ -157,7 +156,6 @@ class JsonParser:
             if self.currChar == ',':
                 self.charAdvance()
             self.skipWhitespace()
-
 
             # add key value pair to current stream dictionary
             if key in self.currStream:
@@ -181,14 +179,12 @@ class JsonParser:
         self.currChar = self.currContents[self.pos]
         self.currStream = copy.deepcopy(self.streamTemplate)
 
-
         self.charAdvance()
         self.skipWhitespace()
         while self.currChar == '{':
             self.parseStream()
             newStream = Stream(self.currStream)
             self.streams.append(newStream)
-        print(self.currStream)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -209,7 +205,6 @@ def main():
     start = time.time()
     v = JsonValidator("testFiles")
     p = JsonParser(v.validFiles, v.dirPath)
-    print(p.debug)
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 
