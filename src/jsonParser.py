@@ -185,6 +185,7 @@ class JsonParser:
             self.parseStream()
             newStream = Stream(self.currStream)
             self.streams.append(newStream)
+        print(fileName, " parsed")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -203,8 +204,9 @@ class JsonParser:
 # FOR TESTING ONLY
 def main():
     start = time.time()
-    v = JsonValidator("testFiles")
+    v = JsonValidator("testFiles/testSet")
     p = JsonParser(v.validFiles, v.dirPath)
+    print(len(p.streams))
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 

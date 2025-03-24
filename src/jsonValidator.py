@@ -95,9 +95,9 @@ class JsonValidator:
 
         filePath = os.path.dirname(os.path.realpath(__file__))
         if system() == "Windows":
-            dirPath = os.path.relpath("..\\testFiles", filePath)
+            dirPath = os.path.relpath("..\\testFiles\\testSet", filePath) # hard coded path needs changed
         else:
-            dirPath = os.path.relpath("../testFiles" ,filePath)
+            dirPath = os.path.relpath("../testFiles/testSet" ,filePath) # hard coded path needs changed
         fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
 
         jsonFiles = []
@@ -231,9 +231,6 @@ class JsonValidator:
                 self.charAdvance()
                 if self.currChar == '"':
                     self.charAdvance()
-                else:
-                    self.errorMessage = "Invalid string"
-                    return True
             if self.currChar != '"':
                 self.charAdvance()
             else:
@@ -290,7 +287,6 @@ class JsonValidator:
             if self.currChar == ':':
                 self.charAdvance()
             else:
-                print("1")
                 self.errorMessage = "Invalid object"
                 return True
 
@@ -400,9 +396,9 @@ class JsonValidator:
         # Obviously needs to be converted to UI display later
         if not valid:
             print(self.currChar)
-            print(self.errorMessage, " at line ", self.line, ", column ", self.column)
+            print(fileName, ": ", self.errorMessage, " at line ", self.line, ", column ", self.column)
         else:
-            print("Input JSON is valid")
+            print(fileName, " is valid JSON.")
 
         return valid
 
@@ -434,7 +430,7 @@ class JsonValidator:
 # FOR TESTING ONLY
 def main():
     start = time.time()
-    v = JsonValidator("testFiles")
+    v = JsonValidator("testFiles/testSet")
     end = time.time()
     print("Program run time = ", end - start, " seconds")
 
