@@ -10,8 +10,6 @@ from stream import Stream
 
 # ----------------------------------------------------------------------------------------------- #
 
-# TODO - NEED TO MAKE VALIDATOR UPDATE TO ONLY ACCEPT ARRAY -> OBJECTS
-
 class JsonParser:
     """
     Takes valid JSON files and parses them in a workable python object for analysis.
@@ -28,7 +26,7 @@ class JsonParser:
 
     def __init__(self, validFiles, dirPath):
         """
-        Constructor for the parser
+        Constructor for the parser.
         """
 
         self.pos = 0
@@ -88,6 +86,11 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def getNextString(self):
+        """
+        Builds a string from the leading JSON.
+
+        :return: the pulled string.
+        """
 
         string = ""
 
@@ -107,6 +110,11 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def getNextInt(self):
+        """
+        Constructs a number from the leading JSON.
+
+        :return: the constructed number.
+        """
 
         number = 0
         while self.currChar.isdigit():
@@ -119,6 +127,11 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def getNextKeyword(self):
+        """
+        Consumes keywords: null, true, false
+
+        :return: the constructed keyword string.
+        """
 
         keyword = ""
         while self.currChar != ',' and self.currChar != '}':
@@ -130,6 +143,9 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def getNextValue(self):
+        """
+        Determines the type of the next value and calls the corresponding function.
+        """
 
         if self.currChar == '"':
             return self.getNextString()
@@ -141,6 +157,10 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def parseStream(self):
+        """
+        Gets all the required data from a single stream in the JSON (each is one JSON object).
+        Assigns all the data to a temporary dictionary for later use.
+        """
 
         self.charAdvance()
         self.skipWhitespace()
@@ -164,6 +184,14 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def parseFile(self, fileName):
+        """
+        Initialises all class variables ready for a new file to be parsed and starts the
+        actual parsing loop to get data on each stream.
+        When a stream has been processed the data in the temporary dictionary is passed off
+        into a stream object that is then added to the list of streams.
+
+        :param fileName: file to be parsed.
+        """
 
         fileContent = ""
 
@@ -190,6 +218,12 @@ class JsonParser:
     # ------------------------------------------------------------------------------------------- #
 
     def parseFiles(self, validFiles, dirPath):
+        """
+        Parses each file in given list according to the current operating system.
+
+        :param validFiles: list of validated JSON files.
+        :param dirPath: Path to the uploaded folder of JSON files.
+        """
 
         for file in validFiles:
             if system() == "Windows":
