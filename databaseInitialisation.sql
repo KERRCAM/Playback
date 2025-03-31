@@ -29,6 +29,7 @@ CREATE TABLE Songs (
     countriesListened VARCHAR(30),
     PRIMARY KEY (songURI, username)
 );
+
 CREATE TABLE Albums (
     album VARCHAR(30),
     username VARCHAR(20),
@@ -36,6 +37,7 @@ CREATE TABLE Albums (
     numberOfStreams INT,
     PRIMARY KEY (album, username)
 );
+
 CREATE TABLE Artists (
     artist VARCHAR(30),
     username VARCHAR(20),
@@ -43,6 +45,7 @@ CREATE TABLE Artists (
     numberOfStreams INT,
     PRIMARY KEY (artist, username)
 );
+
 CREATE TABLE Episodes (
     episodeURI VARCHAR(37),
     username VARCHAR(20),
@@ -55,6 +58,7 @@ CREATE TABLE Episodes (
     countriesListened VARCHAR(30),
     PRIMARY KEY (episodeURI, username)
 );
+
 CREATE TABLE Shows (
     showName VARCHAR(30),
     username VARCHAR(20),
@@ -62,15 +66,17 @@ CREATE TABLE Shows (
     numberOfStreams INT,
     PRIMARY KEY (showName, username)
 );
+
 CREATE TABLE Users (
     username VARCHAR(20) PRIMARY KEY,
     timeListened INT,
-    numberOfStreams INT
+    numberOfStreams INT,
     morning INT,
     afternoon INT,
     evening INT,
     night INT
 );
+
 CREATE TABLE Timestamps (
     username VARCHAR(20),
     songURI VARCHAR(37),
@@ -79,6 +85,7 @@ CREATE TABLE Timestamps (
     timestamp DATETIME,
     PRIMARY KEY (username, songURI)
 );
+
 CREATE TABLE Countries (
 	username VARCHAR (20),
     songURI VARCHAR (37),
@@ -87,10 +94,6 @@ CREATE TABLE Countries (
     country VARCHAR (20),
     streams INT,
     minutesListened INT
-    )
+);
 
-
--- Can have block of insert for basic test data (more likely you make your own)
-insert ...
-
-
+delete from albums;
