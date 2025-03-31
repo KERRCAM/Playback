@@ -18,10 +18,12 @@ class JsonProcessor():
 
         '''
 
+        pswd = input("Enter sql password: ")
+
         db = mysql.connector.connect(
             host = "localhost",
             user = "root",
-            password = "",
+            password = pswd,
             database = "playback"
         )
 
@@ -48,7 +50,6 @@ def main():
     print(len(p.streams))
 
     processor = JsonProcessor()
-
 
     end = time.time()
     print("Program run time = ", end - start, " seconds")
