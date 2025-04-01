@@ -6,7 +6,6 @@ def sort_entries(data, sort_by):
     if sort_by == "most_played":
         count = Counter([entry.get("master_metadata_track_name") for entry in data])
         return count.most_common(100)
-
     elif sort_by == "total_listening_time":
         song_time = defaultdict(int)
         for entry in data:
@@ -63,6 +62,6 @@ def sort_entries(data, sort_by):
     elif sort_by == "most_common_end_reason":
         reason_counts = Counter([entry.get("reason_end") for entry in data])
         return reason_counts.most_common()
-
+    
     else:
         raise ValueError("Unsupported sort_by parameter")
