@@ -109,25 +109,34 @@ def top_artist_year(cursor, resultsNumber):
 
     return year_dict
 
-def first_songs_year(cursor):
-    """Songs listened in each country"""
+def first_songs_year(cursor, rank):
+    """First songs listened listened in each country"""
     cursor.execute("""
-    WITH Separate AS (
-        SELECT
-            C.country,
-            MIN(T.timestamp) as first
+    WITH RankedStreams AS (
+        SELECT C.country, T.songURI, T.timestamp,
+        ROW_NUMBER() OVER (PARTITION BY C.country ORDER BY T.timestamp) as ranking
         FROM Timestamps T
         JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
-        GROUP BY C.country
-    )    
-    SELECT C.country, T.songURI, T.timestamp
-    FROM Timestamps T
-    JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
-    JOIN Separate ON Separate.country = C.country AND Separate.first = T.timestamp
-    """)
+    )
+    SELECT country, songURI, timestamp
+    FROM RankedStreams
+    WHERE ranking <= %s
+    ORDER BY country, ranking
+
+    """, (rank,))
     print(cursor.fetchall())
     return cursor.fetchall()
-first_songs_year(cursor)
+
+first_songs_year(cursor, 4)
+
+def total_listening_time_country(cursor):
+    """Total streams listened in each country"""
+    cursor.execute("""
+        SELECT country, streams
+        FROM Countries
+    """)
+    return cursor.fetchall()
+
 
 def plot_top_artist_year(cursor, rankMax):
     artists_by_year = top_artist_year(cursor, rankMax)
