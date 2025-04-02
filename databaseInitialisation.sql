@@ -26,7 +26,6 @@ CREATE TABLE Songs (
     end_backbtn INT,
     end_remote INT,
     end_endplay INT,
-    countriesListened VARCHAR(30),
     PRIMARY KEY (songURI, username)
 );
 
@@ -87,7 +86,7 @@ CREATE TABLE Timestamps (
 );
 
 CREATE TABLE Countries (
-	username VARCHAR (20),
+    username VARCHAR (20),
     songURI VARCHAR (37),
     albumID INT,
     artistID INT,
