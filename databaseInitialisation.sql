@@ -1,5 +1,8 @@
 -- may be an issue, as would need some way to create the database instance on a users local machine
 
+drop database playback;
+drop table episodes;
+
 create database playback;
 
 use playback;
@@ -35,7 +38,7 @@ CREATE TABLE Albums (
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
-    PRIMARY KEY (album, username)
+    PRIMARY KEY (albumID, username)
 );
 
 CREATE TABLE Artists (
@@ -44,7 +47,7 @@ CREATE TABLE Artists (
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
-    PRIMARY KEY (artist, username)
+    PRIMARY KEY (artistID, username)
 );
 
 CREATE TABLE Episodes (
@@ -54,9 +57,16 @@ CREATE TABLE Episodes (
     showName VARCHAR(30),
     timeListened INT,
     numberOfStreams INT,
-    reasonStart INT,
-    reasonEnd INT,
-    countriesListened VARCHAR(30),
+    start_trackdone INT,
+    start_fwdbtn INT,
+    start_backbtn INT,
+    start_remote INT,
+    start_clickrow INT,
+    end_trackdone INT,
+    end_fwdbtn INT,
+    end_backbtn INT,
+    end_remote INT,
+    end_endplay INT,
     PRIMARY KEY (episodeURI, username)
 );
 
@@ -66,7 +76,7 @@ CREATE TABLE Shows (
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
-    PRIMARY KEY (showName, username)
+    PRIMARY KEY (showID, username)
 );
 
 CREATE TABLE Users (

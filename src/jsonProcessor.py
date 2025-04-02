@@ -8,7 +8,7 @@ from jsonParser import JsonParser
 
 # ----------------------------------------------------------------------------------------------- #
 
-class JsonProcessor:
+class JsonProcessor: # TODO - can remove all the db commits and just move one commit to the end of the loop for stream added
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -56,19 +56,19 @@ class JsonProcessor:
     # ------------------------------------------------------------------------------------------- #
 
     def insertSong(self, i):
-        sql = f"SELECT songURI FROM songs WHERE songURI = {i.songURI}"
+        sql = f"SELECT songURI FROM songs WHERE songURI = {i.spotify_track_uri}"
         self.cursor.execute(sql)
         if self.cursor.fetchone() is None:
-            sql = f"INSERT INTO songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, {i.reason_start}, {i.reason_end}) VALUES ({i.songURI}, {self.username}, {i.master_metadata_track_name}, {i.master_metadata_album_artist_name}, {i.master_metadata_album_album_name}, {i.ms_played}, {1}, {1}, {1})"
+            sql = f"INSERT INTO songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, {i.reason_start}, {i.reason_end}) VALUES ({i.spotify_track_uri}, {self.username}, {i.master_metadata_track_name}, {i.master_metadata_album_artist_name}, {i.master_metadata_album_album_name}, {i.ms_played}, {1}, {1}, {1})"
             self.cursor.execute(sql)
             self.db.commit()
         else:
-            sql = f"SELECT timeListened, numberOfStreams, {i.reason_start}, {i.reason_end} FROM songs WHERE songURI == {i.songURI}"
+            sql = f"SELECT timeListened, numberOfStreams, {i.reason_start}, {i.reason_end} FROM songs WHERE songURI == {i.spotify_track_uri}"
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
             result[2] = 0 if result[2] is None else result[2]
             result[3] = 0 if result[3] is None else result[3]
-            sql = f"UPDATE songs SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, {i.reason_start} = {result[2] + 1}, {i.reason_end} = {result[3] + 1} WHERE songURI = {i.songURI}"
+            sql = f"UPDATE songs SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, {i.reason_start} = {result[2] + 1}, {i.reason_end} = {result[3] + 1} WHERE songURI = {i.spotify_track_uri}"
             self.cursor.execute(sql)
             self.db.commit()
 
@@ -109,14 +109,14 @@ class JsonProcessor:
     # ------------------------------------------------------------------------------------------- #
 
     def insertEpisode(self, i):
-
-        # episodeURI username episodeName showName timeListened numberOfStreams reasonStart reasonEnd countriesListened
-
-        sql = f"SELECT episodeURI FROM episodes WHERE episodeURI = {i.episodeURI}"
+        sql = f"SELECT episodeURI FROM episodes WHERE episodeURI = {i.spotify_episode_uri}"
         self.cursor.execute(sql)
         if self.cursor.fetchone() is None:
-            sql = f""
-
+            sql = f"INSERT INTO episodes episodeURI, username, episodeName, showName, timeListened, numberOfStreams, {i.reason_start}, {i.reason_end} VALUES {i.spotify_episode_uri}, {self.username}, {i.episode_name}, {i.episode_show_name}, {i.ms_played}, {1}, {1}, {1}"
+            self.cursor.execute(sql)
+            self.db.commit()
+        else:
+            pass
 
     # ------------------------------------------------------------------------------------------- #
 
