@@ -257,5 +257,3 @@ for item in data:
 conn.commit()
 cursor.close()
 conn.close()
-
-print("Data insertion completed successfully!")

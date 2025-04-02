@@ -1,8 +1,8 @@
-import json
 import mysql.connector
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.font_manager import FontProperties
 
 conn = mysql.connector.connect(
     host="localhost",
@@ -12,44 +12,44 @@ conn = mysql.connector.connect(
 )
 cursor = conn.cursor()
 
-def most_listened(cursor):
+def most_listened(cursor, limit):
     """Top listened songs by the total minutes listened"""
     cursor.execute("""
         SELECT songName, artist, timeListened, numberOfStreams
         FROM Songs
         ORDER BY timeListened DESC
-        LIMIT 20
-    """)
+        LIMIT %s
+    """, (limit))
     return cursor.fetchall()
 
-def most_streamed(cursor):
+def most_streamed(cursor, limit):
     """Most streamed songs"""
     cursor.execute("""
         SELECT songName, artist, timeListened, numberOfStreams
         FROM Songs
         ORDER BY numberOfStreams DESC
-        LIMIT 20
-    """)
+        LIMIT %s
+    """, (limit))
     return cursor.fetchall()
 
-def most_played_artists(cursor):
+def most_played_artists(cursor, limit):
     """Most Played Artists"""
     cursor.execute("""
         SELECT artist, numberOfStreams
         FROM Artists
         ORDER BY numberOfStreams DESC
-        LIMIT 20
-    """)
+        LIMIT %s
+    """, (limit))
     return cursor.fetchall()
 
-def most_skipped_songs(cursor):
+def most_skipped_songs(cursor, limit):
     """Most Skipped Songs"""
     cursor.execute("""
         SELECT songName, artist, timeListened, numberOfStreams, end_fwdbtn + end_backbtn AS total_skip
         FROM Songs
         ORDER BY total_skip DESC
-        LIMIT 20
-    """)
+        LIMIT %s
+    """, (limit))
     return cursor.fetchall()
 
 def time_of_day(cursor):
@@ -79,6 +79,65 @@ def first_songs_year(cursor):
     """)
     return cursor.fetchall()
 
+def top_artist_year(cursor, resultsNumber):
+    """Top artists in each year"""
+
+    cursor.execute("""
+        SELECT DISTINCT YEAR(timestamp) as year 
+        FROM Timestamps 
+        ORDER BY year DESC
+    """)
+
+    years = cursor.fetchall()
+    total_years = [row[0] for row in years]
+
+    year_dict = {}
+
+    for i in total_years:
+        cursor.execute("""
+        SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
+        FROM Songs S 
+        JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
+        JOIN Artists A ON S.artist = A.artist AND S.username = A.username
+        WHERE YEAR(T.timestamp) = %s
+        GROUP BY A.artist
+        ORDER BY total_time DESC
+        LIMIT %s
+        """, (i, resultsNumber))
+
+        year_dict[i] = cursor.fetchall()
+
+    return year_dict
+
+def first_songs_year(cursor):
+    """Songs listened in each country"""
+    cursor.execute("""
+    WITH Separate AS (
+        SELECT
+            C.country,
+            MIN(T.timestamp) as first
+        FROM Timestamps T
+        JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
+        GROUP BY C.country
+    )    
+    SELECT C.country, T.songURI, T.timestamp
+    FROM Timestamps T
+    JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
+    JOIN Separate ON Separate.country = C.country AND Separate.first = T.timestamp
+    """)
+    print(cursor.fetchall())
+    return cursor.fetchall()
+first_songs_year(cursor)
+
+def plot_top_artist_year(cursor, rankMax):
+    artists_by_year = top_artist_year(cursor, rankMax)
+    for year in artists_by_year:
+        print(f"\n=== Top Artists of {year} ===")
+        print(f"{'Rank':<5} {'Artist':<30} {'Minutes':<10} Streams")
+        position = 1
+        for artist, minutes, streams in artists_by_year[year]:
+            print(f"Top {position:<5} {artist:<30} {minutes:<10.1f} {streams}")
+            position+=1
 
 def plot_first_songs(cursor):
     songs = first_songs_year(cursor)
@@ -88,8 +147,6 @@ def plot_first_songs(cursor):
     for name, date in zip(names, dates):
         formatted_date = date.strftime('%Y/%m/%d')
         print(f"{formatted_date}: {name}")
-
-plot_first_songs(cursor)
 
 def plot_time_of_day(cursor):
     songs = time_of_day(cursor)
@@ -118,18 +175,23 @@ def plot_most_skipped_songs(cursor):
 
 
 def plot_top_songs_streaming(cursor):
+    root = tkinter.Tk()
+
     songs = most_streamed(cursor)
     names = [f"{row[0]}\n({row[1]})" for row in songs]
     times = [row[3] for row in songs]
     
-    plt.figure(figsize=(15, 8))
-    plt.barh(names, times, color='skyblue')
-    plt.xlabel('Minutes streamed')
-    plt.title('Top Songs by Streaming counts')
-    plt.gca().invert_yaxis() 
-    plt.tight_layout()
-    plt.show()
+    fig = Figure(figsize=(15, 8), dpi=100)
+    ax = fig.add_subplot(111)
+    ax.plot(names, times)
 
+    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+
+    toolbar = NavigationToolbar2Tk(canvas, root)
+    toolbar.update()
+    canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
 
 def plot_most_played_artists(cursor):
     artists = most_played_artists(cursor)
