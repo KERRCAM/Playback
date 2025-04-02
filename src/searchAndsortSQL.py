@@ -127,25 +127,41 @@ def first_songs_year(cursor, rank):
     print(cursor.fetchall())
     return cursor.fetchall()
 
-first_songs_year(cursor, 4)
-
 def total_listening_time_country(cursor):
     """Total streams listened in each country"""
     cursor.execute("""
-        SELECT country, streams
+        SELECT country, count(streams), sum(minutesListened)
         FROM Countries
+        GROUP BY country
     """)
     return cursor.fetchall()
 
+def plot_total_listening_time_country(cursor):
+    countries = total_listening_time_country(cursor)
+    country = [{row[0]} for row in countries]
+    stats = [{row[2]} for row in countries]
+
+    y = np.array([])
+    for i in range(len(stats)):
+        y = np.append(y, list(stats[i])[0])
+
+    mylabels = []
+    for i in range(len(country)):
+        mylabels.append(list(country[i])[0])
+    plt.pie(y, labels = mylabels)
+    plt.show()
+
+
+plot_total_listening_time_country(cursor)
 
 def plot_top_artist_year(cursor, rankMax):
     artists_by_year = top_artist_year(cursor, rankMax)
     for year in artists_by_year:
         print(f"\n=== Top Artists of {year} ===")
-        print(f"{'Rank':<5} {'Artist':<30} {'Minutes':<10} Streams")
+        print(f"|{'Rank':<5}| {'Artist':<30}| {'Minutes':<10}| Streams|")
         position = 1
         for artist, minutes, streams in artists_by_year[year]:
-            print(f"Top {position:<5} {artist:<30} {minutes:<10.1f} {streams}")
+            print(f"|Top {position:<5}| {artist:<30}| {minutes:<10.1f}| {streams}|")
             position+=1
 
 def plot_first_songs(cursor):

@@ -65,14 +65,11 @@ with open('dataFiles/Streaming_History_Audio_2021-2025.json') as f:
 for item in data:
     username = "default_user"
     iso_timestamp = item.get("ts")
-    mysql_timestamp = convert_to_mysql_datetime(iso_timestamp)
+    mysql_timestamp = convert_to_mysql_datetime(item.get("ts"))
     time_period = get_time_period(iso_timestamp)
     
     ms_played = item.get("ms_played", 0)
     minutes_played = ms_played / 60000
-    
-    is_song = item.get("spotify_track_uri") is not None
-    is_episode = item.get("spotify_episode_uri") is not None
     
     morning = 1 if time_period == 'morning' else 0
     afternoon = 1 if time_period == 'afternoon' else 0
@@ -89,7 +86,7 @@ for item in data:
         night
     )
     
-    if is_song:
+    if item.get("spotify_track_uri") is not None:
         start_reasons = get_reason_flags(item.get("reason_start"))
         end_reasons = get_reason_flags(item.get("reason_end"))
         
@@ -197,7 +194,7 @@ for item in data:
             minutes_played
         ))
         
-    elif is_episode:
+    elif item.get("spotify_episode_uri") is not None:
         start_reasons = get_reason_flags(item.get("reason_start"))
         end_reasons = get_reason_flags(item.get("reason_end"))
         
