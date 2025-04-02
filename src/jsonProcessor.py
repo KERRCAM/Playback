@@ -1,5 +1,4 @@
 # LIBRARY IMPORTS
-import math
 import time
 import mysql.connector
 
@@ -36,8 +35,14 @@ class JsonProcessor:
     # ------------------------------------------------------------------------------------------- #
 
     def cleanData(self):
-        pass
+
         # delete all database entries under given username for class
+        sql = f"DELETE FROM songs WHERE username = {self.username}"
+        self.cursor.execute(sql)
+
+        # do for all
+
+        self.db.commit()
 
     # ------------------------------------------------------------------------------------------- #
 

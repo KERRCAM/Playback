@@ -1,8 +1,6 @@
 # LIBRARY IMPORTS
 import os
-import sys
 import time
-from importlib.resources import contents
 from os import listdir
 from os.path import isfile, join
 from platform import system
@@ -376,8 +374,6 @@ class JsonValidator:
             while line:
                 fileContent += line
                 line = file.readline()
-
-        # print(sys.getsizeof(file_content))
 
         self.currContents = fileContent + '\0'
         self.pos, self.column, self.line = 0, 0, 0

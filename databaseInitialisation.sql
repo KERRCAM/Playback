@@ -30,6 +30,7 @@ CREATE TABLE Songs (
 );
 
 CREATE TABLE Albums (
+    albumID INT NOT NULL AUTO_INCREMENT,
     album VARCHAR(30),
     username VARCHAR(20),
     timeListened INT,
@@ -38,6 +39,7 @@ CREATE TABLE Albums (
 );
 
 CREATE TABLE Artists (
+    artistID INT NOT NULL AUTO_INCREMENT,
     artist VARCHAR(30),
     username VARCHAR(20),
     timeListened INT,
@@ -59,6 +61,7 @@ CREATE TABLE Episodes (
 );
 
 CREATE TABLE Shows (
+    showID INT NOT NULL AUTO_INCREMENT,
     showName VARCHAR(30),
     username VARCHAR(20),
     timeListened INT,
@@ -90,6 +93,7 @@ CREATE TABLE Countries (
     songURI VARCHAR (37),
     albumID INT,
     artistID INT,
+    showID INT,
     country VARCHAR (20),
     streams INT,
     minutesListened INT
