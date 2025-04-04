@@ -92,21 +92,23 @@ CREATE TABLE Users (
 CREATE TABLE Timestamps (
     username VARCHAR(20),
     songURI VARCHAR(37),
+    episodeURI VARCHAR (37),
     albumID INT,
     artistID INT,
     timestamp DATETIME,
-    PRIMARY KEY (username, songURI)
+    PRIMARY KEY (username, timestamp)
 );
 
 CREATE TABLE Countries (
     username VARCHAR (20),
     songURI VARCHAR (37),
+    episodeURI varchar(37),
     albumID INT,
     artistID INT,
     showID INT,
-    country VARCHAR (20),
-    streams INT,
-    minutesListened INT
+    countryCode VARCHAR (5),
+    numberOfStreams INT,
+    timeListened INT
 );
 
 delete from albums;
