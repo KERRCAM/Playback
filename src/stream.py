@@ -20,7 +20,10 @@ class Stream:
 
         self.ts = stream["ts"]
         self.platform = stream["platform"]
-        self.ms_played = stream["ms_played"]
+
+        ms = int(stream["ms_played"]) / 1000 # convertion from ms to seconds, 60000 for mins
+        self.ms_played = ms
+
         self.conn_country = stream["conn_country"]
         self.master_metadata_track_name = stream["master_metadata_track_name"]
         self.master_metadata_album_artist_name = stream["master_metadata_album_artist_name"]

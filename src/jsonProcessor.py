@@ -9,7 +9,7 @@ from datetime import datetime
 
 # ----------------------------------------------------------------------------------------------- #
 
-class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (END REASON, DATE) TO STREAM CLASS
+class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM CLASS, episode uri longer than song?
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -59,7 +59,11 @@ class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (END REASON, DATE
     # ------------------------------------------------------------------------------------------- #
 
     def insertData(self):
+        n = 0
         for i in self.streams:
+            n += 1
+            if n % 10000 == 0:
+                print(n)
             self.insertSong(i)
             self.insertAlbum(i)
             self.insertArtist(i)

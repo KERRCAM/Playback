@@ -8,16 +8,14 @@ create database playback;
 
 use playback;
 
-
-
 -- All table creations
 
 CREATE TABLE Songs (
-    songURI VARCHAR(37),
+    songURI VARCHAR(50),
     username VARCHAR(20),
-    songName VARCHAR(200),
-    artist VARCHAR(200),
-    album VARCHAR(200),
+    songName VARCHAR(400),
+    artist VARCHAR(400),
+    album VARCHAR(400),
     timeListened INT,
     numberOfStreams INT,
     start_trackdone INT,
@@ -28,6 +26,7 @@ CREATE TABLE Songs (
     start_trackerror INT,
     start_playbtn INT,
     start_appload INT,
+    start_unknown INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
@@ -36,12 +35,14 @@ CREATE TABLE Songs (
     end_logout INT,
     end_unexpected_exit INT,
     end_unexpected_exit_while_paused INT,
+    end_trackerror INT,
+    end_unknown INT,
     PRIMARY KEY (songURI, username)
 );
 
 CREATE TABLE Albums (
     albumID INT NOT NULL AUTO_INCREMENT,
-    album VARCHAR(200),
+    album VARCHAR(400),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -50,7 +51,7 @@ CREATE TABLE Albums (
 
 CREATE TABLE Artists (
     artistID INT NOT NULL AUTO_INCREMENT,
-    artist VARCHAR(200),
+    artist VARCHAR(400),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -58,10 +59,10 @@ CREATE TABLE Artists (
 );
 
 CREATE TABLE Episodes (
-    episodeURI VARCHAR(37),
+    episodeURI VARCHAR(50),
     username VARCHAR(20),
-    episodeName VARCHAR(200),
-    showName VARCHAR(200),
+    episodeName VARCHAR(400),
+    showName VARCHAR(400),
     timeListened INT,
     numberOfStreams INT,
     start_trackdone INT,
@@ -72,6 +73,7 @@ CREATE TABLE Episodes (
     start_trackerror INT,
     start_playbtn INT,
     start_appload INT,
+    start_unknown INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
@@ -80,12 +82,14 @@ CREATE TABLE Episodes (
     end_logout INT,
     end_unexpected_exit INT,
     end_unexpected_exit_while_paused INT,
+    end_trackerror INT,
+    end_unknown INT,
     PRIMARY KEY (episodeURI, username)
 );
 
 CREATE TABLE Shows (
     showID INT NOT NULL AUTO_INCREMENT,
-    showName VARCHAR(200),
+    showName VARCHAR(400),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -105,8 +109,8 @@ CREATE TABLE Users (
 CREATE TABLE Timestamps (
 	tsID INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(20),
-    songURI VARCHAR(37),
-    episodeURI VARCHAR (37),
+    songURI VARCHAR(50),
+    episodeURI VARCHAR (50),
     albumID INT,
     artistID INT,
     timestamp DATETIME,
@@ -115,8 +119,8 @@ CREATE TABLE Timestamps (
 
 CREATE TABLE Countries (
     username VARCHAR (20),
-    songURI VARCHAR (37),
-    episodeURI varchar(37),
+    songURI VARCHAR (50),
+    episodeURI varchar(50),
     albumID INT,
     artistID INT,
     showID INT,
@@ -124,6 +128,10 @@ CREATE TABLE Countries (
     numberOfStreams INT,
     timeListened INT
 );
+
+
+select * from Songs;
+
 
 
 
