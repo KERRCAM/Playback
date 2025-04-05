@@ -114,6 +114,7 @@ class JsonProcessor: # TODO - can remove all the db commits and just move one co
             sql = f"SELECT timeListened, numberOfStreams FROM Artists WHERE artist = \"{i.master_metadata_album_artist_name}\""
             self.cursor.execute(sql)
             result = self.cursor.fetchone()
+            print(result)
             sql = f"UPDATE Artists SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE artist = \"{i.master_metadata_album_artist_name}\""
             self.cursor.execute(sql)
 
