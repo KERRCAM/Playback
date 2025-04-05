@@ -29,7 +29,9 @@ class Stream:
         self.episode_name = stream["episode_name"]
         self.episode_show_name = stream["episode_show_name"]
         self.spotify_episode_uri = stream["spotify_episode_uri"]
+
         self.reason_start = stream["reason_start"]
-        self.reason_end = stream["reason_end"]
+        re = stream["reason_end"].replace('-', '_')
+        self.reason_end = re
 
 # ----------------------------------------------------------------------------------------------- #

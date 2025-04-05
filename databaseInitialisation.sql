@@ -1,7 +1,8 @@
 -- may be an issue, as would need some way to create the database instance on a users local machine
 
 drop database playback;
-drop table episodes;
+drop table Episodes;
+drop table Songs;
 
 create database playback;
 
@@ -24,11 +25,17 @@ CREATE TABLE Songs (
     start_backbtn INT,
     start_remote INT,
     start_clickrow INT,
+    start_trackerror INT,
+    start_playbtn INT,
+    start_appload INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
     end_remote INT,
     end_endplay INT,
+    end_logout INT,
+    end_unexpected_exit INT,
+    end_unexpected_exit_while_paused INT,
     PRIMARY KEY (songURI, username)
 );
 
@@ -62,11 +69,17 @@ CREATE TABLE Episodes (
     start_backbtn INT,
     start_remote INT,
     start_clickrow INT,
+    start_trackerror INT,
+    start_playbtn INT,
+    start_appload INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
     end_remote INT,
     end_endplay INT,
+    end_logout INT,
+    end_unexpected_exit INT,
+    end_unexpected_exit_while_paused INT,
     PRIMARY KEY (episodeURI, username)
 );
 
@@ -90,13 +103,14 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Timestamps (
+	tsID INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(20),
     songURI VARCHAR(37),
     episodeURI VARCHAR (37),
     albumID INT,
     artistID INT,
     timestamp DATETIME,
-    PRIMARY KEY (username, timestamp)
+    PRIMARY KEY (tsID, username, timestamp)
 );
 
 CREATE TABLE Countries (
