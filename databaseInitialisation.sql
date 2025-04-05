@@ -14,9 +14,9 @@ use playback;
 CREATE TABLE Songs (
     songURI VARCHAR(37),
     username VARCHAR(20),
-    songName VARCHAR(30),
-    artist VARCHAR(30),
-    album VARCHAR(30),
+    songName VARCHAR(200),
+    artist VARCHAR(200),
+    album VARCHAR(200),
     timeListened INT,
     numberOfStreams INT,
     start_trackdone INT,
@@ -34,7 +34,7 @@ CREATE TABLE Songs (
 
 CREATE TABLE Albums (
     albumID INT NOT NULL AUTO_INCREMENT,
-    album VARCHAR(30),
+    album VARCHAR(200),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -43,7 +43,7 @@ CREATE TABLE Albums (
 
 CREATE TABLE Artists (
     artistID INT NOT NULL AUTO_INCREMENT,
-    artist VARCHAR(30),
+    artist VARCHAR(200),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -53,8 +53,8 @@ CREATE TABLE Artists (
 CREATE TABLE Episodes (
     episodeURI VARCHAR(37),
     username VARCHAR(20),
-    episodeName VARCHAR(30),
-    showName VARCHAR(30),
+    episodeName VARCHAR(200),
+    showName VARCHAR(200),
     timeListened INT,
     numberOfStreams INT,
     start_trackdone INT,
@@ -72,7 +72,7 @@ CREATE TABLE Episodes (
 
 CREATE TABLE Shows (
     showID INT NOT NULL AUTO_INCREMENT,
-    showName VARCHAR(30),
+    showName VARCHAR(200),
     username VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
@@ -111,4 +111,13 @@ CREATE TABLE Countries (
     timeListened INT
 );
 
-delete from albums;
+
+
+DELETE FROM Songs;
+DELETE FROM Albums;
+DELETE FROM Artists;
+DELETE FROM Episodes;
+DELETE FROM Shows;
+DELETE FROM Timestamps;
+DELETE FROM Countries;
+DELETE FROM Users;
