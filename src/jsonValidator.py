@@ -394,7 +394,7 @@ class JsonValidator:
             print(self.currChar)
             print(fileName, ": ", self.errorMessage, " at line ", self.line, ", column ", self.column)
         else:
-            print(fileName, " is valid JSON.")
+            print(fileName, "is valid JSON.")
 
         return valid
 

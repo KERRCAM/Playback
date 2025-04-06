@@ -1,5 +1,5 @@
 # LIBRARY IMPORTS
-
+from datetime import datetime
 
 # LOCAL IMPORTS
 
@@ -18,7 +18,9 @@ class Stream:
         Constructor for the stream object
         """
 
-        self.ts = stream["ts"]
+        dt = datetime.strptime(stream["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        ts = dt.strftime("%Y-%m-%d %H:%M:%S")
+        self.ts = ts
         self.platform = stream["platform"]
 
         ms = int(stream["ms_played"]) / 1000 # convertion from ms to seconds, 60000 for mins

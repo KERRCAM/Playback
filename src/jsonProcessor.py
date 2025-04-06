@@ -27,9 +27,45 @@ class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM 
             database = "playback"
         )
 
-        self.cursor = self.db.cursor()
+        self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
         self.username = username
+
+        self.songs = {}
+        self.albums = {}
+        self.artists = {}
+        self.episodes = {}
+        self.shows = {}
+        self.countries = {}
+        self.user = {   "timeListened": 0,
+                        "numberOfStreams": 0,
+                        "morning": 0,
+                        "afternoon": 0,
+                        "evening": 0,
+                        "night": 0
+                    }
+
+        self.startEndBase = {
+            "start_trackdone": 0,
+            "start_fwdbtn": 0,
+            "start_backbtn": 0,
+            "start_remote": 0,
+            "start_clickrow": 0,
+            "start_trackerror": 0,
+            "start_playbtn": 0,
+            "start_appload": 0,
+            "start_unknown": 0,
+            "end_trackdone": 0,
+            "end_fwdbtn": 0,
+            "end_backbtn": 0,
+            "end_remote": 0,
+            "end_endplay": 0,
+            "end_logout": 0,
+            "end_unexpected_exit": 0,
+            "end_unexpected_exit_while_paused": 0,
+            "end_trackerror": 0,
+            "end_unknown": 0
+        }
 
         self.insertData()
 
@@ -77,125 +113,111 @@ class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM 
     # ------------------------------------------------------------------------------------------- #
 
     def insertSong(self, i):
-        sql = f"SELECT songURI FROM Songs WHERE songURI = \"{i.spotify_track_uri}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
+        sn = f"start_{i.reason_start}"
+        en = f"end_{i.reason_end}"
+        if i.spotify_track_uri in self.songs.keys():
+            result = self.songs[i.spotify_track_uri]
+            sr = result[2][sn] + 1
+            er = result[2][en] + 1
+            sql = f"UPDATE Songs SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, start_{i.reason_start} = {sr}, end_{i.reason_end} = {er} WHERE songURI = \"{i.spotify_track_uri}\""
+            self.cursor.execute(sql)
+            self.songs[i.spotify_track_uri][2][sn] += 1
+            self.songs[i.spotify_track_uri][2][en] += 1
+            self.songs[i.spotify_track_uri] = (result[0] + i.ms_played, result[1] + 1, self.songs[i.spotify_track_uri][2])
+        else:
             sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_track_uri}\", \"{self.username}\", \"{i.master_metadata_track_name}\", \"{i.master_metadata_album_artist_name}\", \"{i.master_metadata_album_album_name}\", \"{i.ms_played}\", {1}, {1}, {1})"
             self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end} FROM Songs WHERE songURI = \"{i.spotify_track_uri}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
-
-            sCount = 0 if result[2] is None else result[2]
-            eCount = 0 if result[3] is None else result[3]
-
-            sql = f"UPDATE Songs SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, start_{i.reason_start} = {sCount + 1}, end_{i.reason_end} = {eCount + 1} WHERE songURI = \"{i.spotify_track_uri}\""
-            self.cursor.execute(sql)
+            newStartEnd = self.startEndBase
+            newStartEnd[sn] += 1
+            newStartEnd[en] += 1
+            self.songs[i.spotify_track_uri] = (i.ms_played, 1, newStartEnd)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertAlbum(self, i):
-        sql = f"SELECT album FROM Albums WHERE album = \"{i.master_metadata_album_album_name}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
-            sql = f"INSERT INTO Albums (album, username, timeListened, numberOfStreams) VALUES (\"{i.master_metadata_album_album_name}\", \"{self.username}\", {i.ms_played}, {1})"
-            self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams FROM Albums WHERE album = \"{i.master_metadata_album_album_name}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
+        if i.master_metadata_album_album_name in self.albums.keys():
+            result = self.albums[i.master_metadata_album_album_name]
             sql = f"UPDATE Albums SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE album = \"{i.master_metadata_album_album_name}\""
             self.cursor.execute(sql)
+            self.albums[i.master_metadata_album_album_name] = (result[0] + i.ms_played, result[1] + 1)
+        else:
+            sql = f"INSERT INTO Albums (album, username, timeListened, numberOfStreams) VALUES (\"{i.master_metadata_album_album_name}\", \"{self.username}\", {i.ms_played}, {1})"
+            self.cursor.execute(sql)
+            self.albums[i.master_metadata_album_album_name] = (i.ms_played, 1)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertArtist(self, i):
-        sql = f"SELECT artist FROM Artists WHERE artist = \"{i.master_metadata_album_artist_name}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
-            sql = f"INSERT INTO Artists (artist, username, timeListened, numberOfStreams) VALUES (\"{i.master_metadata_album_artist_name}\", \"{self.username}\", {i.ms_played}, {1})"
-            self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams FROM Artists WHERE artist = \"{i.master_metadata_album_artist_name}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
+        if i.master_metadata_album_artist_name in self.artists.keys():
+            result = self.artists[i.master_metadata_album_artist_name]
             sql = f"UPDATE Artists SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE artist = \"{i.master_metadata_album_artist_name}\""
             self.cursor.execute(sql)
+            self.artists[i.master_metadata_album_artist_name] = (result[0] + i.ms_played, result[1] + 1)
+        else:
+            sql = f"INSERT INTO Artists (artist, username, timeListened, numberOfStreams) VALUES (\"{i.master_metadata_album_artist_name}\", \"{self.username}\", {i.ms_played}, {1})"
+            self.cursor.execute(sql)
+            self.artists[i.master_metadata_album_artist_name] = (i.ms_played, 1)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertEpisode(self, i):
-        sql = f"SELECT episodeURI FROM Episodes WHERE episodeURI = \"{i.spotify_episode_uri}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
+        sn = f"start_{i.reason_start}"
+        en = f"end_{i.reason_end}"
+        if i.spotify_episode_uri in self.episodes.keys():
+            result = self.episodes[i.spotify_episode_uri]
+            sr = result[2][sn] + 1
+            er = result[2][en] + 1
+            sql = f"UPDATE Episodes SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, start_{i.reason_start} = {sr}, end_{i.reason_end} = {er} WHERE episodeURI = \"{i.spotify_episode_uri}\""
+            self.cursor.execute(sql)
+            self.episodes[i.spotify_episode_uri][2][sn] += 1
+            self.episodes[i.spotify_episode_uri][2][en] += 1
+            self.episodes[i.spotify_episode_uri] = (
+            result[0] + i.ms_played, result[1] + 1, self.episodes[i.spotify_episode_uri][2])
+        else:
             sql = f"INSERT INTO Episodes (episodeURI, username, episodeName, showName, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_episode_uri}\", \"{self.username}\", \"{i.episode_name}\", \"{i.episode_show_name}\", {i.ms_played}, {1}, {1}, {1})"
             self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end} FROM Episodes WHERE episodeURI = \"{i.spotify_episode_uri}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
-            sCount = 0 if result[2] is None else result[2]
-            eCount = 0 if result[3] is None else result[3]
-            sql = f"UPDATE Episodes SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, start_{i.reason_start} = {sCount + 2}, end_{i.reason_end} = {eCount + 1} WHERE episodeURI = \"{i.spotify_episode_uri}\""
-            self.cursor.execute(sql)
+            newStartEnd = self.startEndBase
+            newStartEnd[sn] += 1
+            newStartEnd[en] += 1
+            self.episodes[i.spotify_episode_uri] = (i.ms_played, 1, newStartEnd)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertShow(self, i):
-        sql = f"SELECT showName FROM Shows WHERE showName = \"{i.episode_show_name}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
-            sql = f"INSERT INTO Shows (showName, username, timeListened, numberOfStreams) VALUES (\"{i.episode_show_name}\", \"{self.username}\", {i.ms_played}, {1})"
-            self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams FROM Shows WHERE showName = \"{i.episode_show_name}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
+        if i.episode_show_name in self.shows.keys():
+            result = self.shows[i.episode_show_name]
             sql = f"UPDATE Shows Set timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE showName = \"{i.episode_show_name}\""
             self.cursor.execute(sql)
+            self.shows[i.episode_show_name] = (result[0] + i.ms_played, result[1] + 1)
+        else:
+            sql = f"INSERT INTO Shows (showName, username, timeListened, numberOfStreams) VALUES (\"{i.episode_show_name}\", \"{self.username}\", {i.ms_played}, {1})"
+            self.cursor.execute(sql)
+            self.shows[i.episode_show_name] = (i.ms_played, 1)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertTimeStamp(self, i):
-        sql = f"SELECT albumID FROM Albums WHERE album = \"{i.master_metadata_album_album_name}\""
-        self.cursor.execute(sql)
-        albumID = self.cursor.fetchone()
-        sql = f"SELECT artistID FROM Artists WHERE artist = \"{i.master_metadata_album_artist_name}\""
-        self.cursor.execute(sql)
-        artistID = self.cursor.fetchone()
-        dt = datetime.strptime(i.ts, "%Y-%m-%dT%H:%M:%SZ")
-        ts = dt.strftime("%Y-%m-%d %H:%M:%S")
-        sql = f"INSERT INTO Timestamps (username, songURI, episodeURI, albumID, artistID, timestamp) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", {albumID[0]}, {artistID[0]}, \'{ts}\')"
+        sql = f"INSERT INTO Timestamps (username, songURI, episodeURI, album, artist, timestamp) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", \"{i.master_metadata_album_album_name}\", \"{i.master_metadata_album_artist_name}\", \'{i.ts}\')"
         self.cursor.execute(sql)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertCountry(self, i):
-        sql = f"SELECT albumID FROM Albums WHERE album = \"{i.master_metadata_album_album_name}\""
-        self.cursor.execute(sql)
-        albumID = self.cursor.fetchone()
-        sql = f"SELECT artistID FROM Artists WHERE artist = \"{i.master_metadata_album_artist_name}\""
-        self.cursor.execute(sql)
-        artistID = self.cursor.fetchone()
-        sql = f"SELECT showID FROM Shows WHERE showName = \"{i.episode_show_name}\""
-        self.cursor.execute(sql)
-        showID = self.cursor.fetchone()
-
-        sql = f"SELECT numberOfStreams, timeListened FROM Countries WHERE countryCode = \"{i.conn_country}\""
-        self.cursor.execute(sql)
-        result = self.cursor.fetchone()
-        if result is None:
-            sql = f"INSERT INTO Countries (username, songURI, episodeURI, albumID, artistID, showID, countryCode, numberOfStreams, timeListened) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", {albumID[0]}, {artistID[0]}, {showID[0]}, \"{i.conn_country}\", {i.ms_played}, {1})"
-            self.cursor.execute(sql)
-        else:
+        if i.conn_country in self.countries.keys():
+            result = self.countries[i.conn_country]
             sql = f"UPDATE Countries SET numberOfStreams = {result[0] + 1}, timeListened = {result[1] + i.ms_played} WHERE countryCode = \"{i.conn_country}\""
             self.cursor.execute(sql)
+            self.countries[i.conn_country] = (result[0] + i.ms_played, result[1] + 1)
+        else:
+            sql = f"INSERT INTO Countries (username, songURI, episodeURI, album, artist, showName, countryCode, numberOfStreams, timeListened) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", \"{i.master_metadata_album_album_name}\", \"{i.master_metadata_album_artist_name}\", \"{i.episode_show_name}\", \"{i.conn_country}\", {i.ms_played}, {1})"
+            self.cursor.execute(sql)
+            self.countries[i.conn_country] = (1, i.ms_played)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertUser(self, i):
-        dt = datetime.strptime(i.ts, "%Y-%m-%dT%H:%M:%SZ")
+
+        dt = datetime.strptime(i.ts, "%Y-%m-%d %H:%M:%S")
         ts = int(dt.strftime("%H"))
 
         timeOfDay = "night"
@@ -206,20 +228,18 @@ class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM 
         elif 18 < ts < 24:
             timeOfDay = "evening"
 
-        sql = f"SELECT username FROM Users WHERE username = \"{self.username}\""
-        self.cursor.execute(sql)
-        if self.cursor.fetchone() is None:
+        if self.user["numberOfStreams"] != 0:
+            sql = f"UPDATE Users SET timeListened = {self.user["timeListened"] + i.ms_played}, numberOfStreams = {self.user["numberOfStreams"] + 1}, {timeOfDay} = {self.user[f"{timeOfDay}"] + 1} WHERE username = \"{self.username}\""
+            self.cursor.execute(sql)
+            self.user["timeListened"] += i.ms_played
+            self.user["numberOfStreams"] += 1
+            self.user[f"{timeOfDay}"] += 1
+        else:
             sql = f"INSERT INTO Users (username, timeListened, numberOfStreams, {timeOfDay}) VALUES (\"{self.username}\", {i.ms_played}, {1}, {1})"
             self.cursor.execute(sql)
-        else:
-            sql = f"SELECT timeListened, numberOfStreams, {timeOfDay} FROM Users WHERE username = \"{self.username}\""
-            self.cursor.execute(sql)
-            result = self.cursor.fetchone()
-
-            tCount = 0 if result[2] is None else result[2]
-
-            sql = f"UPDATE Users SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1}, {timeOfDay} = {tCount + 1} WHERE username = \"{self.username}\""
-            self.cursor.execute(sql)
+            self.user["timeListened"] = i.ms_played
+            self.user["numberOfStreams"] = 1
+            self.user[f"{timeOfDay}"] = 1
 
     # ------------------------------------------------------------------------------------------- #
 

@@ -3,6 +3,8 @@
 drop database playback;
 drop table Episodes;
 drop table Songs;
+drop table TimeStamps;
+drop table Countries;
 
 create database playback;
 
@@ -111,8 +113,8 @@ CREATE TABLE Timestamps (
     username VARCHAR(20),
     songURI VARCHAR(50),
     episodeURI VARCHAR (50),
-    albumID INT,
-    artistID INT,
+    album varchar(400),
+    artist varchar(400),
     timestamp DATETIME,
     PRIMARY KEY (tsID, username, timestamp)
 );
@@ -121,18 +123,19 @@ CREATE TABLE Countries (
     username VARCHAR (20),
     songURI VARCHAR (50),
     episodeURI varchar(50),
-    albumID INT,
-    artistID INT,
-    showID INT,
+    album varchar(400),
+    artist varchar(400),
+    showName varchar(400),
     countryCode VARCHAR (5),
     numberOfStreams INT,
     timeListened INT
+    PRIMARY KEY(username, countryCode)
 );
 
 
 select * from Songs;
 
-
+SELECT * FROM Albums ORDER BY timeListened DESC;
 
 
 DELETE FROM Songs;

@@ -212,7 +212,7 @@ class JsonParser:
             self.parseStream()
             newStream = Stream(self.currStream)
             self.streams.append(newStream)
-        print(fileName, " parsed")
+        print(fileName, "parsed")
 
     # ------------------------------------------------------------------------------------------- #
 
