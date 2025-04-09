@@ -128,12 +128,12 @@ CREATE TABLE Countries (
     showName varchar(400),
     countryCode VARCHAR (5),
     numberOfStreams INT,
-    timeListened INT
+    timeListened INT,
     PRIMARY KEY(username, countryCode)
 );
 
 
-select * from Songs;
+select * from Songs ORDER BY timeListened DESC;
 
 SELECT * FROM Albums ORDER BY timeListened DESC;
 

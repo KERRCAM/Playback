@@ -9,7 +9,7 @@ from datetime import datetime
 
 # ----------------------------------------------------------------------------------------------- #
 
-class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM CLASS, episode uri longer than song?
+class JsonProcessor: # TODO - sort out var char lengths
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -67,6 +67,7 @@ class JsonProcessor: # TODO - MOVE SOME OF THE RUNTIME CHANGES (DATE) TO STREAM 
             "end_unknown": 0
         }
 
+        self.cleanData()
         self.insertData()
 
     # ------------------------------------------------------------------------------------------- #
