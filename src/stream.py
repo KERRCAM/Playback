@@ -1,5 +1,5 @@
 # LIBRARY IMPORTS
-
+from datetime import datetime
 
 # LOCAL IMPORTS
 
@@ -18,9 +18,14 @@ class Stream:
         Constructor for the stream object
         """
 
-        self.ts = stream["ts"]
+        dt = datetime.strptime(stream["ts"], "%Y-%m-%dT%H:%M:%SZ")
+        ts = dt.strftime("%Y-%m-%d %H:%M:%S")
+        self.ts = ts
         self.platform = stream["platform"]
-        self.ms_played = stream["ms_played"]
+
+        ms = int(stream["ms_played"]) / 1000 # convertion from ms to seconds, 60000 for mins
+        self.ms_played = ms
+
         self.conn_country = stream["conn_country"]
         self.master_metadata_track_name = stream["master_metadata_track_name"]
         self.master_metadata_album_artist_name = stream["master_metadata_album_artist_name"]
@@ -29,7 +34,9 @@ class Stream:
         self.episode_name = stream["episode_name"]
         self.episode_show_name = stream["episode_show_name"]
         self.spotify_episode_uri = stream["spotify_episode_uri"]
+
         self.reason_start = stream["reason_start"]
-        self.reason_end = stream["reason_end"]
+        re = stream["reason_end"].replace('-', '_')
+        self.reason_end = re
 
 # ----------------------------------------------------------------------------------------------- #

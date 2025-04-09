@@ -1,6 +1,5 @@
 # LIBRARY IMPORTS
 import copy
-import json
 import time
 from platform import system
 
@@ -213,7 +212,7 @@ class JsonParser:
             self.parseStream()
             newStream = Stream(self.currStream)
             self.streams.append(newStream)
-        print(fileName, " parsed")
+        print(fileName, "parsed")
 
     # ------------------------------------------------------------------------------------------- #
 
