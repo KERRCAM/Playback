@@ -16,6 +16,7 @@ class JsonProcessor: # TODO - sort out var char lengths
     def __init__(self, streams, username):
         """
         Constructor for processor class.
+        Contains all the dictionary defaults and database connection setup.
         """
 
         password = input("Enter sql password: ")
@@ -73,6 +74,9 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def cleanData(self):
+        """
+        Clears all data relating to a user -> ran before new insertion.
+        """
 
         sql = f"DELETE FROM Songs WHERE username = {self.username}"
         self.cursor.execute(sql)
@@ -96,6 +100,12 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertData(self):
+        """
+        Loops through all the stream objects calling all the insert methods for each.
+        Responsible for commiting the data after the inserts and updates are made.
+        Also tracks rough progress for larger datasets.
+        """
+
         n = 0
         for i in self.streams:
             n += 1
@@ -114,6 +124,11 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertSong(self, i):
+        """
+        Inserts stream song data.
+        :param i: current stream object.
+        """
+
         sn = f"start_{i.reason_start}"
         en = f"end_{i.reason_end}"
         if i.spotify_track_uri in self.songs.keys():
@@ -136,6 +151,11 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertAlbum(self, i):
+        """
+        Inserts stream album data.
+        :param i: current stream object.
+        """
+
         if i.master_metadata_album_album_name in self.albums.keys():
             result = self.albums[i.master_metadata_album_album_name]
             sql = f"UPDATE Albums SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE album = \"{i.master_metadata_album_album_name}\""
@@ -149,6 +169,11 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertArtist(self, i):
+        """
+        Inserts stream artist data.
+        :param i: current stream object.
+        """
+
         if i.master_metadata_album_artist_name in self.artists.keys():
             result = self.artists[i.master_metadata_album_artist_name]
             sql = f"UPDATE Artists SET timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE artist = \"{i.master_metadata_album_artist_name}\""
@@ -162,6 +187,11 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertEpisode(self, i):
+        """
+        Inserts stream episode data.
+        :param i: current stream object.
+        """
+
         sn = f"start_{i.reason_start}"
         en = f"end_{i.reason_end}"
         if i.spotify_episode_uri in self.episodes.keys():
@@ -185,6 +215,11 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertShow(self, i):
+        """
+        Inserts stream show data.
+        :param i: current stream object.
+        """
+
         if i.episode_show_name in self.shows.keys():
             result = self.shows[i.episode_show_name]
             sql = f"UPDATE Shows Set timeListened = {result[0] + i.ms_played}, numberOfStreams = {result[1] + 1} WHERE showName = \"{i.episode_show_name}\""
@@ -198,12 +233,22 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertTimeStamp(self, i):
+        """
+        Inserts stream timestamp data.
+        :param i: current stream object.
+        """
+
         sql = f"INSERT INTO Timestamps (username, songURI, episodeURI, album, artist, timestamp) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", \"{i.master_metadata_album_album_name}\", \"{i.master_metadata_album_artist_name}\", \'{i.ts}\')"
         self.cursor.execute(sql)
 
     # ------------------------------------------------------------------------------------------- #
 
     def insertCountry(self, i):
+        """
+        Inserts stream country data.
+        :param i: current stream object.
+        """
+
         if i.conn_country in self.countries.keys():
             result = self.countries[i.conn_country]
             sql = f"UPDATE Countries SET numberOfStreams = {result[0] + 1}, timeListened = {result[1] + i.ms_played} WHERE countryCode = \"{i.conn_country}\""
@@ -217,6 +262,10 @@ class JsonProcessor: # TODO - sort out var char lengths
     # ------------------------------------------------------------------------------------------- #
 
     def insertUser(self, i):
+        """
+        Inserts a users overall data.
+        :param i: the current stream object.
+        """
 
         dt = datetime.strptime(i.ts, "%Y-%m-%d %H:%M:%S")
         ts = int(dt.strftime("%H"))
