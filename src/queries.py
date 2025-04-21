@@ -21,7 +21,7 @@ def most_listened(cursor, limit):
         FROM Songs
         ORDER BY timeListened DESC
         LIMIT %s
-    """, (limit))
+    """, (limit,))
     return cursor.fetchall()
 
 def most_streamed(cursor, limit):
@@ -31,7 +31,7 @@ def most_streamed(cursor, limit):
         FROM Songs
         ORDER BY numberOfStreams DESC
         LIMIT %s
-    """, (limit))
+    """, (limit,))
     return cursor.fetchall()
 
 def most_played_artists(cursor, limit):
@@ -41,7 +41,7 @@ def most_played_artists(cursor, limit):
         FROM Artists
         ORDER BY numberOfStreams DESC
         LIMIT %s
-    """, (limit))
+    """, (limit,))
     return cursor.fetchall()
 
 def most_skipped_songs(cursor, limit):
@@ -111,22 +111,22 @@ def top_artist_year(cursor, resultsNumber):
 
     return year_dict
 
-def first_songs_year(cursor, rank):
-    """First songs listened listened in each country"""
+def first_songs_year(cursor):
+    """First songs listened in each country"""
     cursor.execute("""
     WITH RankedStreams AS (
         SELECT C.country, T.songURI, T.timestamp,
         ROW_NUMBER() OVER (PARTITION BY C.country ORDER BY T.timestamp) as ranking
         FROM Timestamps T
         JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
-    )
-    SELECT country, songURI, timestamp
-    FROM RankedStreams
-    WHERE ranking <= %s
+    )     
+    SELECT country, S.songName, timestamp
+    FROM RankedStreams R
+    JOIN Songs S ON R.songURI = S.songURI
+    WHERE ranking <= 1
     ORDER BY country, ranking
 
-    """, (rank,))
-    print(cursor.fetchall())
+    """)
     return cursor.fetchall()
 
 def total_listening_time_country(cursor):
@@ -138,15 +138,18 @@ def total_listening_time_country(cursor):
     """)
     return cursor.fetchall()
 
-# this is kinda broken haha, will fix
 def most_common_end_reason(cursor):
-    """Most commont reason to end songs"""
+    """Most common reason to end songs"""
     cursor.execute("""
-        SELECT GREATEST(end_trackdone, end_backbtn, end_remote, end_endplay),     
-            CONCAT_WS(',', IF(end_trackdone = :query, `track donw`, NULL),
-                IF(end_backbtn = :query, `b button is used`, NULL),
-                IF(end_remote = :query, `remote`, NULL),
-                IF(end_endplay = :query, `play is finished`, NULL)) AS matching_cols
-        FROM Songs
+        SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone = 1
+        UNION ALL
+        SELECT 'used back button' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_backbtn = 1
+        UNION ALL
+        SELECT 'remote' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_remote = 1
+        UNION ALL
+        SELECT 'finished playing' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_endplay = 1
+        UNION ALL
+        SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn = 1
+        ORDER BY count DESC
     """)
-    return cursor.fetchall()
+    result = (cursor.fetchall())

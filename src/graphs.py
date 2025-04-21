@@ -45,23 +45,31 @@ class CF():
 
     def plot_top_artist_year(cursor, rankMax):
         artists_by_year = top_artist_year(cursor, rankMax)
-        for year in artists_by_year:
-            print(f"\n=== Top Artists of {year} ===")
-            print(f"|{'Rank':<5}| {'Artist':<30}| {'Minutes':<10}| Streams|")
-            position = 1
-            for artist, minutes, streams in artists_by_year[year]:
-                print(f"|Top {position:<5}| {artist:<30}| {minutes:<10.1f}| {streams}|")
-                position+=1
+        years = list(artists_by_year.keys())
+
+        fig, axes = plt.subplots(nrows=len(years), figsize=(7, len(years) * 2))
+
+        for ax, year in zip(axes, years):
+            names = [a[0] for a in artists_by_year[year]]
+            minutes = [float(a[1]) for a in artists_by_year[year]]
+
+            ax.barh(names, minutes, color='green')
+            ax.set_xlabel("Total Minutes Played")
+            ax.set_title(f"Top Artists of {year}")
+            ax.invert_yaxis()
+
+        plt.tight_layout()
+        plt.show()
 
     def plot_first_songs(cursor):
+        # need to fix
         songs = first_songs_year(cursor)
-        names = [f"{row[1]}\n({row[2]})" for row in songs]
-        dates = [row[3] for row in songs]
+        years = [row[2].year for row in songs]
+        dates = [f"{row[2].year}:{row[2].month}:{row[2].day}" for row in songs]
 
-        for name, date in zip(names, dates):
-            formatted_date = date.strftime('%Y/%m/%d')
-            print(f"{formatted_date}: {name}")
-
+        countries = [row[0] for row in songs]
+        songNames = [row[1] for row in songs]
+        
     def plot_time_of_day(cursor):
         songs = time_of_day(cursor)
         morning = [{row[0]} for row in songs][0]
@@ -88,37 +96,56 @@ class CF():
         plt.show()
 
     def plot_top_songs_streaming(cursor, limit):
-        # failed attempt to use tkinter for plot
-        root = tkinter.Tk()
-
         songs = most_streamed(cursor, limit)
-        names = [f"{row[0]}\n({row[1]})" for row in songs]
-        times = [row[3] for row in songs]
+        names = [f"{row[0]}\nby {row[1]}" for row in songs]
+        streams = [row[2] for row in songs]
+        plt.figure(figsize=(10, 3))
+        plt.barh(names, streams, color='skyblue')
+        plt.xlabel('Times streamed')
+        plt.title('Top Streamed Songs')
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        plt.show()
+
+    def plot_top_songs_listened(cursor, limit):
+        songs = most_listened(cursor, limit)
+        names = [f"{row[0]}\nby {row[1]}" for row in songs]
+        minutes = [row[2] for row in songs]
         
-        fig = Figure(figsize=(15, 8), dpi=100)
-        ax = fig.add_subplot(111)
-        ax.plot(names, times)
+        plt.figure(figsize=(10, 3))
+        plt.barh(names, minutes, color='skyblue')
+        plt.xlabel('Minutes listened')
+        plt.title('Top Songs by Total Minutes Listened')
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        plt.show()
 
-        canvas = FigureCanvasTkAgg(fig, master=root)
-        canvas.draw()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
-
-        toolbar = NavigationToolbar2Tk(canvas, root)
-        toolbar.update()
-        canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=1)
+    plot_top_songs_listened(cursor, 5)
 
     def plot_most_played_artists(cursor, limit):
         artists = most_played_artists(cursor, limit)
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         
-        plt.figure(figsize=(15, 8))
+        plt.figure(figsize=(10, 3))
         plt.barh(names, times, color='skyblue')
         plt.xlabel('Times played')
         plt.title('Top artists')
         plt.gca().invert_yaxis()
         plt.tight_layout()
         plt.show()
+
+    def plot_most_common_end_reason(cursor):
+        endReasons = most_common_end_reason(cursor)
+        reasons = [f"{row[0]}" for row in endReasons]
+        counts = [row[1] for row in endReasons]
+
+        y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
+        mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
+        plt.pie(y, labels = mylabels)
+        plt.show()
+
+
 
 # ----------------------------------------------------------------------------------------------- #
 
