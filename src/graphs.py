@@ -60,7 +60,7 @@ class CF():
 
         plt.tight_layout()
         plt.show()
-
+        
     def plot_first_songs(cursor):
         # need to fix
         songs = first_songs_year(cursor)
@@ -141,11 +141,6 @@ class CF():
         mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
         plt.pie(y, labels = mylabels)
         plt.show()
-
-    plot_most_common_end_reason(cursor)
-
-
-
 # ----------------------------------------------------------------------------------------------- #
 
 
