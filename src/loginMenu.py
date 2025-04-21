@@ -35,23 +35,8 @@ class LoginMenu:
         # initialize UploadMenu
         SignUpMenu(signUp_window, self.root)
 
-        signUp_window.title("Upload Menu")
-        signUp_window.geometry("800x600")
-
-        # Handle the close button to return to login screen
-        signUp_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(signUp_window))
-
         return
 
-        # # THIS CREATES NEW WINDOW
-        # signUpPage = ctk.CTk()
-        # # AND CLOSES THE OLD ONE
-        # self.root.destroy()
-        #
-        # #  initialize SignUpMenu
-        # signup_app = SignUpMenu(signUpPage)
-        # signUpPage.mainloop()
-        # return
 
     def loginSegue(self):
         username = self.usernameField.get()
@@ -68,24 +53,14 @@ class LoginMenu:
         # initialize UploadMenu
         UploadMenu(login_window, self.root)
 
-        login_window.title("Upload Menu")
-        login_window.geometry("800x600")
-
-        # Handle the close button to return to login
-        login_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(login_window))
-
         return
-
-    def close_upload_window(self, window):
-        window.destroy()
-        self.root.deiconify()  # Show the main window again
 
     def __init__(self, root):
         self.root = root
         app = self.root
 
         ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
+        ctk.set_default_color_theme("green")
 
         # Create the main window
         app.title("Playback")
