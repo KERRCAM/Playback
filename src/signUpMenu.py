@@ -9,7 +9,7 @@ import customtkinter as ctk
 # LOCAL IMPORTS
 
 class SignUpMenu():
-    def __init__(self, window, main_window):
+    def __init__(self, window):
         self.window = window
         signMenu = self.window
 

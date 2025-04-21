@@ -1,5 +1,13 @@
 """
-This class is used to accredit username and password at the first time
+This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu 
+
+TO DO:
+DROP BAR, ACCEPT BUTTON
+file processing
+
+
+IF HAVE TIME: 
+DO LOADING SCREEN?
 
 """
 
@@ -9,7 +17,7 @@ import customtkinter as ctk
 # LOCAL IMPORTS
 
 class UploadMenu():
-    def __init__(self, window, main_window):
+    def __init__(self, window):
         self.window = window
         uploadmenu = self.window
 
@@ -29,7 +37,7 @@ class UploadMenu():
         )
         frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-        label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))
+        label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         uploadmenu.mainloop()

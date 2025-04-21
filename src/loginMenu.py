@@ -2,8 +2,8 @@
 import customtkinter as ctk
 
 # LOCAL IMPORTS
-from UploadMenu import *
-from SignUpMenu import *
+from uploadMenu import *
+from signUpMenu import *
 
 class LoginMenu:
     """
@@ -63,16 +63,16 @@ class LoginMenu:
         self.root.withdraw()
 
         # Create the toplevel window
-        second_window = ctk.CTkToplevel(self.root)
+        login_window = ctk.CTkToplevel(self.root)
 
         # initialize UploadMenu
-        UploadMenu(second_window, self.root)
+        UploadMenu(login_window, self.root)
 
-        second_window.title("Upload Menu")
-        second_window.geometry("800x600")
+        login_window.title("Upload Menu")
+        login_window.geometry("800x600")
 
         # Handle the close button to return to login
-        second_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(second_window))
+        login_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(login_window))
 
         return
 
