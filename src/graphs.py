@@ -43,24 +43,25 @@ class CF():
         plt.pie(y, labels = mylabels)
         plt.show()
 
-    def plot_top_artist_year(cursor, rankMax):
+    # The year (first year) that user started listening can be found by 0 as an argument
+    def plot_top_artist_year(cursor, rankMax, yearNumber):
         artists_by_year = top_artist_year(cursor, rankMax)
         years = list(artists_by_year.keys())
+        exactYear = years[yearNumber]
 
-        fig, axes = plt.subplots(nrows=len(years), figsize=(7, len(years) * 2))
+        names = [a[0] for a in artists_by_year[exactYear]]
+        minutes = [float(a[1]) for a in artists_by_year[exactYear]]
+        print(names)
+        print(minutes)
 
-        for ax, year in zip(axes, years):
-            names = [a[0] for a in artists_by_year[year]]
-            minutes = [float(a[1]) for a in artists_by_year[year]]
-
-            ax.barh(names, minutes, color='green')
-            ax.set_xlabel("Total Minutes Played")
-            ax.set_title(f"Top Artists of {year}")
-            ax.invert_yaxis()
-
+        plt.figure(figsize=(15, 8))
+        plt.barh(names, minutes, color='skyblue')
+        plt.xlabel('Total Minutes Played')
+        plt.title(f'Top artists of {exactYear} ')
+        plt.gca().invert_yaxis()
         plt.tight_layout()
         plt.show()
-        
+
     def plot_first_songs(cursor):
         # need to fix
         songs = first_songs_year(cursor)
