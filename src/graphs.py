@@ -135,13 +135,14 @@ class CF():
 
     def plot_most_common_end_reason(cursor):
         endReasons = most_common_end_reason(cursor)
-        reasons = [f"{row[0]}" for row in endReasons]
+        reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
-
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
         mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
         plt.pie(y, labels = mylabels)
         plt.show()
+
+    plot_most_common_end_reason(cursor)
 
 
 

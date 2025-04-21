@@ -153,3 +153,4 @@ def most_common_end_reason(cursor):
         ORDER BY count DESC
     """)
     result = (cursor.fetchall())
+    return result
