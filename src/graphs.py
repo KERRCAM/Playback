@@ -143,8 +143,6 @@ class CF():
         plt.pie(y, labels = mylabels)
         plt.show()
 
-    plot_most_common_end_reason(5)
-
 
 
 # ----------------------------------------------------------------------------------------------- #
