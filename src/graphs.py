@@ -120,8 +120,6 @@ class CF():
         plt.tight_layout()
         plt.show()
 
-    plot_top_songs_listened(cursor, 5)
-
     def plot_most_played_artists(cursor, limit):
         artists = most_played_artists(cursor, limit)
         names = [f"{row[0]}" for row in artists]
