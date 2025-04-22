@@ -80,6 +80,8 @@ class CF():
         plt.tight_layout()
         saveAsPng("topArtistYear.png")
         plt.show()
+        
+    plot_top_artist_year(cursor, 5, 2)
 
     def plot_first_songs(cursor):
         # need to fix
