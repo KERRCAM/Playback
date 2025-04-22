@@ -51,7 +51,7 @@ def most_skipped_songs(cursor, limit):
         FROM Songs
         ORDER BY total_skip DESC
         LIMIT %s
-    """, (limit))
+    """, (limit,))
     return cursor.fetchall()
 
 def time_of_day(cursor):

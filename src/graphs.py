@@ -2,6 +2,7 @@
 
 
 # LOCAL IMPORTS
+import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,6 +11,15 @@ from queries import *
 
 
 # ----------------------------------------------------------------------------------------------- #
+def saveAsPng(fileName):
+    script_dir = os.path.dirname("/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/src")
+    results_dir = os.path.join(script_dir, 'Results/')
+
+    if not os.path.isdir(results_dir):
+        os.makedirs(results_dir)
+
+    sample_file_name = f"{fileName}"
+    plt.savefig(results_dir + sample_file_name)
 
 class CF():
     """
@@ -25,7 +35,7 @@ class CF():
     ^ Can replace doc string once code is in, above is just a note.
     """
 
-    conn = connection_database();
+    conn = connection_database()
     cursor = conn.cursor()
 
     def plot_total_listening_time_country(cursor):
@@ -39,9 +49,13 @@ class CF():
 
         mylabels = []
         for i in range(len(country)):
-            mylabels.append(list(country[i])[0])
-        plt.pie(y, labels = mylabels)
+            mylabels.append(f'{list(country[i])[0]}: {float("{:.2f}".format((y[i]/sum(y))*100))}%')
+
+        plt.figure(facecolor='black')
+        plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
+        saveAsPng("totalListeningTimeCountry.png")
         plt.show()
+    
 
     # The year (first year) that user started listening can be found by 0 as an argument
     def plot_top_artist_year(cursor, rankMax, yearNumber):
@@ -51,15 +65,21 @@ class CF():
 
         names = [a[0] for a in artists_by_year[exactYear]]
         minutes = [float(a[1]) for a in artists_by_year[exactYear]]
-        print(names)
-        print(minutes)
 
-        plt.figure(figsize=(15, 8))
-        plt.barh(names, minutes, color='skyblue')
+        plt.figure(figsize=(8, 3))
+        bar = plt.barh(names, minutes, color='green')
+        plt.bar_label(
+            bar,
+            label_type='edge', 
+            color='white',  
+            fontweight='bold',  
+            padding=3  
+        )
         plt.xlabel('Total Minutes Played')
-        plt.title(f'Top artists of {exactYear} ')
+        plt.title(f'Top artists of {exactYear}')
         plt.gca().invert_yaxis()
         plt.tight_layout()
+        saveAsPng("topArtistYear.png")
         plt.show()
 
     def plot_first_songs(cursor):
@@ -73,39 +93,44 @@ class CF():
         
     def plot_time_of_day(cursor):
         songs = time_of_day(cursor)
-        morning = [{row[0]} for row in songs][0]
-        afternoon = [{row[1]} for row in songs][0]
-        evening = [{row[2]} for row in songs][0]
-        night = [{row[3]} for row in songs][0]
+        morning = [row[0] for row in songs][0]
+        afternoon = [row[1] for row in songs][0]
+        evening = [row[2] for row in songs][0]
+        night = [row[3] for row in songs][0]
 
         y = np.array([morning, afternoon, evening, night])
-        mylabels = [f"Morning: {morning}", f"Afternoon: {afternoon}", f"Evening: {evening}", f"Night: {night}"]
-        plt.pie(y, labels = mylabels)
+        mylabels = [f'Morning: {float("{:.2f}".format((morning/sum(y))*100))}%', f'Afternoon: {float("{:.2f}".format((afternoon/sum(y))*100))}%', 
+                    f'Evening: {float("{:.2f}".format((evening/sum(y))*100))}%', f'Night: {float("{:.2f}".format((night/sum(y))*100))}%']
+        plt.figure(facecolor='black')
+        plt.pie(y, labels = mylabels,  textprops={'color': 'white', 'fontweight': 'bold'})
+        saveAsPng("timeOfDay.png")
         plt.show()
 
-    def plot_most_skipped_songs(cursor):
-        songs = most_skipped_songs(cursor)
+    def plot_most_skipped_songs(cursor, limit):
+        songs = most_skipped_songs(cursor, limit)
         names = [f"{row[0]}\n({row[1]})" for row in songs]
         times = [row[4] for row in songs]
         
-        plt.figure(figsize=(15, 8))
-        plt.barh(names, times, color='skyblue')
+        plt.figure(figsize=(8, 4))
+        plt.barh(names, times, color='green')
         plt.xlabel('Times Skipped')
         plt.title('Top Skipped Songs')
         plt.gca().invert_yaxis() 
         plt.tight_layout()
+        saveAsPng("mostSkippedSongs.png")
         plt.show()
 
     def plot_top_songs_streaming(cursor, limit):
         songs = most_streamed(cursor, limit)
         names = [f"{row[0]}\nby {row[1]}" for row in songs]
         streams = [row[2] for row in songs]
-        plt.figure(figsize=(10, 3))
-        plt.barh(names, streams, color='skyblue')
+        plt.figure(figsize=(8, 4))
+        plt.barh(names, streams, color='green')
         plt.xlabel('Times streamed')
         plt.title('Top Streamed Songs')
         plt.gca().invert_yaxis()
         plt.tight_layout()
+        saveAsPng("topSongsStreaming.png")
         plt.show()
 
     def plot_top_songs_listened(cursor, limit):
@@ -113,12 +138,13 @@ class CF():
         names = [f"{row[0]}\nby {row[1]}" for row in songs]
         minutes = [row[2] for row in songs]
         
-        plt.figure(figsize=(10, 3))
-        plt.barh(names, minutes, color='skyblue')
+        plt.figure(figsize=(8, 4))
+        plt.barh(names, minutes, color='green')
         plt.xlabel('Minutes listened')
         plt.title('Top Songs by Total Minutes Listened')
         plt.gca().invert_yaxis()
         plt.tight_layout()
+        saveAsPng("topSongsListened.png")
         plt.show()
 
     def plot_most_played_artists(cursor, limit):
@@ -126,12 +152,13 @@ class CF():
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         
-        plt.figure(figsize=(10, 3))
-        plt.barh(names, times, color='skyblue')
+        plt.figure(figsize=(8, 3))
+        plt.barh(names, times, color='green')
         plt.xlabel('Times played')
         plt.title('Top artists')
         plt.gca().invert_yaxis()
         plt.tight_layout()
+        saveAsPng("mostPlayedArtists.png")
         plt.show()
 
     def plot_most_common_end_reason(cursor):
@@ -139,9 +166,15 @@ class CF():
         reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
-        mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
-        plt.pie(y, labels = mylabels)
+        mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", 
+                    f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", 
+                    f"{reasons[4]}: {counts[4]}"]
+        plt.figure(facecolor='black', figsize=(8, 4))
+        plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
+        saveAsPng("mostCommonEndReason.png")
         plt.show()
+
+    plot_most_common_end_reason(cursor)
 # ----------------------------------------------------------------------------------------------- #
 
 
