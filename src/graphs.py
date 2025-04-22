@@ -9,10 +9,9 @@ import numpy as np
 from matplotlib.font_manager import FontProperties
 from queries import *
 
-
 # ----------------------------------------------------------------------------------------------- #
 def saveAsPng(fileName):
-    script_dir = os.path.dirname("/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/src")
+    script_dir = os.path.dirname("./src")
     results_dir = os.path.join(script_dir, 'Results/')
 
     if not os.path.isdir(results_dir):
@@ -173,8 +172,6 @@ class CF():
         plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
         saveAsPng("mostCommonEndReason.png")
         plt.show()
-
-    plot_most_common_end_reason(cursor)
 # ----------------------------------------------------------------------------------------------- #
 
 
