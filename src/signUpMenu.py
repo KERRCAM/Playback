@@ -10,11 +10,13 @@ import customtkinter as ctk
 
 class SignUpMenu():
 
+
     # On closing, this function will transition back to the main window
     def close_window(self, window):
         window.destroy()
         # Show the main window again
         self.loginMenu.deiconify()
+
 
     # Gets username and password from the entry box
     def get_user_info(self):
@@ -22,12 +24,43 @@ class SignUpMenu():
         password = self.passwordInfo.get()
 
         print(f"Username and Password: {username} {password}")
-
+        
         # This deletes datas in the entry box
-        self.usernameInfo.delete(0, "END")
-        self.passwordInfo.delete(0, "END")
+        self.usernameInfo.delete(0, ctk.END)
+        self.passwordInfo.delete(0, ctk.END)
 
+        try:
+            if self.sign_up_successful(username, password):  # Replace with your actual check
+                ctk.CTkMessagebox(
+                    title="Success",
+                    message="Sign Up Successful!",
+                    icon="check",
+                    option_1="OK"
+                )
+            else:
+                ctk.CTkMessagebox(
+                    title="Error",
+                    message="Sign Up Failed. Please try again.",
+                    icon="cancel",
+                    option_1="OK"
+                )
+        except Exception as e:
+            ctk.CTkMessagebox(
+                title="Error",
+                message=f"An error occurred: {str(e)}",
+                icon="cancel",
+                option_1="OK"
+            )
         return
+    
+    
+    def sign_up_successful(self, username, password):
+        try:
+            # Check if username exists, then insert
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
 
     def __init__(self, window, mainWindow):
         self.window = window
@@ -66,14 +99,14 @@ class SignUpMenu():
         passwordLabel.grid(row=2, column=0, padx=10, pady=10)
 
         # Username and password user input box - store as instance variables
-        usernameInfo = ctk.CTkEntry(frame, font=("Helvetica", 20))
-        usernameInfo.grid(row=1, column=1, padx=10, pady=10)
+        self.usernameInfo = ctk.CTkEntry(frame, font=("Helvetica", 20))
+        self.usernameInfo.grid(row=1, column=1, padx=10, pady=10)
 
-        passwordInfo = ctk.CTkEntry(frame, font=("Helvetica", 20), show="*")  # Show * for password
-        passwordInfo.grid(row=2, column=1, padx=10, pady=10)
+        self.passwordInfo = ctk.CTkEntry(frame, font=("Helvetica", 20), show="*")  # Show * for password
+        self.passwordInfo.grid(row=2, column=1, padx=10, pady=10)
 
         # Button to sign Up
-        signUpButton = ctk.CTkButton(frame, text="Sign Up", command=self.get_user_info)
+        signUpButton = ctk.CTkButton(frame, text="Submit", command=self.get_user_info)
         signUpButton.grid(row=3, column=1, padx=10, pady=20)
 
         signMenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(signMenu))

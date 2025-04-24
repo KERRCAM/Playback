@@ -18,15 +18,29 @@ class JsonProcessor: # TODO - sort out var char lengths
         Constructor for processor class.
         Contains all the dictionary defaults and database connection setup.
         """
+                    
+        """
+        THE CONNECTION TO LINUX SERVER
+        DELETE BEFORE FINAL PROJECT
 
-        password = input("Enter sql password: ")
+        Host lxfarm01.csc.liv.ac.uk
+        HostName lxfarm01.csc.liv.ac.uk 
+        User psubattu
 
+        Host lxfarm*.csc.liv.ac.uk
+        User psubattu
+        Macs hmac-sha2-512                        
+           
+        """
+        
         self.db = mysql.connector.connect(
-            host = "localhost",
-            user = "root",
-            password = password,
+            Host = "lxfarm*.csc.liv.ac.uk",
+            HostName = "lxfarm01.csc.liv.ac.uk",
+            user = "psubattu",
+            Macs = "hmac-sha2-512",
             database = "playback"
         )
+
 
         self.cursor = self.db.cursor(buffered = True)
         self.streams = streams

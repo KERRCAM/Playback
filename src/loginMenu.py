@@ -19,7 +19,6 @@ class LoginMenu:
         return
 
     # the button methods will do the transition to other screens and some stuffs
-    # Temporary method to switch between Pages
     def signUpSegue(self):
         username = self.usernameField.get()
         password = self.passwordField.get()
@@ -43,7 +42,7 @@ class LoginMenu:
         password = self.passwordField.get()
 
         print(f"Login attempt: {username} {password}")
-
+        
         # Hide the main window
         self.root.withdraw()
 
