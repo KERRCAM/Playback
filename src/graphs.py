@@ -1,6 +1,5 @@
 # LIBRARY IMPORTS
 
-
 # LOCAL IMPORTS
 import os
 import matplotlib.pyplot as plt
@@ -52,6 +51,8 @@ class CF():
         plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
         saveAsPng("totalListeningTimeCountry.png")
         plt.show()
+
+    plot_total_listening_time_country(cursor)
     
 
     # The year (first year) that user started listening can be found by 0 as an argument
