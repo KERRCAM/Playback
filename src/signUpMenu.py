@@ -7,9 +7,11 @@ This class is used to accredit username and password at the first time
 import customtkinter as ctk
 
 # LOCAL IMPORTS
+import mysql.connector
 
 class SignUpMenu():
     def __init__(self, window, main_window):
+
         self.window = window
         self.main_window = main_window
 
@@ -33,3 +35,34 @@ class SignUpMenu():
 
         label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
+
+        usernameLabel = ctk.CTkLabel(frame, text="Username", font=("Helvetica", 20))
+        usernameLabel.grid(row=1, column=0, padx=10, pady=10)
+
+        passwordLabel = ctk.CTkLabel(frame, text="Password", font=("Helvetica", 20))
+        passwordLabel.grid(row=2, column=0, padx=10, pady=10)
+
+        # Username and password user input box - store as instance variables
+        self.usernameField = ctk.CTkEntry(frame, font=("Helvetica", 20))
+        self.usernameField.grid(row=1, column=1, padx=10, pady=10)
+
+        self.passwordField = ctk.CTkEntry(frame, font=("Helvetica", 20), show="*")  # Show * for password
+        self.passwordField.grid(row=2, column=1, padx=10, pady=10)
+
+        usernameSignUp = self.usernameField.get()
+        passwordSignUp = self.passwordField.get()
+
+        conn = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="Ulaaka_1223",
+                database="playback"
+            )
+        cursor = conn.cursor()
+
+        query = """ 
+        INSERT INTO Users (username, password)
+        VALUES (%s, %s) """
+        cursor.execute(query, (usernameSignUp, passwordSignUp))
+
+        

@@ -43,6 +43,8 @@ class CF():
         plt.pie(y, labels = mylabels)
         plt.show()
 
+    plot_total_listening_time_country(cursor)
+
     def plot_top_artist_year(cursor, rankMax):
         artists_by_year = top_artist_year(cursor, rankMax)
         years = list(artists_by_year.keys())
@@ -142,8 +144,6 @@ class CF():
         mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
         plt.pie(y, labels = mylabels)
         plt.show()
-
-    plot_most_common_end_reason(5)
 
 
 

@@ -15,6 +15,8 @@ use playback;
 CREATE TABLE Songs (
     songURI VARCHAR(50),
     username VARCHAR(20),
+    -- made this change?
+    password VARCHAR(20),
     songName VARCHAR(400),
     artist VARCHAR(400),
     album VARCHAR(400),
