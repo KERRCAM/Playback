@@ -56,23 +56,29 @@ class UploadMenu():
         extract_button.pack(pady=10)
 
         uploadmenu.mainloop()
+
+    def callToPopulate(self):
+        start = time.time()
+        v = JsonValidator("testFiles/testSet")
+        print("validated")
+        p = JsonParser(v.validFiles, v.dirPath)
+        print("parsed")
+        print(p.streams)
+        JsonProcessor(p.streams, "testUser")
+        print("processed")
+        end = time.time()
+        print("Program run time = ", end - start, " seconds")
+
     # The snipped of code from the link below were used for the section down
     # https://stackoverflow.com/questions/70844511/i-want-to-upload-a-file-and-extract-it-using-python-tkinter-button-but-getting-e
     # acw1668
     def UploadAction(self):
         self.input_path = filedialog.askopenfilename(filetypes=[('Zip file', '*.zip')])
+    
 
     def extraction(self):
         if self.input_path:
             with ZipFile(self.input_path, 'r') as zip_file:
                 zip_file.extractall('/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/testFiles/testSet')
-                start = time.time()
-                v = JsonValidator("testFiles/testSet")
-                print("validated")
-                p = JsonParser(v.validFiles, v.dirPath)
-                print("parsed")
-                print(p.streams)
-                JsonProcessor(p.streams, "testUser")
-                print("processed")
-                end = time.time()
-                print("Program run time = ", end - start, " seconds")
+        
+        self.callToPopulate()
