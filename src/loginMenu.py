@@ -1,6 +1,5 @@
 # LIBRARY IMPORTS
 import customtkinter as ctk
-# import mysql.connector
 
 # LOCAL IMPORTS
 from uploadMenu import *
