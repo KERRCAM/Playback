@@ -16,11 +16,16 @@ import customtkinter as ctk
 
 # LOCAL IMPORTS
 from mainMenu import *
+from jsonParser import *
 
 
 class UploadMenu():
 
     def menuSegue(self):
+
+        #self.jsonProcessor.
+
+
         # Hide the main window
         #self.root.withdraw()
         #
@@ -69,7 +74,7 @@ class UploadMenu():
         label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
-        mainMenuButton = ctk.CTkButton(frame, text="MainMenu button", font=("Helvetica", 20))
+        mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20))
 
         mainMenuButton.grid(row=1, column=0, pady=10)
 
