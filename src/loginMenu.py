@@ -2,8 +2,8 @@
 import customtkinter as ctk
 
 # LOCAL IMPORTS
-from UploadMenu import *
-from SignUpMenu import *
+from uploadMenu import *
+from signUpMenu import *
 
 class LoginMenu:
     """
@@ -32,10 +32,10 @@ class LoginMenu:
         # Create the toplevel window
         signUp_window = ctk.CTkToplevel(self.root)
 
-        # initialize UploadMenu
+        # initialize SignUp menu
         SignUpMenu(signUp_window, self.root)
 
-        signUp_window.title("Upload Menu")
+        signUp_window.title("Sign-up Menu")
         signUp_window.geometry("800x600")
 
         # Handle the close button to return to login screen

@@ -11,6 +11,8 @@ import customtkinter as ctk
 class SignUpMenu():
     def __init__(self, window, main_window):
         self.window = window
+        self.main_window = main_window
+
         signMenu = self.window
 
         # Create the main window
@@ -31,13 +33,3 @@ class SignUpMenu():
 
         label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
-
-        signMenu.mainloop()
-
-def main():
-    root = ctk.CTk()
-    app = SignUpMenu(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
