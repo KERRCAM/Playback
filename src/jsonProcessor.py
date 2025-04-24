@@ -279,16 +279,16 @@ class JsonProcessor: # TODO - sort out var char lengths
             timeOfDay = "evening"
 
         if self.user["numberOfStreams"] != 0:
-            sql = f"UPDATE Users SET timeListened = {self.user["timeListened"] + i.ms_played}, numberOfStreams = {self.user["numberOfStreams"] + 1}, {timeOfDay} = {self.user[f"{timeOfDay}"] + 1} WHERE username = \"{self.username}\""
+            sql = f"UPDATE Users SET timeListened = {self.user['timeListened'] + i.ms_played}, numberOfStreams = {self.user['numberOfStreams'] + 1}, {timeOfDay} = {self.user[timeOfDay] + 1} WHERE username = '{self.username}'"
             self.cursor.execute(sql)
-            self.user["timeListened"] += i.ms_played
-            self.user["numberOfStreams"] += 1
+            self.user['timeListened'] += i.ms_played
+            self.user['numberOfStreams'] += 1
             self.user[f"{timeOfDay}"] += 1
         else:
             sql = f"INSERT INTO Users (username, timeListened, numberOfStreams, {timeOfDay}) VALUES (\"{self.username}\", {i.ms_played}, {1}, {1})"
             self.cursor.execute(sql)
-            self.user["timeListened"] = i.ms_played
-            self.user["numberOfStreams"] = 1
+            self.user['timeListened'] = i.ms_played
+            self.user['numberOfStreams'] = 1
             self.user[f"{timeOfDay}"] = 1
 
     # ------------------------------------------------------------------------------------------- #

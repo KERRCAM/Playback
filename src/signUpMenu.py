@@ -7,7 +7,7 @@ This class is used to accredit username and password at the first time
 import customtkinter as ctk
 
 # LOCAL IMPORTS
-import mysql.connector
+# mport mysql.connector
 
 class SignUpMenu():
     def __init__(self, window, main_window):
@@ -49,20 +49,18 @@ class SignUpMenu():
         self.passwordField = ctk.CTkEntry(frame, font=("Helvetica", 20), show="*")  # Show * for password
         self.passwordField.grid(row=2, column=1, padx=10, pady=10)
 
+        # Buttons for login a sign-up - pass function references not calls
+        submit = ctk.CTkButton(frame, text="Submit")
+        submit.grid(row=3, column=0, padx=10, pady=20)
+
         usernameSignUp = self.usernameField.get()
         passwordSignUp = self.passwordField.get()
-
-        conn = mysql.connector.connect(
+        
+        """     conn = mysql.connector.connect(
                 host="localhost",
                 user="root",
                 password="Ulaaka_1223",
                 database="playback"
             )
-        cursor = conn.cursor()
-
-        query = """ 
-        INSERT INTO Users (username, password)
-        VALUES (%s, %s) """
-        cursor.execute(query, (usernameSignUp, passwordSignUp))
-
+        cursor = conn.cursor()"""
         

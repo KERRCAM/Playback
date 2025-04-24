@@ -5,6 +5,13 @@ This class is used to accredit username and password at the first time
 
 # LIBRARY IMPORTS
 import customtkinter as ctk
+from tkinter import filedialog
+from zipfile import ZipFile
+from jsonValidator import JsonValidator
+from jsonParser import JsonParser
+from jsonProcessor import JsonProcessor
+import time
+
 
 # LOCAL IMPORTS
 
@@ -13,13 +20,12 @@ class UploadMenu():
         self.window = window
         uploadmenu = self.window
 
-        # Create the main window
+        self.input_path = None
+
         uploadmenu.title("Playback")
         uploadmenu.geometry("800x600")
-        # Allow resizing
         uploadmenu.resizable(width=True, height=True)
 
-        # A frame to collect the labels and entry box
         frame = ctk.CTkFrame(
             uploadmenu,
             width=200,
@@ -29,15 +35,40 @@ class UploadMenu():
         )
         frame.pack(pady=20, padx=20, fill="both", expand=True)
 
-        label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))
-        label.grid(row=0, column=0, columnspan=2, pady=10)
+        label = ctk.CTkLabel(frame, text="Menu screen", font=("Helvetica", 20))
+        label.pack(pady=10)  
+
+        upload_button = ctk.CTkButton(
+            frame,
+            text="Upload",
+            font=("Helvetica", 12),
+            command=self.UploadAction
+        )
+        upload_button.pack(pady=10)
+
+        extract_button = ctk.CTkButton(
+            frame,
+            text="Extract",
+            font=("Helvetica", 12),
+            command=self.extraction
+        )
+        extract_button.pack(pady=10)
 
         uploadmenu.mainloop()
+    # The snipped of code from the link below were used for the section down
+    # https://stackoverflow.com/questions/70844511/i-want-to-upload-a-file-and-extract-it-using-python-tkinter-button-but-getting-e
+    # acw1668
+    def UploadAction(self):
+        self.input_path = filedialog.askopenfilename(filetypes=[('Zip file', '*.zip')])
 
-def main():
-    root = ctk.CTk()
-    app = UploadMenu(root)
-    root.mainloop()
+    def extraction(self):
+        if self.input_path:
+            with ZipFile(self.input_path, 'r') as zip_file:
+                zip_file.extractall('/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/testFiles/testSet')
+                start = time.time()
+                v = JsonValidator("testFiles/testSet")
+                p = JsonParser(v.validFiles, v.dirPath)
 
-if __name__ == "__main__":
-    main()
+                processor = JsonProcessor(p.streams, "testUser")
+                end = time.time()
+                print("Program run time = ", end - start, " seconds")
