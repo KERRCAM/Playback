@@ -1,9 +1,5 @@
 import mysql.connector
-from datetime import datetime
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.font_manager import FontProperties
-
+print("MySQL Connector is installed!")
 
 def connection_database():
     """Returns a new database connection"""

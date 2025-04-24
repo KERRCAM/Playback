@@ -1,7 +1,6 @@
 # LIBRARY IMPORTS
 import time
 import mysql.connector
-
 # LOCAL IMPORTS
 from jsonValidator import JsonValidator
 from jsonParser import JsonParser
@@ -19,12 +18,12 @@ class JsonProcessor: # TODO - sort out var char lengths
         Contains all the dictionary defaults and database connection setup.
         """
 
-        password = input("Enter sql password: ")
+        # password = input("Enter sql password: ")
 
         self.db = mysql.connector.connect(
             host = "localhost",
             user = "root",
-            password = password,
+            password = 'Ulaaka_1223',
             database = "playback"
         )
 
@@ -78,22 +77,22 @@ class JsonProcessor: # TODO - sort out var char lengths
         Clears all data relating to a user -> ran before new insertion.
         """
 
-        sql = f"DELETE FROM Songs WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Albums WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Artists WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Episodes WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Shows WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Timestamps WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Countries WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Users WHERE username = {self.username}"
-        self.cursor.execute(sql)
+        sql = f"DELETE FROM Songs WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Albums WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Artists WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Episodes WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Shows WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Timestamps WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Countries WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Users WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
 
         self.db.commit()
 
@@ -128,7 +127,7 @@ class JsonProcessor: # TODO - sort out var char lengths
         Inserts stream song data.
         :param i: current stream object.
         """
-
+        print("and i wonder")
         sn = f"start_{i.reason_start}"
         en = f"end_{i.reason_end}"
         if i.spotify_track_uri in self.songs.keys():

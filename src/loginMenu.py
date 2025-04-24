@@ -73,7 +73,6 @@ class LoginMenu:
 
         # Handle the close button to return to login
         second_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(second_window))
-
         return
 
     def close_upload_window(self, window):
@@ -127,7 +126,6 @@ class LoginMenu:
 
         SignUpButton = ctk.CTkButton(frame, text="Sign up", command=self.signUpSegue)
         SignUpButton.grid(row=3, column=1, padx=10, pady=20)
-
 
 def main():
     root = ctk.CTk()

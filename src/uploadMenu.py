@@ -10,6 +10,7 @@ from zipfile import ZipFile
 from jsonValidator import JsonValidator
 from jsonParser import JsonParser
 from jsonProcessor import JsonProcessor
+# from jsonProcessor import JsonProcessor
 import time
 
 
@@ -67,8 +68,10 @@ class UploadMenu():
                 zip_file.extractall('/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/testFiles/testSet')
                 start = time.time()
                 v = JsonValidator("testFiles/testSet")
+                print("validated")
                 p = JsonParser(v.validFiles, v.dirPath)
-
-                processor = JsonProcessor(p.streams, "testUser")
+                print("parsed")
+                JsonProcessor(p.streams, "testUser")
+                print("processed")
                 end = time.time()
                 print("Program run time = ", end - start, " seconds")

@@ -2,10 +2,8 @@
 
 
 # LOCAL IMPORTS
-from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.font_manager import FontProperties
 from queries import *
 
 
