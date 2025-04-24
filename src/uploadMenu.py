@@ -71,6 +71,7 @@ class UploadMenu():
                 print("validated")
                 p = JsonParser(v.validFiles, v.dirPath)
                 print("parsed")
+                print(p.streams)
                 JsonProcessor(p.streams, "testUser")
                 print("processed")
                 end = time.time()

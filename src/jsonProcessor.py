@@ -30,7 +30,7 @@ class JsonProcessor: # TODO - sort out var char lengths
         self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
         self.username = username
-
+        
         self.songs = {}
         self.albums = {}
         self.artists = {}
@@ -69,7 +69,6 @@ class JsonProcessor: # TODO - sort out var char lengths
 
         self.cleanData()
         self.insertData()
-
     # ------------------------------------------------------------------------------------------- #
 
     def cleanData(self):
@@ -93,6 +92,7 @@ class JsonProcessor: # TODO - sort out var char lengths
         self.cursor.execute(sql, (self.username,))
         sql = f"DELETE FROM Users WHERE username = %s"
         self.cursor.execute(sql, (self.username,))
+        print("nyamdorj")
 
         self.db.commit()
 
@@ -104,7 +104,6 @@ class JsonProcessor: # TODO - sort out var char lengths
         Responsible for commiting the data after the inserts and updates are made.
         Also tracks rough progress for larger datasets.
         """
-
         n = 0
         for i in self.streams:
             n += 1
@@ -118,7 +117,10 @@ class JsonProcessor: # TODO - sort out var char lengths
             self.insertTimeStamp(i)
             self.insertCountry(i)
             self.insertUser(i)
+
         self.db.commit()
+        print("done?")
+
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -146,7 +148,7 @@ class JsonProcessor: # TODO - sort out var char lengths
             newStartEnd[sn] += 1
             newStartEnd[en] += 1
             self.songs[i.spotify_track_uri] = (i.ms_played, 1, newStartEnd)
-
+        
     # ------------------------------------------------------------------------------------------- #
 
     def insertAlbum(self, i):
@@ -239,6 +241,7 @@ class JsonProcessor: # TODO - sort out var char lengths
 
         sql = f"INSERT INTO Timestamps (username, songURI, episodeURI, album, artist, timestamp) VALUES (\"{self.username}\", \"{i.spotify_track_uri}\", \"{i.spotify_episode_uri}\", \"{i.master_metadata_album_album_name}\", \"{i.master_metadata_album_artist_name}\", \'{i.ts}\')"
         self.cursor.execute(sql)
+
 
     # ------------------------------------------------------------------------------------------- #
 

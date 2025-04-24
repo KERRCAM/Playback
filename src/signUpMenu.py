@@ -8,7 +8,7 @@ import customtkinter as ctk
 
 
 # LOCAL IMPORTS
-# mport mysql.connector
+# import mysql.connector
 
 class SignUpMenu():
     def __init__(self, window, main_window):
