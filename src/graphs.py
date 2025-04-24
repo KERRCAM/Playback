@@ -3,10 +3,8 @@
 
 # LOCAL IMPORTS
 import os
-from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.font_manager import FontProperties
 from queries import *
 
 # ----------------------------------------------------------------------------------------------- #
@@ -64,8 +62,8 @@ class CF():
 
         names = [a[0] for a in artists_by_year[exactYear]]
         minutes = [float(a[1]) for a in artists_by_year[exactYear]]
-
-        plt.figure(figsize=(8, 3))
+        height = rankMax * 0.3
+        plt.figure(figsize=(8, height))
         bar = plt.barh(names, minutes, color='green')
         plt.bar_label(
             bar,
@@ -81,8 +79,6 @@ class CF():
         saveAsPng("topArtistYear.png")
         plt.show()
         
-    plot_top_artist_year(cursor, 5, 2)
-
     def plot_first_songs(cursor):
         # need to fix
         songs = first_songs_year(cursor)
@@ -106,16 +102,17 @@ class CF():
         plt.pie(y, labels = mylabels,  textprops={'color': 'white', 'fontweight': 'bold'})
         saveAsPng("timeOfDay.png")
         plt.show()
-
+    
     def plot_most_skipped_songs(cursor, limit):
         songs = most_skipped_songs(cursor, limit)
-        names = [f"{row[0]}\n({row[1]})" for row in songs]
+        names = [f"{row[0]} ({row[1]})" for row in songs]
         times = [row[4] for row in songs]
-        
-        plt.figure(figsize=(8, 4))
+        height = limit * 0.3
+        plt.figure(figsize=(8, height))
         plt.barh(names, times, color='green')
         plt.xlabel('Times Skipped')
         plt.title('Top Skipped Songs')
+        plt.yticks(fontsize=9)
         plt.gca().invert_yaxis() 
         plt.tight_layout()
         saveAsPng("mostSkippedSongs.png")
@@ -125,7 +122,8 @@ class CF():
         songs = most_streamed(cursor, limit)
         names = [f"{row[0]}\nby {row[1]}" for row in songs]
         streams = [row[2] for row in songs]
-        plt.figure(figsize=(8, 4))
+        height = limit * 0.3
+        plt.figure(figsize=(8, height))
         plt.barh(names, streams, color='green')
         plt.xlabel('Times streamed')
         plt.title('Top Streamed Songs')
@@ -136,10 +134,10 @@ class CF():
 
     def plot_top_songs_listened(cursor, limit):
         songs = most_listened(cursor, limit)
-        names = [f"{row[0]}\nby {row[1]}" for row in songs]
+        names = [f"{row[0]} ({row[1]})" for row in songs]
         minutes = [row[2] for row in songs]
-        
-        plt.figure(figsize=(8, 4))
+        height = limit * 0.3
+        plt.figure(figsize=(8, height))
         plt.barh(names, minutes, color='green')
         plt.xlabel('Minutes listened')
         plt.title('Top Songs by Total Minutes Listened')
@@ -152,8 +150,8 @@ class CF():
         artists = most_played_artists(cursor, limit)
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
-        
-        plt.figure(figsize=(8, 3))
+        height = limit * 0.3
+        plt.figure(figsize=(8, height))
         plt.barh(names, times, color='green')
         plt.xlabel('Times played')
         plt.title('Top artists')
@@ -161,7 +159,7 @@ class CF():
         plt.tight_layout()
         saveAsPng("mostPlayedArtists.png")
         plt.show()
-
+    
     def plot_most_common_end_reason(cursor):
         endReasons = most_common_end_reason(cursor)
         reasons = [row[0] for row in endReasons]
