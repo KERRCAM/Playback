@@ -2,9 +2,7 @@
 This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu 
 
 TO DO:
-DROP BAR, ACCEPT BUTTON
 file processing
-
 
 IF HAVE TIME: 
 DO LOADING SCREEN?
@@ -15,14 +13,12 @@ DO LOADING SCREEN?
 import customtkinter as ctk
 from zipfile import ZipFile
 from tkinter import filedialog, messagebox
-
 import os
 
 # LOCAL IMPORTS
-from mainMenu import *
 from jsonParser import *
 from jsonProcessor import *
-from statisticMenu import *
+from mainMenu import *
 
 
 class UploadMenu():
@@ -52,13 +48,14 @@ class UploadMenu():
                 zip_file.extractall(output_dir)
 
     def main_menu_segue(self):
+        # Hides this window to show the next window
         self.window.withdraw()
 
         # Create the toplevel window
         signUp_window = ctk.CTkToplevel(self.window)
 
         # Initialise new window
-        statisticMenu(signUp_window, self.window)
+        mainMenu(signUp_window, self.window)
 
 
     def close_window(self, window):
@@ -82,7 +79,7 @@ class UploadMenu():
 
         # A frame to collect the labels and entry box
         frame = ctk.CTkFrame(uploadmenu, width=200, height=200, corner_radius=10, border_width=2)
-        frame.pack(pady=20, padx=20, fill="both", expand=True)
+        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)

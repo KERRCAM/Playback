@@ -10,6 +10,10 @@ from tkinter import messagebox
 # LOCAL IMPORTS
 
 class SignUpMenu():
+    # a method to verify username and password also create as well
+    def dataSQL(self):
+        # activate db
+        return
 
 
     # On closing, this function will transition back to the main window
@@ -44,7 +48,7 @@ class SignUpMenu():
         try:
             # Check if username exists, then insert
 
-            
+
             return True
         except Exception as e:
             print(f"Error: {e}")
@@ -66,14 +70,8 @@ class SignUpMenu():
         signMenu.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(
-            signMenu,
-            width=200,
-            height=200,
-            corner_radius=10,
-            border_width=2
-        )
-        frame.pack(pady=20, padx=20, fill="both", expand=True)
+        frame = ctk.CTkFrame(signMenu, width=200, height=200, corner_radius=10, border_width=2)
+        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         # Title label
         label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))

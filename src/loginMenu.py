@@ -6,18 +6,6 @@ from uploadMenu import *
 from signUpMenu import *
 
 class LoginMenu:
-    """
-    BitmapImage for images in XBM format.
-    PhotoImage for images in PGM, PPM, GIF and PNG formats. The latter is supported starting with Tk 8.6.
-    """
-    def imageProc(self):
-        return
-
-    # a method to verify username and password also create as well
-    def dataSQL(self):
-        # activate db
-        return
-
     # the button methods will do the transition to other screens and some stuffs
     def signUpSegue(self):
         username = self.usernameField.get()
@@ -69,7 +57,7 @@ class LoginMenu:
 
         # A frame to collect the labels and entry box
         frame = ctk.CTkFrame(app, width=200, height=200, corner_radius=10, border_width=2)
-        frame.pack(pady=40, padx=20, fill="both", expand=True)
+        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         # App title
         label = ctk.CTkLabel(frame, text="Login screen", font=("Helvetica", 20))
