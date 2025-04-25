@@ -60,7 +60,6 @@ class CF():
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
         minutes = [a[1]/3600 for a in artists_by_year[exactYear]]
-        print(minutes)
         height = rankMax * 0.4
         plt.figure(figsize=(8, height))
         bar = plt.barh(names, minutes, color='green')
