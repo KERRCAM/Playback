@@ -107,7 +107,6 @@ class JsonValidator:
             if file[-5:] == ".json":
                 jsonFiles.append(file)
 
-        print(jsonFiles)
         return jsonFiles, dirPath
 
     # ------------------------------------------------------------------------------------------- #
