@@ -14,12 +14,15 @@ DO LOADING SCREEN?
 # LIBRARY IMPORTS
 import customtkinter as ctk
 from zipfile import ZipFile
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
+
+import os
 
 # LOCAL IMPORTS
 from mainMenu import *
 from jsonParser import *
 from jsonProcessor import *
+from statisticMenu import *
 
 
 class UploadMenu():
@@ -28,29 +31,34 @@ class UploadMenu():
     The code snippet both UploadAction(), extraction() are in credit to acw1668
     https://stackoverflow.com/questions/70844511/i-want-to-upload-a-file-and-extract-it-using-python-tkinter-button-but-getting-eacw1668
     """
-
     # The function opens a folder to upload the file
     def UploadAction(self):
         try:
             self.input_path = filedialog.askopenfilename(filetypes=[('Zip file', '*.zip')])
-            actionCompleteLabel = ctk.CTkLabel(self.frame, text="The file has been received.", font=("Helvetica", 20))
-            actionCompleteLabel.grid(row=2, column=0, pady=10)
+            messagebox.showinfo("Success", "File succesfully uploaded.")
         except Exception as e:
             print(f"Error: {e}")   
 
-
     # The function will extract given file and Validate and Parse.
-    def extraction(self):
+    def extraction(self, output_dir):
         if self.input_path:
+            if not os.path.exists(output_dir):
+                # Create dir if it doesn't exist
+                output_dir = r"C:\Users\Dell\Desktop\Playback\testFiles\testSet"
+                os.makedirs(output_dir)     
+            
             with ZipFile(self.input_path, 'r') as zip_file:
-                zip_file.extractall(r"C:\Users\Dell\Desktop\Playback\testFiles\testSet")
-                start = time.time()
-                v = JsonValidator("testFiles/testSet")
-                p = JsonParser(v.validFiles, v.dirPath)
+                # Extract all files to output_dir
+                zip_file.extractall(output_dir)
 
-                processor = JsonProcessor(p.streams, "testUser")
-                end = time.time()
-                print("Program run time = ", end - start, " seconds")
+    def main_menu_segue(self):
+        self.window.withdraw()
+
+        # Create the toplevel window
+        signUp_window = ctk.CTkToplevel(self.window)
+
+        # Initialise new window
+        statisticMenu(signUp_window, self.window)
 
 
     def close_window(self, window):
@@ -73,13 +81,7 @@ class UploadMenu():
         uploadmenu.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(
-            uploadmenu,
-            width=200,
-            height=200,
-            corner_radius=10,
-            border_width=2
-        )
+        frame = ctk.CTkFrame(uploadmenu, width=200, height=200, corner_radius=10, border_width=2)
         frame.pack(pady=20, padx=20, fill="both", expand=True)
 
         label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
@@ -88,13 +90,11 @@ class UploadMenu():
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
         mainMenuButton.grid(row=1, column=0, pady=10)
         
-        extract_button = ctk.CTkButton(
-            frame,
-            text="Extract",
-            font=("Helvetica", 20),
-            command=self.extraction
-        )
+        extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=self.extraction)
         extract_button.grid(row=1, column=1, pady=10)
+
+        temp_button = ctk.CTkButton(frame, text = "Temp button to Menu", font=("Helvetica", 20), command=self.main_menu_segue)
+        temp_button.grid(row = 2, column = 0, pady= 10)
 
         uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
         uploadmenu.mainloop()

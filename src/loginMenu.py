@@ -68,13 +68,7 @@ class LoginMenu:
         app.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(
-            app,
-            width=200,
-            height=200,
-            corner_radius=10,
-            border_width=2
-        )
+        frame = ctk.CTkFrame(app, width=200, height=200, corner_radius=10, border_width=2)
         frame.pack(pady=40, padx=20, fill="both", expand=True)
 
         # App title

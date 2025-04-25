@@ -5,6 +5,7 @@ This class is used to accredit username and password at the first time
 
 # LIBRARY IMPORTS
 import customtkinter as ctk
+from tkinter import messagebox
 
 # LOCAL IMPORTS
 
@@ -30,33 +31,20 @@ class SignUpMenu():
         self.passwordInfo.delete(0, ctk.END)
 
         try:
-            if self.sign_up_successful(username, password):  # Replace with your actual check
-                ctk.CTkMessagebox(
-                    title="Success",
-                    message="Sign Up Successful!",
-                    icon="check",
-                    option_1="OK"
-                )
+            if self.sign_up_successful(username, password):
+                messagebox.showinfo("Success", "Account creation has been successfull")
             else:
-                ctk.CTkMessagebox(
-                    title="Error",
-                    message="Sign Up Failed. Please try again.",
-                    icon="cancel",
-                    option_1="OK"
-                )
+                messagebox.showerror("Error", "There is a error")
         except Exception as e:
-            ctk.CTkMessagebox(
-                title="Error",
-                message=f"An error occurred: {str(e)}",
-                icon="cancel",
-                option_1="OK"
-            )
+            messagebox.showerror("Error", e)
         return
     
     
     def sign_up_successful(self, username, password):
         try:
             # Check if username exists, then insert
+
+            
             return True
         except Exception as e:
             print(f"Error: {e}")
