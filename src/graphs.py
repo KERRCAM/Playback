@@ -23,7 +23,7 @@ class CF():
     ^ Can replace doc string once code is in, above is just a note.
     """
 
-    conn = connection_database();
+    conn = connection_database()
     cursor = conn.cursor()
 
     def plot_total_listening_time_country(cursor):
@@ -41,7 +41,6 @@ class CF():
         plt.pie(y, labels = mylabels)
         plt.show()
 
-    plot_total_listening_time_country(cursor)
 
     def plot_top_artist_year(cursor, rankMax):
         artists_by_year = top_artist_year(cursor, rankMax)

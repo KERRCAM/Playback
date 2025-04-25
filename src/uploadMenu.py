@@ -12,6 +12,9 @@ from jsonParser import JsonParser
 from jsonProcessor import JsonProcessor
 # from jsonProcessor import JsonProcessor
 import time
+from graphs import CF
+import mysql.connector
+from queries import *
 
 
 # LOCAL IMPORTS
@@ -60,12 +63,9 @@ class UploadMenu():
     def callToPopulate(self):
         start = time.time()
         v = JsonValidator("testFiles/testSet")
-        print("validated")
         p = JsonParser(v.validFiles, v.dirPath)
-        print("parsed")
         print(p.streams)
         JsonProcessor(p.streams, "testUser")
-        print("processed")
         end = time.time()
         print("Program run time = ", end - start, " seconds")
 
@@ -80,5 +80,5 @@ class UploadMenu():
         if self.input_path:
             with ZipFile(self.input_path, 'r') as zip_file:
                 zip_file.extractall('/Users/nyamdorjbat-erdene/COMP208_G24/COMP208/testFiles/testSet')
-        
+
         self.callToPopulate()

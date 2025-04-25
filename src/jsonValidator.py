@@ -99,14 +99,15 @@ class JsonValidator:
         else:
             dirPath = os.path.relpath("../testFiles/testSet" ,filePath) # hard coded path needs changed """
         # now seems okay
-        dirPath = os.path.join(filePath, 'testFiles', 'testSet')
-        fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+        dirPath = os.path.join(filePath, 'testFiles', 'testSet', 'Spotify Extended Streaming History')
 
+        fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
         jsonFiles = []
         for file in fileNames:
             if file[-5:] == ".json":
                 jsonFiles.append(file)
 
+        print(jsonFiles)
         return jsonFiles, dirPath
 
     # ------------------------------------------------------------------------------------------- #

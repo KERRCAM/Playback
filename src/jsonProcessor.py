@@ -30,7 +30,7 @@ class JsonProcessor: # TODO - sort out var char lengths
         self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
         self.username = username
-        
+
         self.songs = {}
         self.albums = {}
         self.artists = {}
@@ -92,7 +92,6 @@ class JsonProcessor: # TODO - sort out var char lengths
         self.cursor.execute(sql, (self.username,))
         sql = f"DELETE FROM Users WHERE username = %s"
         self.cursor.execute(sql, (self.username,))
-        print("nyamdorj")
 
         self.db.commit()
 
@@ -119,7 +118,6 @@ class JsonProcessor: # TODO - sort out var char lengths
             self.insertUser(i)
 
         self.db.commit()
-        print("done?")
 
 
     # ------------------------------------------------------------------------------------------- #
@@ -129,7 +127,19 @@ class JsonProcessor: # TODO - sort out var char lengths
         Inserts stream song data.
         :param i: current stream object.
         """
-        print("and i wonder")
+
+        start_reasons = ['trackdone', 'fwdbtn', 'backbtn', 'remote', 'clickrow', 'trackerror', 'playbtn', 'appload']
+        if (i.reason_start in start_reasons):
+            i.reason_start = i.reason_start
+        else:
+            i.reason_start = 'unknown'
+            
+        end_reasons = ['trackdone', 'fwdbtn', 'backbtn', 'remote', 'endplay', 'logout', 'unexpected_exit', 'unexpected_exit_while_paused', 'end_trackerror']
+        if (i.reason_end in end_reasons):
+            i.reason_end = i.reason_end
+        else:
+            i.reason_end = 'unknown'
+
         sn = f"start_{i.reason_start}"
         en = f"end_{i.reason_end}"
         if i.spotify_track_uri in self.songs.keys():
@@ -142,8 +152,8 @@ class JsonProcessor: # TODO - sort out var char lengths
             self.songs[i.spotify_track_uri][2][en] += 1
             self.songs[i.spotify_track_uri] = (result[0] + i.ms_played, result[1] + 1, self.songs[i.spotify_track_uri][2])
         else:
-            sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_track_uri}\", \"{self.username}\", \"{i.master_metadata_track_name}\", \"{i.master_metadata_album_artist_name}\", \"{i.master_metadata_album_album_name}\", \"{i.ms_played}\", {1}, {1}, {1})"
-            self.cursor.execute(sql)
+            sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            self.cursor.execute(sql, (i.spotify_track_uri, self.username, i.master_metadata_track_name, i.master_metadata_album_artist_name, i.master_metadata_album_album_name, i.ms_played, 1, 1, 1))
             newStartEnd = self.startEndBase
             newStartEnd[sn] += 1
             newStartEnd[en] += 1
