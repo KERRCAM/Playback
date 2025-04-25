@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
 
+# TODO - change function names to camel case
+
 # ----------------------------------------------------------------------------------------------- #
 
 def connection_database():
