@@ -66,8 +66,6 @@ class UploadMenu():
         p = JsonParser(v.validFiles, v.dirPath)
         print(p.streams)
         processsor = JsonProcessor(p.streams, "testUser")
-        conn = connection_database()
-        cursor = conn.cursor()
         end = time.time()
         print("Program run time = ", end - start, " seconds")
 
