@@ -59,9 +59,8 @@ class CF():
         years = list(artists_by_year.keys())
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
-        minutes = [float(a[1]/3600) for a in artists_by_year[exactYear]]
+        minutes = [a[1]/3600 for a in artists_by_year[exactYear]]
         print(minutes)
-
         height = rankMax * 0.4
         plt.figure(figsize=(8, height))
         bar = plt.barh(names, minutes, color='green')
@@ -78,6 +77,8 @@ class CF():
         plt.tight_layout()
         saveAsPng("topArtistYear.png")
         plt.show()
+
+    plot_top_artist_year(cursor, 5, 1)
 
     def plot_first_songs(cursor):
         # need to fix
@@ -135,7 +136,7 @@ class CF():
     def plot_top_songs_listened(cursor, limit):
         songs = most_listened(cursor, limit)
         names = [f"{row[0]} ({row[1]})" for row in songs]
-        minutes = [row[2]/3600 for row in songs]
+        minutes = [row[2]/60 for row in songs]
         height = limit * 0.4
         plt.figure(figsize=(8, height))
         plt.barh(names, minutes, color='green')
@@ -145,8 +146,6 @@ class CF():
         plt.tight_layout()
         saveAsPng("topSongsListened.png")
         plt.show()
-
-    plot_top_songs_listened(cursor, 5)
     
     def plot_most_played_artists(cursor, limit):
         artists = most_played_artists(cursor, limit)
