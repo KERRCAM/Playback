@@ -65,9 +65,12 @@ class UploadMenu():
         v = JsonValidator("testFiles/testSet")
         p = JsonParser(v.validFiles, v.dirPath)
         print(p.streams)
-        JsonProcessor(p.streams, "testUser")
+        processsor = JsonProcessor(p.streams, "testUser")
+        conn = connection_database()
+        cursor = conn.cursor()
         end = time.time()
         print("Program run time = ", end - start, " seconds")
+
 
     # The snipped of code from the link below were used for the section down
     # https://stackoverflow.com/questions/70844511/i-want-to-upload-a-file-and-extract-it-using-python-tkinter-button-but-getting-e

@@ -39,6 +39,8 @@ class CF():
             mylabels.append(list(country[i])[0])
         plt.pie(y, labels = mylabels)
         plt.show()
+        
+    plot_total_listening_time_country(cursor)
 
     def plot_top_artist_year(cursor, rankMax):
         artists_by_year = top_artist_year(cursor, rankMax)
