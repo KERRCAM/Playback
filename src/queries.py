@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
 
+# ----------------------------------------------------------------------------------------------- #
 
 def connection_database():
     """Returns a new database connection"""
@@ -13,6 +14,8 @@ def connection_database():
         password="Ulaaka_1223",
         database="playback"
     )
+
+# ----------------------------------------------------------------------------------------------- #
 
 def most_listened(cursor, limit):
     """Top listened songs by the total minutes listened"""
@@ -25,6 +28,8 @@ def most_listened(cursor, limit):
     """, (limit,))
     return cursor.fetchall()
 
+# ----------------------------------------------------------------------------------------------- #
+
 def most_streamed(cursor, limit):
     """Most streamed songs"""
     cursor.execute("""
@@ -36,6 +41,8 @@ def most_streamed(cursor, limit):
     """, (limit,))
     return cursor.fetchall()
 
+# ----------------------------------------------------------------------------------------------- #
+
 def most_played_artists(cursor, limit):
     """Most Played Artists"""
     cursor.execute("""
@@ -46,6 +53,8 @@ def most_played_artists(cursor, limit):
         LIMIT %s
     """, (limit,))
     return cursor.fetchall()
+
+# ----------------------------------------------------------------------------------------------- #
 
 def most_skipped_songs(cursor, limit):
     """Most Skipped Songs"""
@@ -59,6 +68,8 @@ def most_skipped_songs(cursor, limit):
     """, (limit,))
     return cursor.fetchall()
 
+# ----------------------------------------------------------------------------------------------- #
+
 def time_of_day(cursor):
     """Songs listened in each time of the day"""
     cursor.execute("""
@@ -66,7 +77,8 @@ def time_of_day(cursor):
         FROM Users
     """)
     return cursor.fetchall()
-    
+
+# ----------------------------------------------------------------------------------------------- #
 
 def first_songs_year(cursor):
     """Songs listened in each time of the day"""
@@ -85,6 +97,8 @@ def first_songs_year(cursor):
     ORDER BY firstDate.year
     """)
     return cursor.fetchall()
+
+# ----------------------------------------------------------------------------------------------- #
 
 def top_artist_year(cursor, resultsNumber):
     """Top artists in each year"""
@@ -115,6 +129,8 @@ def top_artist_year(cursor, resultsNumber):
 
     return year_dict
 
+# ----------------------------------------------------------------------------------------------- #
+
 def first_songs_year(cursor):
     """First songs listened in each country"""
     cursor.execute("""
@@ -142,6 +158,8 @@ def total_listening_time_country(cursor):
     """)
     return cursor.fetchall()
 
+# ----------------------------------------------------------------------------------------------- #
+
 def most_common_end_reason(cursor):
     """Most common reason to end songs"""
     cursor.execute("""
@@ -166,3 +184,5 @@ def most_common_end_reason(cursor):
     """)
     result = (cursor.fetchall())
     return result
+
+# ----------------------------------------------------------------------------------------------- #
