@@ -1,11 +1,46 @@
 # LIBRARY IMPORTS
 import customtkinter as ctk
+import mysql.connector
 
 # LOCAL IMPORTS
 from uploadMenu import *
 from signUpMenu import *
 
+
 class LoginMenu:
+    # a method to verify username and password also create as well
+    def dataSQL(self):
+        # activate db                   
+        """
+        THE CONNECTION TO LINUX SERVER
+        DELETE BEFORE FINAL PROJECT
+
+        Host lxfarm01.csc.liv.ac.uk
+        HostName lxfarm01.csc.liv.ac.uk 
+        User psubattu
+
+        Host lxfarm*.csc.liv.ac.uk
+        User psubattu
+        Macs hmac-sha2-512                        
+           
+        """
+        
+        self.db = mysql.connector.connect(
+            Host = "lxfarm*.csc.liv.ac.uk",
+            HostName = "lxfarm01.csc.liv.ac.uk",
+            user = "psubattu",
+            Macs = "hmac-sha2-512",
+            database = "playback"
+        )
+
+        return
+    
+
+    # username and password verification and DB STUFFS
+    def user_authentication(self):
+        self.username
+
+
     # the button methods will do the transition to other screens and some stuffs
     def signUpSegue(self):
         username = self.usernameField.get()
@@ -23,7 +58,6 @@ class LoginMenu:
         SignUpMenu(signUp_window, self.root)
 
         return
-
 
     def loginSegue(self):
         username = self.usernameField.get()
@@ -89,6 +123,7 @@ def main():
     root = ctk.CTk()
     app = LoginMenu(root)
     root.mainloop()
+    dataSQL()
 
 if __name__ == "__main__":
     main()

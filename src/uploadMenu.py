@@ -46,6 +46,11 @@ class UploadMenu():
             with ZipFile(self.input_path, 'r') as zip_file:
                 # Extract all files to output_dir
                 zip_file.extractall(output_dir)
+                v = JsonProcessor(output_dir)
+                JsonParser(v.validfiles, v.dirPath)
+
+
+
 
     def main_menu_segue(self):
         # Hides this window to show the next window
@@ -55,7 +60,7 @@ class UploadMenu():
         signUp_window = ctk.CTkToplevel(self.window)
 
         # Initialise new window
-        mainMenu(signUp_window, self.window)
+        MainMenu(signUp_window, self.window)
 
 
     def close_window(self, window):

@@ -20,6 +20,7 @@ class MainMenu():
     PhotoImage for images in PGM, PPM, GIF and PNG formats. The latter is supported starting with Tk 8.6.
     """
     def imageProc(self):
+        
         return
 
     def close_window(self, window):
