@@ -150,6 +150,9 @@ class JsonProcessor: # TODO - sort out var char lengths
             self.cursor.execute(sql)
             self.songs[i.spotify_track_uri][2][sn] += 1
             self.songs[i.spotify_track_uri][2][en] += 1
+
+            if result[0] is None:
+                result[0] = 0
             self.songs[i.spotify_track_uri] = (result[0] + i.ms_played, result[1] + 1, self.songs[i.spotify_track_uri][2])
         else:
             sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
