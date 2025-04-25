@@ -22,7 +22,6 @@ class CF():
 
     ^ Can replace doc string once code is in, above is just a note.
     """
-
     conn = connection_database()
     cursor = conn.cursor()
 
@@ -41,7 +40,6 @@ class CF():
         plt.pie(y, labels = mylabels)
         plt.show()
 
-
     def plot_top_artist_year(cursor, rankMax):
         artists_by_year = top_artist_year(cursor, rankMax)
         years = list(artists_by_year.keys())
@@ -59,6 +57,7 @@ class CF():
 
         plt.tight_layout()
         plt.show()
+
 
     def plot_first_songs(cursor):
         # need to fix
@@ -134,14 +133,13 @@ class CF():
 
     def plot_most_common_end_reason(cursor):
         endReasons = most_common_end_reason(cursor)
-        reasons = [f"{row[0]}" for row in endReasons]
+        reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
 
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
         mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}", f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}", f"{reasons[4]}: {counts[4]}"]
         plt.pie(y, labels = mylabels)
         plt.show()
-
 
 
 # ----------------------------------------------------------------------------------------------- #

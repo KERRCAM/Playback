@@ -154,11 +154,12 @@ class JsonProcessor: # TODO - sort out var char lengths
         else:
             sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             self.cursor.execute(sql, (i.spotify_track_uri, self.username, i.master_metadata_track_name, i.master_metadata_album_artist_name, i.master_metadata_album_album_name, i.ms_played, 1, 1, 1))
-            newStartEnd = self.startEndBase
-            newStartEnd[sn] += 1
-            newStartEnd[en] += 1
+            # create new instance for each song
+            newStartEnd = self.startEndBase.copy()
+            # start the count as 1
+            newStartEnd[sn] = 1
+            newStartEnd[en] = 1
             self.songs[i.spotify_track_uri] = (i.ms_played, 1, newStartEnd)
-        
     # ------------------------------------------------------------------------------------------- #
 
     def insertAlbum(self, i):
@@ -218,9 +219,9 @@ class JsonProcessor: # TODO - sort out var char lengths
         else:
             sql = f"INSERT INTO Episodes (episodeURI, username, episodeName, showName, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_episode_uri}\", \"{self.username}\", \"{i.episode_name}\", \"{i.episode_show_name}\", {i.ms_played}, {1}, {1}, {1})"
             self.cursor.execute(sql)
-            newStartEnd = self.startEndBase
-            newStartEnd[sn] += 1
-            newStartEnd[en] += 1
+            newStartEnd = self.startEndBase.copy()
+            newStartEnd[sn] = 1
+            newStartEnd[en] = 1
             self.episodes[i.spotify_episode_uri] = (i.ms_played, 1, newStartEnd)
 
     # ------------------------------------------------------------------------------------------- #
