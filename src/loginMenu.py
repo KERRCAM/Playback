@@ -123,7 +123,6 @@ def main():
     root = ctk.CTk()
     app = LoginMenu(root)
     root.mainloop()
-    dataSQL()
 
 if __name__ == "__main__":
     main()

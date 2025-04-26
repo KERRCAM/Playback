@@ -1,9 +1,6 @@
 """
 This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu 
 
-TO DO:
-file processing
-
 IF HAVE TIME: 
 DO LOADING SCREEN?
 
@@ -23,33 +20,54 @@ from mainMenu import *
 
 class UploadMenu():
 
-    """
-    The code snippet both UploadAction(), extraction() are in credit to acw1668
-    https://stackoverflow.com/questions/70844511/i-want-to-upload-a-file-and-extract-it-using-python-tkinter-button-but-getting-eacw1668
-    """
     # The function opens a folder to upload the file
     def UploadAction(self):
         try:
             self.input_path = filedialog.askopenfilename(filetypes=[('Zip file', '*.zip')])
-            messagebox.showinfo("Success", "File succesfully uploaded.")
+            if not self.input_path:
+                messagebox.showerror("Error", "No file uploaded.")
+                return
+            else:
+                # Get the directory of the uploaded file
+                self.input_dir = os.path.dirname(self.input_path)
+                messagebox.showinfo("Success", "File succesfully uploaded.")
+                extract_dir = os.path.join(self.input_dir, "extracted_files")
+
+                # Call the extraction method with the directory of the uploaded file
+                self.extraction(extract_dir)
         except Exception as e:
             print(f"Error: {e}")   
 
-    # The function will extract given file and Validate and Parse.
     def extraction(self, output_dir):
-        if self.input_path:
-            if not os.path.exists(output_dir):
-                # Create dir if it doesn't exist
-                output_dir = r"C:\Users\Dell\Desktop\Playback\testFiles\testSet"
-                os.makedirs(output_dir)     
-            
+        if not self.input_path:
+            messagebox.showerror("Error", "No file uploaded.")
+            return
+
+        try:
+            # Ensure the output directory exists
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Extract files to the specified output directory
             with ZipFile(self.input_path, 'r') as zip_file:
-                # Extract all files to output_dir
                 zip_file.extractall(output_dir)
-                v = JsonProcessor(output_dir)
-                JsonParser(v.validfiles, v.dirPath)
 
+            # Validate extracted files
+            if not os.listdir(output_dir):
+                raise ValueError("The zip file is empty or contains no valid files.")
 
+            # Process the extracted files
+            v = JsonProcessor(output_dir)
+            JsonParser(v.validfiles, v.dirPath)
+
+            messagebox.showinfo("Success", f"Files extracted to {output_dir}")
+        except Exception as e:
+            # Cleanup in case of failure
+            if os.path.exists(output_dir):
+                for file in os.listdir(output_dir):
+                    os.remove(os.path.join(output_dir, file))
+                os.rmdir(output_dir)
+
+            messagebox.showerror("Error", f"An error occurred during extraction: {e}")
 
 
     def main_menu_segue(self):

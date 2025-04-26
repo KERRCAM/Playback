@@ -1,5 +1,6 @@
 """
-
+This is the main menu for the application.
+It is also used to display the main menu of the application.
 
 
 """
