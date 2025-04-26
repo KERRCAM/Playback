@@ -1,11 +1,10 @@
 # LIBRARY IMPORTS
-
-
-# LOCAL IMPORTS
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
+
+# LOCAL IMPORTS
 from queries import *
 
 
@@ -25,7 +24,7 @@ class CF():
     ^ Can replace doc string once code is in, above is just a note.
     """
 
-    conn = connection_database();
+    conn = connection_database()
     cursor = conn.cursor()
 
     def plot_total_listening_time_country(cursor):
