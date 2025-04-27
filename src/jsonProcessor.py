@@ -7,6 +7,7 @@ import mysql.connector
 from jsonValidator import JsonValidator
 from jsonParser import JsonParser
 from datetime import datetime
+from db import DB
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -19,7 +20,7 @@ class JsonProcessor:
         Constructor for processor class.
         Contains all the dictionary defaults and database connection setup.
         """
-                    
+                   
         """
         THE CONNECTION TO LINUX SERVER
         DELETE BEFORE FINAL PROJECT
@@ -31,27 +32,12 @@ class JsonProcessor:
         Host lxfarm*.csc.liv.ac.uk
         User psubattu
         Macs hmac-sha2-512                        
-           
         """
-        
-        # self.db = mysql.connector.connect(
-        #     Host = "lxfarm*.csc.liv.ac.uk",
-        #     HostName = "lxfarm01.csc.liv.ac.uk",
-        #     user = "psubattu",
-        #     Macs = "hmac-sha2-512",
-        #     database = "playback"
-        # )
 
-        password = input("Enter sql password: ")
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
 
-        self.db = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password=password,
-            database="playback"
-        )
-
-        self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
         self.username = username
 
@@ -147,6 +133,8 @@ class JsonProcessor:
             self.insertCountry(i)
             self.insertUser(i)
         self.db.commit()
+
+    print("Data processed")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -306,11 +294,11 @@ class JsonProcessor:
             timeOfDay = "evening"
 
         if self.user["numberOfStreams"] != 0:
-            sql = f"UPDATE Users SET timeListened = {self.user["timeListened"] + i.ms_played}, numberOfStreams = {self.user["numberOfStreams"] + 1}, {timeOfDay} = {self.user[f"{timeOfDay}"] + 1} WHERE username = \"{self.username}\""
+            sql = f"UPDATE Users SET timeListened = {self.user['timeListened'] + i.ms_played}, numberOfStreams = {self.user['numberOfStreams'] + 1}, {timeOfDay} = {self.user[timeOfDay] + 1} WHERE username = '{self.username}'"
             self.cursor.execute(sql)
             self.user["timeListened"] += i.ms_played
             self.user["numberOfStreams"] += 1
-            self.user[f"{timeOfDay}"] += 1
+            self.user[timeOfDay] += 1
         else:
             sql = f"INSERT INTO Users (username, timeListened, numberOfStreams, {timeOfDay}) VALUES (\"{self.username}\", {i.ms_played}, {1}, {1})"
             self.cursor.execute(sql)
@@ -325,8 +313,6 @@ def main():
     start = time.time()
     v = JsonValidator("testFiles/testSet")
     p = JsonParser(v.validFiles, v.dirPath)
-    print(len(p.streams))
-
     processor = JsonProcessor(p.streams, "testUser")
 
     end = time.time()

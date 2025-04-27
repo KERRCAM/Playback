@@ -4,17 +4,14 @@ It is also used to display the main menu of the application.
 
 
 """
-
-
-
 # LIBRARY IMPORTS
 import customtkinter as ctk
 
 # LOCAL IMPORTS
-#from graphs import *
+from graphs import Graphs
 
 
-class MainMenu():
+class MainMenu:
 
     """
     BitmapImage for images in XBM format.
@@ -38,17 +35,21 @@ class MainMenu():
         ctk.set_default_color_theme("green")
 
         mainMenu.title("Playback")
-        mainMenu.geometry("800x600")
+        mainMenu.geometry("1920x1080")
         # Allow resizing
         mainMenu.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(mainMenu, width=200, height=200, corner_radius=10, border_width=2)
-        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+        # frame = ctk.CTkFrame(mainMenu, width=200, height=200, corner_radius=10, border_width=2)
+        # frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
-        label = ctk.CTkLabel(frame, text="Main Menu", font=("Helvetica", 20))
-        label.grid(row=0, column=0, columnspan=2, pady=10)
-
+        combobox = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist"], command=None)
+        combobox.pack(padx=5, pady=5)
+        combobox.set("Song")
+        combobox.get() 
+        g = Graphs()
+        g.plot_top_songs_listened(5)
+        g.plot_most_common_end_reason()
         mainMenu.mainloop()
 
 def main():
