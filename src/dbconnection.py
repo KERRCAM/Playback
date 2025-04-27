@@ -7,9 +7,10 @@ import mysql.connector
 class DatabaseConnection:
     def __init__(self):
         """Initialize the database connection."""
-            # Connect to the database
+        # Connect to the database
         connection = self.connection_database()
         self.connection = connection
+        print("Database connection established.")
         # Create tables
         self.create_tables()
 
@@ -185,3 +186,4 @@ class DatabaseConnection:
         if self.connection:
             self.connection.close()
             print("Connection closed.")
+            

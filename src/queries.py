@@ -81,7 +81,6 @@ class quieries():
 
     def top_artist_year(cursor, resultsNumber):
         """Top artists in each year"""
-
         cursor.execute("""
             SELECT DISTINCT YEAR(timestamp) as year 
             FROM Timestamps 
@@ -153,4 +152,22 @@ class quieries():
         result = (cursor.fetchall())
 
         return result  
+    
+    def __init__(self, cursor):
+        connection = self.connection_database()
+        cursor = connection.cursor()
+        self.cursor = cursor
+        self.most_listened = self.most_listened(cursor, 10)
+        self.most_streamed = self.most_streamed(cursor, 10) 
+        self.most_played_artists = self.most_played_artists(cursor, 10)
+        self.most_skipped_songs = self.most_skipped_songs(cursor, 10)   
+        self.top_artist_year = self.top_artist_year(cursor, 10)
+        self.time_of_day = self.time_of_day(cursor) 
+        self.first_songs_year = self.first_songs_year(cursor)
+        self.total_listening_time_country = self.total_listening_time_country(cursor)
+        
+        
+        self.most_common_end_reason = self.most_common_end_reason(cursor)
+
+
       
