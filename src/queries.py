@@ -165,6 +165,7 @@ class Queries():
 
         return result  
     
+    """
     def __init__(self, cursor):
         connection = DB()
         self.db = connection.db
@@ -179,3 +180,4 @@ class Queries():
         self.total_listening_time_country = self.total_listening_time_country(cursor)        
         self.most_common_end_reason = self.most_common_end_reason(cursor)
         print("Queries innitialized")
+    """
