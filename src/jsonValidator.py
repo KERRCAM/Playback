@@ -91,12 +91,14 @@ class JsonValidator:
         :return: returns a list of the JSON files as strings
         """
 
-        filePath = os.path.dirname(os.path.realpath(__file__))
+        filePath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        print(filePath)
         if system() == "Windows":
             dirPath = os.path.relpath("..\\testFiles\\testSet", filePath) # hard coded path needs changed
         else:
             dirPath = os.path.relpath("../testFiles/testSet" ,filePath) # hard coded path needs changed
         fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
+
 
         jsonFiles = []
         for file in fileNames:
