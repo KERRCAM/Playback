@@ -46,13 +46,10 @@ class MainMenu:
         combobox = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist"], command=None)
         combobox.pack(padx=5, pady=5)
         combobox.set("Song")
-
-        combobox.get() # gets option
+        combobox.get() 
         g = Graphs()
-
-        # g.plot_top_artist_year(100, 2)
-        # g.plot_total_listening_time_country()
         g.plot_top_songs_listened(5)
+        g.plot_most_common_end_reason()
         mainMenu.mainloop()
 
 def main():

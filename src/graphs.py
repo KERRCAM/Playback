@@ -166,6 +166,21 @@ class Graphs:
         self.saveAsPng("mostPlayedArtists.png")
 
         plt.show()
+
+    def plot_most_played_shows(self, limit):
+        shows = self.queries.most_played_shows_podcast
+        names = [f"{row[0]}" for row in shows]
+        times = [row[1] for row in shows]
+        height = limit * 0.3
+        plt.figure(figsize=(8, height))
+        plt.barh(names, times, color='green')
+        plt.xlabel('Times played')
+        plt.title('Top Shows')
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        self.saveAsPng("mostPlayedShows.png")
+
+        plt.show()
     
     def plot_most_common_end_reason(self):
         endReasons = self.queries.most_common_end_reason
@@ -184,7 +199,7 @@ class Graphs:
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
-        self.queries = Queries(self.cursor)
+        self.queries = Queries()
 
 # ----------------------------------------------------------------------------------------------- #
 
