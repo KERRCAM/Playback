@@ -11,8 +11,11 @@ from matplotlib.font_manager import FontProperties
 
 # LOCAL IMPORTS
 from dbconnection import *
+from db import DB
 
-class quieries():
+class Queries():
+
+    @staticmethod
     def most_listened(cursor, limit):
         """Top listened songs by the total minutes listened"""
         cursor.execute("""
@@ -23,6 +26,7 @@ class quieries():
         """, (limit,))
         return cursor.fetchall()
 
+    @staticmethod
     def most_streamed(cursor, limit):
         """Most streamed songs"""
         cursor.execute("""
@@ -33,6 +37,7 @@ class quieries():
         """, (limit,))
         return cursor.fetchall()
 
+    @staticmethod
     def most_played_artists(cursor, limit):
         """Most Played Artists"""
         cursor.execute("""
@@ -43,6 +48,7 @@ class quieries():
         """, (limit,))
         return cursor.fetchall()
 
+    @staticmethod
     def most_skipped_songs(cursor, limit):
         """Most Skipped Songs"""
         cursor.execute("""
@@ -50,9 +56,10 @@ class quieries():
             FROM Songs
             ORDER BY total_skip DESC
             LIMIT %s
-        """, (limit))
+        """, limit)
         return cursor.fetchall()
 
+    @staticmethod
     def time_of_day(cursor):
         """Songs listened in each time of the day"""
         cursor.execute("""
@@ -60,9 +67,9 @@ class quieries():
             FROM Users
         """)
         return cursor.fetchall()
-        
 
-    def first_songs_year(cursor):
+    @staticmethod
+    def first_songs_year_time(cursor):
         """Songs listened in each time of the day"""
         cursor.execute("""
             WITH firstDate AS (
@@ -80,6 +87,7 @@ class quieries():
         """)
         return cursor.fetchall()
 
+    @staticmethod
     def top_artist_year(cursor, resultsNumber):
         """Top artists in each year"""
         cursor.execute("""
@@ -109,7 +117,8 @@ class quieries():
 
         return year_dict
 
-    def first_songs_year(cursor):
+    @staticmethod
+    def first_songs_year_country(cursor):
         """First songs listened in each country"""
         cursor.execute("""
         WITH RankedStreams AS (
@@ -127,6 +136,7 @@ class quieries():
         """)
         return cursor.fetchall()
 
+    @staticmethod
     def total_listening_time_country(cursor):
         """Total streams listened in each country"""
         cursor.execute("""
@@ -136,6 +146,7 @@ class quieries():
         """)
         return cursor.fetchall()
 
+    @staticmethod
     def most_common_end_reason(cursor):
         """Most common reason to end songs"""
         cursor.execute("""
@@ -155,9 +166,9 @@ class quieries():
         return result  
     
     def __init__(self, cursor):
-        connection = self.connection_database()
-        cursor = connection.cursor()
-        self.cursor = cursor
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
         self.most_listened = self.most_listened(cursor, 10)
         self.most_streamed = self.most_streamed(cursor, 10) 
         self.most_played_artists = self.most_played_artists(cursor, 10)

@@ -5,20 +5,24 @@ IF HAVE TIME:
 DO LOADING SCREEN?
 
 """
+# from wsgiref.validate import validator
 
 # LIBRARY IMPORTS
 import customtkinter as ctk
-from zipfile import ZipFile
+from zipfile import ZipFile # NEED TO INCLUDE IN DEPENDENCIES?
 from tkinter import filedialog, messagebox
 import os
 
 # LOCAL IMPORTS
-from jsonParser import *
-from jsonProcessor import *
+from jsonParser import JsonParser
+from jsonProcessor import JsonProcessor
+from jsonValidator import JsonValidator
 from mainMenu import *
 
 
 class UploadMenu():
+
+    # ------------------------------------------------------------------------------------------- #
 
     # The function opens a folder to upload the file
     def UploadAction(self):
@@ -31,7 +35,7 @@ class UploadMenu():
             else:
                 # Get the directory of the uploaded file
                 self.input_dir = os.path.dirname(self.input_path)
-                messagebox.showinfo("Success", "File succesfully uploaded.")
+                messagebox.showinfo("Success", "File successfully uploaded.")
                 extract_dir = os.path.join(self.input_dir, "extracted_files")
 
                 # Call the extraction method with the directory of the uploaded file
@@ -39,22 +43,26 @@ class UploadMenu():
         except Exception as e:
             print(f"Error: {e}")   
 
+    # ------------------------------------------------------------------------------------------- #
+
     def extraction(self, output_dir):
         try:
             # Ensure the output directory exists
             os.makedirs(output_dir, exist_ok=True)
-
+            print(120302)
             # Extract files to the specified output directory
             with ZipFile(self.input_path, 'r') as zip_file:
                 zip_file.extractall(output_dir)
-
+            print(364634)
             # Validate extracted files
             if not os.listdir(output_dir):
                 raise ValueError("The zip file is empty or contains no valid files.")
 
             # Process the extracted files
-            v = JsonProcessor(output_dir)
-            JsonParser(v.validfiles, v.dirPath)
+            v = JsonValidator(output_dir)
+            print(output_dir)
+            p = JsonParser(v.validFiles, v.dirPath)
+            processor = JsonProcessor(p.streams, "test") # NEED TO CHANGE TO CURRENT USERNAME
 
             messagebox.showinfo("Success", f"Files extracted to {output_dir}")
         except Exception as e:
@@ -66,6 +74,7 @@ class UploadMenu():
 
             messagebox.showerror("Error", f"An error occurred during extraction: {e}")
 
+    # ------------------------------------------------------------------------------------------- #
 
     def main_menu_segue(self):
         # Hides this window to show the next window
@@ -77,13 +86,19 @@ class UploadMenu():
         # Initialise new window
         MainMenu(signUp_window, self.window)
 
+    # ------------------------------------------------------------------------------------------- #
 
     def close_window(self, window):
         window.destroy()
         # Show the main window again
         self.loginMenu.deiconify()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def __init__(self, window, mainWindow):
+        self.input_path = ""
+        self.input_dir = ""
+
         self.window = window
         uploadmenu = self.window
         self.loginMenu = mainWindow

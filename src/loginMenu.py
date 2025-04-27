@@ -8,6 +8,9 @@ from signUpMenu import *
 from dbconnection import *  # This is the connection to the database
 
 class LoginMenu:
+
+    # ------------------------------------------------------------------------------------------- #
+
     # a method to verify username and password also create as well
     def dataSQL(self):
         # activate db   
@@ -28,18 +31,20 @@ class LoginMenu:
             dbUsername, dbPassword = None, None
 
         return dbUsername, dbPassword
-    
+
+    # ------------------------------------------------------------------------------------------- #
 
     # username and password verification and DB STUFFS
     def user_authentication(self):
         dbUsername, dbPassword = self.dataSQL()
-        if self.username == dbUsername and self.password == dbPassword:
+        if self.usernameField.get() == dbUsername and self.passwordField.get() == dbPassword:
             print("Login successful")
             return True
         else:
             print("Login failed")
             return False
 
+    # ------------------------------------------------------------------------------------------- #
 
     # the button methods will do the transition to other screens and some stuffs
     def signUpSegue(self):
@@ -59,6 +64,8 @@ class LoginMenu:
 
         return
 
+    # ------------------------------------------------------------------------------------------- #
+
     def loginSegue(self):
         username = self.usernameField.get()
         password = self.passwordField.get()
@@ -75,6 +82,8 @@ class LoginMenu:
         UploadMenu(login_window, self.root)
 
         return
+
+    # ------------------------------------------------------------------------------------------- #
 
     def __init__(self, root):
         self.root = root
@@ -118,6 +127,7 @@ class LoginMenu:
         SignUpButton = ctk.CTkButton(frame, text="Sign up", command=self.signUpSegue)
         SignUpButton.grid(row=3, column=1, padx=10, pady=20)
 
+    # ------------------------------------------------------------------------------------------- #
 
 def main():
     root = ctk.CTk()

@@ -22,6 +22,8 @@ class graphs():
 
     ^ Can replace doc string once code is in, above is just a note.
     """
+
+    @staticmethod
     def saveAsPng(fileName):
         script_dir = os.path.dirname("./src")
         results_dir = os.path.join(script_dir, 'Results/')
@@ -33,8 +35,8 @@ class graphs():
         plt.savefig(results_dir + sample_file_name)
         plt.close()
 
-    def plot_total_listening_time_country(cursor):
-        countries = total_listening_time_country(cursor)
+    def plot_total_listening_time_country(self, cursor):
+        countries = self.queries.total_listening_time_country(cursor)
         country = [{row[0]} for row in countries]
         stats = [{row[2]} for row in countries]
 
@@ -54,8 +56,8 @@ class graphs():
 
     # The year (first year) that user started listening can be found by 0 as an argument
 
-    def plot_top_artist_year(cursor, rankMax, yearNumber):
-        artists_by_year = top_artist_year(cursor, rankMax)
+    def plot_top_artist_year(self, cursor, rankMax, yearNumber):
+        artists_by_year = self.queries.top_artist_year(cursor, rankMax)
         years = list(artists_by_year.keys())
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
@@ -78,19 +80,17 @@ class graphs():
 
         plt.show()
 
-    plot_top_artist_year(cursor, 5, 1)
-
-    def plot_first_songs(cursor):
+    def plot_first_songs(self, cursor):
         # need to fix
-        songs = first_songs_year(cursor)
+        songs = self.queries.first_songs_year(cursor)
         years = [row[2].year for row in songs]
         dates = [f"{row[2].year}:{row[2].month}:{row[2].day}" for row in songs]
 
         countries = [row[0] for row in songs]
         songNames = [row[1] for row in songs]
         
-    def plot_time_of_day(cursor):
-        songs = time_of_day(cursor)
+    def plot_time_of_day(self, cursor):
+        songs = self.queries.time_of_day(cursor)
         morning = [row[0] for row in songs][0]
         afternoon = [row[1] for row in songs][0]
         evening = [row[2] for row in songs][0]
@@ -104,8 +104,8 @@ class graphs():
         self.saveAsPng("timeOfDay.png")
         plt.show()
     
-    def plot_most_skipped_songs(cursor, limit):
-        songs = most_skipped_songs(cursor, limit)
+    def plot_most_skipped_songs(self, cursor, limit):
+        songs = self.queries.most_skipped_songs(cursor, limit)
         names = [f"{row[0]} ({row[1]})" for row in songs]
         times = [row[4] for row in songs]
         height = limit * 0.4
@@ -119,8 +119,8 @@ class graphs():
 
         plt.show()
 
-    def plot_top_songs_streaming(cursor, limit):
-        songs = most_streamed(cursor, limit)
+    def plot_top_songs_streaming(self, cursor, limit):
+        songs = self.queries.most_streamed(cursor, limit)
         names = [f"{row[0]} by {row[1]}" for row in songs]
         streams = [row[3] for row in songs]
         height = limit * 0.4
@@ -135,8 +135,8 @@ class graphs():
         plt.show()
 
     # not sure about this
-    def plot_top_songs_listened(cursor, limit):
-        songs = most_listened(cursor, limit)
+    def plot_top_songs_listened(self, cursor, limit):
+        songs = self.queries.most_listened(cursor, limit)
         names = [f"{row[0]} ({row[1]})" for row in songs]
         minutes = [row[2]/60 for row in songs]
         height = limit * 0.4
@@ -150,8 +150,8 @@ class graphs():
 
         plt.show()
     
-    def plot_most_played_artists(cursor, limit):
-        artists = most_played_artists(cursor, limit)
+    def plot_most_played_artists(self, cursor, limit):
+        artists = self.queries.most_played_artists(cursor, limit)
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         height = limit * 0.3
@@ -165,8 +165,8 @@ class graphs():
 
         plt.show()
     
-    def plot_most_common_end_reason(cursor):
-        endReasons = most_common_end_reason(cursor)
+    def plot_most_common_end_reason(self, cursor):
+        endReasons = self.queries.most_common_end_reason(cursor)
         reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
@@ -181,7 +181,7 @@ class graphs():
     def __init__(self, cursor):
         connection = self.connection_database()
         cursor = connection.cursor()
-        self.queries = quieries(cursor)
+        self.queries = Queries(cursor)
 
 # ----------------------------------------------------------------------------------------------- #
 

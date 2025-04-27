@@ -7,6 +7,7 @@ import mysql.connector
 from jsonValidator import JsonValidator
 from jsonParser import JsonParser
 from datetime import datetime
+from db import DB
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -31,27 +32,12 @@ class JsonProcessor:
         Host lxfarm*.csc.liv.ac.uk
         User psubattu
         Macs hmac-sha2-512                        
-           
         """
-        
-        # self.db = mysql.connector.connect(
-        #     Host = "lxfarm*.csc.liv.ac.uk",
-        #     HostName = "lxfarm01.csc.liv.ac.uk",
-        #     user = "psubattu",
-        #     Macs = "hmac-sha2-512",
-        #     database = "playback"
-        # )
 
-        password = input("Enter sql password: ")
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
 
-        self.db = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password=password,
-            database="playback"
-        )
-
-        self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
         self.username = username
 
