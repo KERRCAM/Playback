@@ -61,24 +61,22 @@ class MainMenu:
             table.insert('', i, values = (i + 1, current[0], current[1], current[2], current[3]))
 
 
-        typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command=None)
-        typeOption.grid(padx=5, pady=5)
-        typeOption.set("Song")
-        typeOption.place(x = 10, y = 5)
+        self.typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command = self.checkStates)
+        self.typeOption.grid(padx=5, pady=5)
+        self.typeOption.set("Song")
+        self.typeOption.place(x = 10, y = 5)
 
-        # type.get() # gets option
+        print(self.typeOption.get()) # gets option
 
-        sortBy = ctk.CTkComboBox(mainMenu, values=["Streams", "Time listened"], command = None)
-        sortBy.grid(padx=5, pady=5)
-        sortBy.set("Streams")
-        sortBy.place(x=180, y=5)
+        self.sortBy = ctk.CTkComboBox(mainMenu, values=["Streams", "Time listened"], command = self.checkStates)
+        self.sortBy.grid(padx=5, pady=5)
+        self.sortBy.set("Streams")
+        self.sortBy.place(x=180, y=5)
 
-        timeFrame = ctk.CTkComboBox(mainMenu, values=["All", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017"], command=None)
-        timeFrame.grid(padx=5, pady=5)
-        timeFrame.set("All")
-        timeFrame.place(x = 350, y = 5)
-
-
+        self.timeFrame = ctk.CTkComboBox(mainMenu, values=["All", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017"], command = self.checkStates)
+        self.timeFrame.grid(padx=5, pady=5)
+        self.timeFrame.set("All")
+        self.timeFrame.place(x = 350, y = 5)
 
         i1 = ctk.CTkImage(light_image=Image.open('results/topArtistYear.png'),
                                         dark_image=Image.open('results/topArtistYear.png'),
@@ -105,6 +103,58 @@ class MainMenu:
         g3.place(x=820, y=600)
 
         mainMenu.mainloop()
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def checkStates(self, idk):
+        q = Queries(self.username)
+        to = self.typeOption.get()
+        sb = self.sortBy.get()
+        tf = self.timeFrame.get()
+
+        if to == "Song" and sb == "Streams":
+            data = q.most_streamed
+            self.songTable(data)
+        elif to == "Song" and sb == "Time listened":
+            data = q.most_listened
+            self.songTable(data)
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def songTable(self, data):
+        table = ttk.Treeview(self.window, columns=('rank', 'song', 'artist', 'minuets', 'streams'), show='headings',
+                             selectmode='browse', height=45, )
+        table.column('rank', width=50, anchor='center')
+        table.heading('rank', text='Rank')
+        table.column('song', width=300, anchor='w')
+        table.heading('song', text='Song')
+        table.column('artist', width=250, anchor='w')
+        table.heading('artist', text='Artist')
+        table.column('minuets', width=100, anchor='center')
+        table.heading('minuets', text='Minuets')
+        table.column('streams', width=100, anchor='center')
+        table.heading('streams', text='Streams')
+        table.grid(padx=5, pady=5)
+        table.place(x=10, y=37)
+
+        for i in range(0, 100):
+            current = data[i]
+            table.insert('', i, values=(i + 1, current[0], current[1], current[2], current[3]))
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def graph1(self):
+        pass
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def graph2(self):
+        pass
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def graph3(self):
+        pass
 
 # ----------------------------------------------------------------------------------------------- #
 
