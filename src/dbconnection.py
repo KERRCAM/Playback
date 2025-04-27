@@ -1,9 +1,20 @@
+# LIBRARY IMPORTS
 import mysql.connector
 
+# LOCAL IMPORTS
+
+
+# ----------------------------------------------------------------------------------------------- #
+
 class DatabaseConnection:
+
+# ----------------------------------------------------------------------------------------------- #
+
     def __init__(self):
         """Initialize the database connection."""
         self.connection = None
+
+    # ------------------------------------------------------------------------------------------- #
 
     def connection_database(self):
         """Connect to the MySQL database."""
@@ -20,6 +31,8 @@ class DatabaseConnection:
             print(f"Error: {err}")
             raise
 
+    # ------------------------------------------------------------------------------------------- #
+
     def test_connection(self):
         """Test the database connection."""
         try:
@@ -35,11 +48,15 @@ class DatabaseConnection:
         except mysql.connector.Error as err:
             print(f"Error: {err}")
 
+    # ------------------------------------------------------------------------------------------- #
+
     def close(self):
         """Close the database connection."""
         if self.connection:
             self.connection.close()
             print("Connection closed.")
+
+    # ------------------------------------------------------------------------------------------- #
 
     def create_tables(self):
         """Create tables in the database."""
@@ -197,6 +214,8 @@ class DatabaseConnection:
         finally:
             if cursor:
                 cursor.close()
+
+# ----------------------------------------------------------------------------------------------- #
 
 if __name__ == "__main__":
     db = DatabaseConnection()

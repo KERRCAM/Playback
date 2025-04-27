@@ -1,12 +1,3 @@
-"""
-This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu 
-
-IF HAVE TIME: 
-DO LOADING SCREEN?
-
-"""
-# from wsgiref.validate import validator
-
 # LIBRARY IMPORTS
 import customtkinter as ctk
 from zipfile import ZipFile # NEED TO INCLUDE IN DEPENDENCIES?
@@ -19,7 +10,52 @@ from jsonProcessor import JsonProcessor
 from jsonValidator import JsonValidator
 from mainMenu import *
 
+# ----------------------------------------------------------------------------------------------- #
+
 class UploadMenu:
+    """
+    This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu.
+    """
+
+# ----------------------------------------------------------------------------------------------- #
+
+    def __init__(self, window, mainWindow, username):
+        self.username = username
+        self.input_path = ""
+        self.input_dir = ""
+
+        self.window = window
+        uploadmenu = self.window
+        self.loginMenu = mainWindow
+
+        ctk.set_appearance_mode("dark")
+        ctk.set_default_color_theme("green")
+
+        # Create the main window
+        uploadmenu.title("Playback")
+        uploadmenu.geometry("800x600")
+        # Allow resizing
+        uploadmenu.resizable(width=True, height=True)
+
+        # A frame to collect the labels and entry box
+        frame = ctk.CTkFrame(uploadmenu, width=200, height=200, corner_radius=10, border_width=2)
+        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+
+        label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
+        label.grid(row=0, column=0, columnspan=2, pady=10)
+
+        mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
+        mainMenuButton.grid(row=1, column=0, pady=10)
+
+        # extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=lambda: self.extraction(self.input_dir))
+        # extract_button.grid(row=1, column=1, pady=10)
+
+        temp_button = ctk.CTkButton(frame, text="Temp button to Menu", font=("Helvetica", 20),
+                                    command=self.main_menu_segue)
+        temp_button.grid(row=2, column=0, pady=10)
+
+        uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
+        uploadmenu.mainloop()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -92,44 +128,7 @@ class UploadMenu:
         # Show the main window again
         self.loginMenu.deiconify()
 
-    # ------------------------------------------------------------------------------------------- #
-
-    def __init__(self, window, mainWindow, username):
-        self.username = username
-        self.input_path = ""
-        self.input_dir = ""
-
-        self.window = window
-        uploadmenu = self.window
-        self.loginMenu = mainWindow
-
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("green")
-
-        # Create the main window
-        uploadmenu.title("Playback")
-        uploadmenu.geometry("800x600")
-        # Allow resizing
-        uploadmenu.resizable(width=True, height=True)
-
-        # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(uploadmenu, width=200, height=200, corner_radius=10, border_width=2)
-        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
-
-        label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
-        label.grid(row=0, column=0, columnspan=2, pady=10)
-
-        mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
-        mainMenuButton.grid(row=1, column=0, pady=10)
-        
-        # extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=lambda: self.extraction(self.input_dir))
-        # extract_button.grid(row=1, column=1, pady=10)
-
-        temp_button = ctk.CTkButton(frame, text = "Temp button to Menu", font=("Helvetica", 20), command=self.main_menu_segue)
-        temp_button.grid(row = 2, column = 0, pady= 10)
-
-        uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
-        uploadmenu.mainloop()
+# ----------------------------------------------------------------------------------------------- #
 
 def main():
     root = ctk.CTk()

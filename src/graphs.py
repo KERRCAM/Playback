@@ -7,22 +7,23 @@ import numpy as np
 from queries import *
 from db import DB
 
-
 # ----------------------------------------------------------------------------------------------- #
 
 class Graphs:
     """
-    WHERE TO PUT SEARCH SORT ALGORITHMS
-
-    Need to prioritise good run times and efficiency here as we are dealing with
-    potentially tens of thousands of items needing sorted and hundreds of thousands
-    needing to be searched through.
-
-    So go more quick sorts, merge sorts and binary searches etc - best option in each case.
-    Things like bubble sort and linear searches will be no good.
-
-    ^ Can replace doc string once code is in, above is just a note.
+    Class for graph plotting.
     """
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def __init__(self, username):
+        self.username = username
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
+        self.queries = Queries(self.username)
+
+    # ------------------------------------------------------------------------------------------- #
 
     @staticmethod
     def saveAsPng(fileName):
@@ -35,6 +36,8 @@ class Graphs:
         sample_file_name = f"{fileName}"
         plt.savefig(results_dir + sample_file_name)
         plt.close()
+
+    # ------------------------------------------------------------------------------------------- #
 
     def plot_total_listening_time_country(self):
         countries = self.queries.total_listening_time_country
@@ -55,6 +58,8 @@ class Graphs:
 
         self.saveAsPng("totalListeningTimeCountry.png")
         plt.show()
+
+    # ------------------------------------------------------------------------------------------- #
 
     # The year (first year) that user started listening can be found by 0 as an argument
     def plot_top_artist_year(self, rankMax, yearNumber):
@@ -82,6 +87,8 @@ class Graphs:
 
         plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def plot_first_songs(self):
         # need to fix
         songs = self.queries.first_songs_year
@@ -90,6 +97,8 @@ class Graphs:
 
         countries = [row[0] for row in songs]
         songNames = [row[1] for row in songs]
+
+    # ------------------------------------------------------------------------------------------- #
 
     def plot_time_of_day(self):
         songs = self.queries.time_of_day
@@ -108,6 +117,8 @@ class Graphs:
         self.saveAsPng("timeOfDay.png")
         plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def plot_most_skipped_songs(self, limit):
         songs = self.queries.most_skipped_songs
         names = [f"{row[0]} ({row[1]})" for row in songs]
@@ -123,6 +134,8 @@ class Graphs:
 
         plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def plot_top_songs_streaming(self, limit):
         songs = self.queries.most_streamed
         names = [f"{row[0]} by {row[1]}" for row in songs]
@@ -137,6 +150,8 @@ class Graphs:
         self.saveAsPng("topSongsStreaming.png")
 
         plt.show()
+
+    # ------------------------------------------------------------------------------------------- #
 
     # not sure about this
     def plot_top_songs_listened(self, limit):
@@ -154,6 +169,8 @@ class Graphs:
 
         plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def plot_most_played_artists(self, limit):
         artists = self.queries.most_played_artists
         names = [f"{row[0]}" for row in artists]
@@ -169,6 +186,8 @@ class Graphs:
 
         plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def plot_most_common_end_reason(self):
         endReasons = self.queries.most_common_end_reason
         reasons = [row[0] for row in endReasons]
@@ -181,12 +200,5 @@ class Graphs:
         plt.pie(y, labels=mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
         self.saveAsPng("mostCommonEndReason.png")
         plt.show()
-
-    def __init__(self, username):
-        self.username = username
-        connection = DB()
-        self.db = connection.db
-        self.cursor = connection.cursor
-        self.queries = Queries(self.username)
 
 # ----------------------------------------------------------------------------------------------- #
