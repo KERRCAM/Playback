@@ -29,6 +29,8 @@ CREATE TABLE Songs (
     start_playbtn INT,
     start_appload INT,
     start_unknown INT,
+    start_switched_to_audio INT,
+    start_switched_to_video INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
@@ -39,6 +41,8 @@ CREATE TABLE Songs (
     end_unexpected_exit_while_paused INT,
     end_trackerror INT,
     end_unknown INT,
+    end_switched_to_audio INT,
+    end_switched_to_video int,
     PRIMARY KEY (songURI, username)
 );
 
@@ -76,6 +80,8 @@ CREATE TABLE Episodes (
     start_playbtn INT,
     start_appload INT,
     start_unknown INT,
+    start_switched_to_audio INT,
+    start_switched_to_video INT,
     end_trackdone INT,
     end_fwdbtn INT,
     end_backbtn INT,
@@ -86,6 +92,8 @@ CREATE TABLE Episodes (
     end_unexpected_exit_while_paused INT,
     end_trackerror INT,
     end_unknown INT,
+    end_switched_to_audio INT,
+    end_switched_to_video INT,
     PRIMARY KEY (episodeURI, username)
 );
 

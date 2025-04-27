@@ -345,7 +345,6 @@ class JsonValidator:
         :return: list of the valid file names
         """
 
-
         validFileNames = []
 
         # temporary - only checks for json files rn, will just use a regex later probably

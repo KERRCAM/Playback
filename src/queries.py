@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
 
+
 # LOCAL IMPORTS
 from dbconnection import *
 
@@ -170,4 +171,6 @@ class quieries():
         self.most_common_end_reason = self.most_common_end_reason(cursor)
 
 
-      
+        # Close the connection
+        db.close()
+
