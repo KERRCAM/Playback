@@ -165,12 +165,6 @@ class quieries():
         self.top_artist_year = self.top_artist_year(cursor, 10)
         self.time_of_day = self.time_of_day(cursor) 
         self.first_songs_year = self.first_songs_year(cursor)
-        self.total_listening_time_country = self.total_listening_time_country(cursor)
-        
-        
+        self.total_listening_time_country = self.total_listening_time_country(cursor)        
         self.most_common_end_reason = self.most_common_end_reason(cursor)
-
-
-        # Close the connection
-        db.close()
-
+        print("Queries innitialized")

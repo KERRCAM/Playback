@@ -4,9 +4,6 @@ It is also used to display the main menu of the application.
 
 
 """
-
-
-
 # LIBRARY IMPORTS
 import customtkinter as ctk
 

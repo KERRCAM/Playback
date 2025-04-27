@@ -24,6 +24,7 @@ class UploadMenu():
     def UploadAction(self):
         try:
             self.input_path = filedialog.askopenfilename(filetypes=[('Zip file', '*.zip')])
+            # Check if a file was selected
             if not self.input_path:
                 messagebox.showerror("Error", "No file uploaded.")
                 return
@@ -39,10 +40,6 @@ class UploadMenu():
             print(f"Error: {e}")   
 
     def extraction(self, output_dir):
-        if not self.input_path:
-            messagebox.showerror("Error", "No file uploaded.")
-            return
-
         try:
             # Ensure the output directory exists
             os.makedirs(output_dir, exist_ok=True)
@@ -110,8 +107,8 @@ class UploadMenu():
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
         mainMenuButton.grid(row=1, column=0, pady=10)
         
-        extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=self.extraction)
-        extract_button.grid(row=1, column=1, pady=10)
+        # extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=lambda: self.extraction(self.input_dir))
+        # extract_button.grid(row=1, column=1, pady=10)
 
         temp_button = ctk.CTkButton(frame, text = "Temp button to Menu", font=("Helvetica", 20), command=self.main_menu_segue)
         temp_button.grid(row = 2, column = 0, pady= 10)
