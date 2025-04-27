@@ -5,40 +5,40 @@ import mysql.connector
 # LOCAL IMPORTS
 from uploadMenu import *
 from signUpMenu import *
-
+from dbconnection import *  # This is the connection to the database
 
 class LoginMenu:
     # a method to verify username and password also create as well
     def dataSQL(self):
-        # activate db                   
-        """
-        THE CONNECTION TO LINUX SERVER
-        DELETE BEFORE FINAL PROJECT
+        # activate db   
+        #Establish database connection
+        db = DatabaseConnection()                
+        connection = db.connection_database()
+        cursor = connection.cursor()
 
-        Host lxfarm01.csc.liv.ac.uk
-        HostName lxfarm01.csc.liv.ac.uk 
-        User psubattu
+        cursor.execute("""
+            SELECT username, password
+            FROM Users
+            WHERE username = %s AND password = %s
+        """, (self.username, self.password))
+        result = cursor.fetchone()
+        if result:
+            dbUsername, dbPassword = result
+        else:
+            dbUsername, dbPassword = None, None
 
-        Host lxfarm*.csc.liv.ac.uk
-        User psubattu
-        Macs hmac-sha2-512                        
-           
-        """
-        
-        self.db = mysql.connector.connect(
-            Host = "lxfarm*.csc.liv.ac.uk",
-            HostName = "lxfarm01.csc.liv.ac.uk",
-            user = "psubattu",
-            Macs = "hmac-sha2-512",
-            database = "playback"
-        )
-
-        return
+        return dbUsername, dbPassword
     
 
     # username and password verification and DB STUFFS
     def user_authentication(self):
-        self.username
+        dbUsername, dbPassword = self.dataSQL()
+        if self.username == dbUsername and self.password == dbPassword:
+            print("Login successful")
+            return True
+        else:
+            print("Login failed")
+            return False
 
 
     # the button methods will do the transition to other screens and some stuffs

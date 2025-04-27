@@ -11,7 +11,7 @@ It is also used to display the main menu of the application.
 import customtkinter as ctk
 
 # LOCAL IMPORTS
-
+#from graphs import *
 
 
 class MainMenu():

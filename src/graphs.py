@@ -1,25 +1,15 @@
 # LIBRARY IMPORTS
-from datetime import datetime
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.font_manager import FontProperties
 
 # LOCAL IMPORTS
+import os
+import matplotlib.pyplot as plt
+import numpy as np
 from queries import *
 
 # ----------------------------------------------------------------------------------------------- #
 
-def saveAsPng(fileName):
-    script_dir = os.path.dirname("./src")
-    results_dir = os.path.join(script_dir, 'Results/')
+class graphs():
 
-    if not os.path.isdir(results_dir):
-        os.makedirs(results_dir)
-
-    sample_file_name = f"{fileName}"
-    plt.savefig(results_dir + sample_file_name)
-
-class CF():
     """
     WHERE TO PUT SEARCH SORT ALGORITHMS
 
@@ -32,9 +22,16 @@ class CF():
 
     ^ Can replace doc string once code is in, above is just a note.
     """
+    def saveAsPng(fileName):
+        script_dir = os.path.dirname("./src")
+        results_dir = os.path.join(script_dir, 'Results/')
 
-    conn = connection_database()
-    cursor = conn.cursor()
+        if not os.path.isdir(results_dir):
+            os.makedirs(results_dir)
+
+        sample_file_name = f"{fileName}"
+        plt.savefig(results_dir + sample_file_name)
+        plt.close()
 
     def plot_total_listening_time_country(cursor):
         countries = total_listening_time_country(cursor)
@@ -51,11 +48,12 @@ class CF():
 
         plt.figure(facecolor='black')
         plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
-        saveAsPng("totalListeningTimeCountry.png")
+
+        self.saveAsPng("totalListeningTimeCountry.png")
         plt.show()
 
     # The year (first year) that user started listening can be found by 0 as an argument
-    # need to change 
+
     def plot_top_artist_year(cursor, rankMax, yearNumber):
         artists_by_year = top_artist_year(cursor, rankMax)
         years = list(artists_by_year.keys())
@@ -76,7 +74,8 @@ class CF():
         plt.title(f'Top artists of {exactYear}')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        saveAsPng("topArtistYear.png")
+        self.saveAsPng("topArtistYear.png")
+
         plt.show()
 
     plot_top_artist_year(cursor, 5, 1)
@@ -102,7 +101,7 @@ class CF():
                     f'Evening: {float("{:.2f}".format((evening/sum(y))*100))}%', f'Night: {float("{:.2f}".format((night/sum(y))*100))}%']
         plt.figure(facecolor='black')
         plt.pie(y, labels = mylabels,  textprops={'color': 'white', 'fontweight': 'bold'})
-        saveAsPng("timeOfDay.png")
+        self.saveAsPng("timeOfDay.png")
         plt.show()
     
     def plot_most_skipped_songs(cursor, limit):
@@ -116,7 +115,8 @@ class CF():
         plt.title('Top Skipped Songs')
         plt.gca().invert_yaxis() 
         plt.tight_layout()
-        saveAsPng("mostSkippedSongs.png")
+        self.saveAsPng("mostSkippedSongs.png")
+
         plt.show()
 
     def plot_top_songs_streaming(cursor, limit):
@@ -130,7 +130,8 @@ class CF():
         plt.title('Top Streamed Songs')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        saveAsPng("topSongsStreaming.png")
+        self.saveAsPng("topSongsStreaming.png")
+
         plt.show()
 
     # not sure about this
@@ -145,7 +146,8 @@ class CF():
         plt.title('Top Songs by Total Minutes Listened')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        saveAsPng("topSongsListened.png")
+        self.saveAsPng("topSongsListened.png")
+
         plt.show()
     
     def plot_most_played_artists(cursor, limit):
@@ -159,7 +161,8 @@ class CF():
         plt.title('Top artists')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        saveAsPng("mostPlayedArtists.png")
+        self.saveAsPng("mostPlayedArtists.png")
+
         plt.show()
     
     def plot_most_common_end_reason(cursor):
@@ -172,9 +175,14 @@ class CF():
                     f"{reasons[4]}: {counts[4]}"]
         plt.figure(facecolor='black', figsize=(8, 4))
         plt.pie(y, labels = mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
-        saveAsPng("mostCommonEndReason.png")
+        self.saveAsPng("mostCommonEndReason.png")
         plt.show()
+
+    def __init__(self, cursor):
+        connection = self.connection_database()
+        cursor = connection.cursor()
+        self.queries = quieries(cursor)
+
 # ----------------------------------------------------------------------------------------------- #
 
 
-    # ------------------------------------------------------------------------------------------- #
