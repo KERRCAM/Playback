@@ -100,6 +100,7 @@ CREATE TABLE Shows (
 
 CREATE TABLE Users (
     username VARCHAR(20) PRIMARY KEY,
+    password VARCHAR(20),
     timeListened INT,
     numberOfStreams INT,
     morning INT,

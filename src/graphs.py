@@ -1,12 +1,14 @@
 # LIBRARY IMPORTS
-
-# LOCAL IMPORTS
-import os
+from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.font_manager import FontProperties
+
+# LOCAL IMPORTS
 from queries import *
 
 # ----------------------------------------------------------------------------------------------- #
+
 def saveAsPng(fileName):
     script_dir = os.path.dirname("./src")
     results_dir = os.path.join(script_dir, 'Results/')

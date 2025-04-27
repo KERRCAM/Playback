@@ -6,7 +6,7 @@ put you straight on master branch which should NOT be edited, before doing any
 coding you should make a new branch or switch to an existing one.
 
 git fetch + git pull
-gets info on new branches and updates current branch if there is changes
+gets info on new branches and updates current branch if there is changesg
  (should be used if multiple people are working on same branch or if you are switching branch)
 
 git add -A
