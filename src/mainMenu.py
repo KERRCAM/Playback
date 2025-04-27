@@ -6,6 +6,7 @@ It is also used to display the main menu of the application.
 """
 # LIBRARY IMPORTS
 import customtkinter as ctk
+from PIL import Image
 
 # LOCAL IMPORTS
 from graphs import Graphs
@@ -51,6 +52,12 @@ class MainMenu:
         g = Graphs()
         g.plot_top_artist_year(100, 2)
 
+        my_image = ctk.CTkImage(light_image=Image.open('results/topArtistYear.png'),
+                                          dark_image=Image.open('results/topArtistYear.png'),
+                                          size=(640, 400))  # Width x Height
+
+        my_label = ctk.CTkLabel(mainMenu, text="", image=my_image, anchor="sw")
+        my_label.pack(pady=10)
 
         mainMenu.mainloop()
 
