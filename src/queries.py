@@ -56,7 +56,7 @@ class Queries():
             FROM Songs
             ORDER BY total_skip DESC
             LIMIT %s
-        """, limit)
+        """, (limit,))
         return cursor.fetchall()
 
     @staticmethod
@@ -107,7 +107,7 @@ class Queries():
             FROM Songs S 
             JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
             JOIN Artists A ON S.artist = A.artist AND S.username = A.username
-            WHERE YEAR(T.timestamp) = %s
+            WHERE YEAR(T.timestamp) = %s and S.artist != 'null'
             GROUP BY A.artist
             ORDER BY total_time DESC
             LIMIT %s
@@ -122,16 +122,16 @@ class Queries():
         """First songs listened in each country"""
         cursor.execute("""
         WITH RankedStreams AS (
-            SELECT C.country, T.songURI, T.timestamp,
-            ROW_NUMBER() OVER (PARTITION BY C.country ORDER BY T.timestamp) as ranking
+            SELECT C.countryCode, T.songURI, T.timestamp,
+            ROW_NUMBER() OVER (PARTITION BY C.countryCode ORDER BY T.timestamp) as ranking
             FROM Timestamps T
             JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
         )     
-        SELECT country, S.songName, timestamp
+        SELECT countryCode, S.songName, timestamp
         FROM RankedStreams R
         JOIN Songs S ON R.songURI = S.songURI
         WHERE ranking <= 1
-        ORDER BY country, ranking
+        ORDER BY countryCode, ranking
 
         """)
         return cursor.fetchall()
@@ -140,9 +140,9 @@ class Queries():
     def total_listening_time_country(cursor):
         """Total streams listened in each country"""
         cursor.execute("""
-            SELECT country, count(streams), sum(minutesListened)
+            SELECT countryCode, count(numberOfStreams), sum(timeListened)
             FROM Countries
-            GROUP BY country
+            GROUP BY countryCode
         """)
         return cursor.fetchall()
 
@@ -175,7 +175,7 @@ class Queries():
         self.most_skipped_songs = self.most_skipped_songs(cursor, 10)   
         self.top_artist_year = self.top_artist_year(cursor, 10)
         self.time_of_day = self.time_of_day(cursor) 
-        self.first_songs_year = self.first_songs_year(cursor)
+        self.first_songs_year = self.first_songs_year_time(cursor)
         self.total_listening_time_country = self.total_listening_time_country(cursor)        
         self.most_common_end_reason = self.most_common_end_reason(cursor)
         print("Queries innitialized")

@@ -144,6 +144,8 @@ CREATE TABLE Countries (
 
 select * from Songs ORDER BY timeListened DESC;
 
+select * from Timestamps;
+
 SELECT * FROM Albums ORDER BY timeListened DESC;
 
 

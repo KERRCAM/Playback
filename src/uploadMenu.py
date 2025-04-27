@@ -20,7 +20,7 @@ from jsonValidator import JsonValidator
 from mainMenu import *
 
 
-class UploadMenu():
+class UploadMenu:
 
     # ------------------------------------------------------------------------------------------- #
 

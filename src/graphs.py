@@ -5,10 +5,11 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 from queries import *
+from db import DB
 
 # ----------------------------------------------------------------------------------------------- #
 
-class graphs():
+class Graphs:
 
     """
     WHERE TO PUT SEARCH SORT ALGORITHMS
@@ -56,13 +57,14 @@ class graphs():
 
     # The year (first year) that user started listening can be found by 0 as an argument
 
-    def plot_top_artist_year(self, cursor, rankMax, yearNumber):
-        artists_by_year = self.queries.top_artist_year(cursor, rankMax)
+    def plot_top_artist_year(self, rankMax, yearNumber):
+        artists_by_year = self.queries.top_artist_year
+        print(artists_by_year)
         years = list(artists_by_year.keys())
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
         minutes = [a[1]/3600 for a in artists_by_year[exactYear]]
-        height = rankMax * 0.4
+        height = rankMax * 0.05
         plt.figure(figsize=(8, height))
         bar = plt.barh(names, minutes, color='green')
         plt.bar_label(
@@ -178,10 +180,11 @@ class graphs():
         self.saveAsPng("mostCommonEndReason.png")
         plt.show()
 
-    def __init__(self, cursor):
-        connection = self.connection_database()
-        cursor = connection.cursor()
-        self.queries = Queries(cursor)
+    def __init__(self):
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
+        self.queries = Queries(self.cursor)
 
 # ----------------------------------------------------------------------------------------------- #
 
