@@ -2,12 +2,12 @@ import mysql.connector
 
 class DB:
     def __init__(self):
-        password = input("Enter sql password: ")
+        #password = input("Enter sql password: ")
 
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password=password,
+            password= "",
             database="playback"
         )
 

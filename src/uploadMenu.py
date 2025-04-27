@@ -49,11 +49,11 @@ class UploadMenu():
         try:
             # Ensure the output directory exists
             os.makedirs(output_dir, exist_ok=True)
-            print(120302)
+
             # Extract files to the specified output directory
             with ZipFile(self.input_path, 'r') as zip_file:
                 zip_file.extractall(output_dir)
-            print(364634)
+
             # Validate extracted files
             if not os.listdir(output_dir):
                 raise ValueError("The zip file is empty or contains no valid files.")

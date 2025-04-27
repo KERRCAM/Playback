@@ -134,6 +134,8 @@ class JsonProcessor:
             self.insertUser(i)
         self.db.commit()
 
+    print("Data processed")
+
     # ------------------------------------------------------------------------------------------- #
 
     def insertSong(self, i):
