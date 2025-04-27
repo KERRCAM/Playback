@@ -1,4 +1,5 @@
 # LIBRARY IMPORTS
+import copy
 import time
 import mysql.connector
 
@@ -33,14 +34,22 @@ class JsonProcessor:
            
         """
         
-        self.db = mysql.connector.connect(
-            Host = "lxfarm*.csc.liv.ac.uk",
-            HostName = "lxfarm01.csc.liv.ac.uk",
-            user = "psubattu",
-            Macs = "hmac-sha2-512",
-            database = "playback"
-        )
+        # self.db = mysql.connector.connect(
+        #     Host = "lxfarm*.csc.liv.ac.uk",
+        #     HostName = "lxfarm01.csc.liv.ac.uk",
+        #     user = "psubattu",
+        #     Macs = "hmac-sha2-512",
+        #     database = "playback"
+        # )
 
+        password = input("Enter sql password: ")
+
+        self.db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password=password,
+            database="playback"
+        )
 
         self.cursor = self.db.cursor(buffered = True)
         self.streams = streams
@@ -70,6 +79,8 @@ class JsonProcessor:
             "start_playbtn": 0,
             "start_appload": 0,
             "start_unknown": 0,
+            "start_switched_to_audio": 0,
+            "start_switched_to_video": 0,
             "end_trackdone": 0,
             "end_fwdbtn": 0,
             "end_backbtn": 0,
@@ -79,7 +90,9 @@ class JsonProcessor:
             "end_unexpected_exit": 0,
             "end_unexpected_exit_while_paused": 0,
             "end_trackerror": 0,
-            "end_unknown": 0
+            "end_unknown": 0,
+            "end_switched_to_audio": 0,
+            "end_switched_to_video": 0
         }
 
         self.cleanData()
@@ -92,22 +105,22 @@ class JsonProcessor:
         Clears all data relating to a user -> ran before new insertion.
         """
 
-        sql = f"DELETE FROM Songs WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Albums WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Artists WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Episodes WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Shows WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Timestamps WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Countries WHERE username = {self.username}"
-        self.cursor.execute(sql)
-        sql = f"DELETE FROM Users WHERE username = {self.username}"
-        self.cursor.execute(sql)
+        sql = f"DELETE FROM Songs WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Albums WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Artists WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Episodes WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Shows WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Timestamps WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Countries WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
+        sql = f"DELETE FROM Users WHERE username = %s"
+        self.cursor.execute(sql, (self.username,))
 
         self.db.commit()
 
@@ -157,7 +170,7 @@ class JsonProcessor:
         else:
             sql = f"INSERT INTO Songs (songURI, username, songName, artist, album, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_track_uri}\", \"{self.username}\", \"{i.master_metadata_track_name}\", \"{i.master_metadata_album_artist_name}\", \"{i.master_metadata_album_album_name}\", \"{i.ms_played}\", {1}, {1}, {1})"
             self.cursor.execute(sql)
-            newStartEnd = self.startEndBase
+            newStartEnd = copy.deepcopy(self.startEndBase)
             newStartEnd[sn] += 1
             newStartEnd[en] += 1
             self.songs[i.spotify_track_uri] = (i.ms_played, 1, newStartEnd)
@@ -221,7 +234,7 @@ class JsonProcessor:
         else:
             sql = f"INSERT INTO Episodes (episodeURI, username, episodeName, showName, timeListened, numberOfStreams, start_{i.reason_start}, end_{i.reason_end}) VALUES (\"{i.spotify_episode_uri}\", \"{self.username}\", \"{i.episode_name}\", \"{i.episode_show_name}\", {i.ms_played}, {1}, {1}, {1})"
             self.cursor.execute(sql)
-            newStartEnd = self.startEndBase
+            newStartEnd = copy.deepcopy(self.startEndBase)
             newStartEnd[sn] += 1
             newStartEnd[en] += 1
             self.episodes[i.spotify_episode_uri] = (i.ms_played, 1, newStartEnd)
