@@ -1,25 +1,47 @@
 # LIBRARY IMPORTS
 import customtkinter as ctk
+import mysql.connector
 
 # LOCAL IMPORTS
-from UploadMenu import *
-from SignUpMenu import *
+from uploadMenu import *
+from signUpMenu import *
+from dbconnection import *  # This is the connection to the database
 
 class LoginMenu:
-    """
-    BitmapImage for images in XBM format.
-    PhotoImage for images in PGM, PPM, GIF and PNG formats. The latter is supported starting with Tk 8.6.
-    """
-    def imageProc(self):
-        return
-
     # a method to verify username and password also create as well
     def dataSQL(self):
-        # activate db
-        return
+        # activate db   
+        #Establish database connection
+        db = DatabaseConnection()                
+        connection = db.connection_database()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            SELECT username, password
+            FROM Users
+            WHERE username = %s AND password = %s
+        """, (self.username, self.password))
+        result = cursor.fetchone()
+        if result:
+            dbUsername, dbPassword = result
+        else:
+            dbUsername, dbPassword = None, None
+
+        return dbUsername, dbPassword
+    
+
+    # username and password verification and DB STUFFS
+    def user_authentication(self):
+        dbUsername, dbPassword = self.dataSQL()
+        if self.username == dbUsername and self.password == dbPassword:
+            print("Login successful")
+            return True
+        else:
+            print("Login failed")
+            return False
+
 
     # the button methods will do the transition to other screens and some stuffs
-    # Temporary method to switch between Pages
     def signUpSegue(self):
         username = self.usernameField.get()
         password = self.passwordField.get()
@@ -35,57 +57,31 @@ class LoginMenu:
         # initialize UploadMenu
         SignUpMenu(signUp_window, self.root)
 
-        signUp_window.title("Upload Menu")
-        signUp_window.geometry("800x600")
-
-        # Handle the close button to return to login screen
-        signUp_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(signUp_window))
-
         return
-
-        # # THIS CREATES NEW WINDOW
-        # signUpPage = ctk.CTk()
-        # # AND CLOSES THE OLD ONE
-        # self.root.destroy()
-        #
-        # #  initialize SignUpMenu
-        # signup_app = SignUpMenu(signUpPage)
-        # signUpPage.mainloop()
-        # return
 
     def loginSegue(self):
         username = self.usernameField.get()
         password = self.passwordField.get()
 
         print(f"Login attempt: {username} {password}")
-
+        
         # Hide the main window
         self.root.withdraw()
 
         # Create the toplevel window
-        second_window = ctk.CTkToplevel(self.root)
+        login_window = ctk.CTkToplevel(self.root)
 
         # initialize UploadMenu
-        UploadMenu(second_window, self.root)
-
-        second_window.title("Upload Menu")
-        second_window.geometry("800x600")
-
-        # Handle the close button to return to login
-        second_window.protocol("WM_DELETE_WINDOW", lambda: self.close_upload_window(second_window))
+        UploadMenu(login_window, self.root)
 
         return
-
-    def close_upload_window(self, window):
-        window.destroy()
-        self.root.deiconify()  # Show the main window again
 
     def __init__(self, root):
         self.root = root
         app = self.root
 
         ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
+        ctk.set_default_color_theme("green")
 
         # Create the main window
         app.title("Playback")
@@ -94,14 +90,8 @@ class LoginMenu:
         app.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(
-            app,
-            width=200,
-            height=200,
-            corner_radius=10,
-            border_width=2
-        )
-        frame.pack(pady=40, padx=20, fill="both", expand=True)
+        frame = ctk.CTkFrame(app, width=200, height=200, corner_radius=10, border_width=2)
+        frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         # App title
         label = ctk.CTkLabel(frame, text="Login screen", font=("Helvetica", 20))
