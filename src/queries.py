@@ -154,17 +154,3 @@ class quieries():
 
         return result  
       
-    def __init__(self, cursor):
-        # Create an instance of DatabaseConnection
-        db = DatabaseConnection()
-        connection = db.connection_database()
-
-        # Pass the connection to Queries
-        queries = Queries(connection.cursor())
-
-        # Execute queries
-        most_listened = queries.most_listened(limit=10)
-        print(most_listened)
-
-        # Close the connection
-        db.close()

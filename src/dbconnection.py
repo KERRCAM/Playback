@@ -17,10 +17,10 @@ class DatabaseConnection:
         """Connect to the MySQL database."""
         try:
             self.connection = mysql.connector.connect(
-                host="localhost",       # Replace with your database host
-                user="root",            # Replace with your username
-                password="password",    # Replace with your password
-                database="playback"     # Replace with your database name
+                host="localhost",       
+                user="root",            
+                password="Uchku2003!",    
+                database="playback"     
             )
             print("Database connection established.")
             return self.connection

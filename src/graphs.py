@@ -24,9 +24,6 @@ class CF():
     ^ Can replace doc string once code is in, above is just a note.
     """
 
-    conn = connection_database()
-    cursor = conn.cursor()
-
     def plot_total_listening_time_country(cursor):
         countries = total_listening_time_country(cursor)
         country = [{row[0]} for row in countries]
@@ -144,7 +141,14 @@ class CF():
 
     plot_most_common_end_reason(5)
 
+    def ___init__(self):
+        # Create an instance of DatabaseConnection
+        db = DatabaseConnection()
+        connection = db.connection_database()
 
+        # Pass the connection to Queries
+        queries = queries(connection.cursor())
+        pass
 
 # ----------------------------------------------------------------------------------------------- #
 
