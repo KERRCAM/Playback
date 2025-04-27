@@ -36,7 +36,7 @@ class UploadMenu:
                 # Get the directory of the uploaded file
                 self.input_dir = os.path.dirname(self.input_path)
                 messagebox.showinfo("Success", "File successfully uploaded.")
-                extract_dir = os.path.join(self.input_dir, "extracted_files")
+                extract_dir = os.path.join(self.input_dir)
 
                 # Call the extraction method with the directory of the uploaded file
                 self.extraction(extract_dir)

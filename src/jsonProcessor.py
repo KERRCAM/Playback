@@ -20,7 +20,7 @@ class JsonProcessor:
         Constructor for processor class.
         Contains all the dictionary defaults and database connection setup.
         """
-                    
+                   
         """
         THE CONNECTION TO LINUX SERVER
         DELETE BEFORE FINAL PROJECT
@@ -313,8 +313,6 @@ def main():
     start = time.time()
     v = JsonValidator("testFiles/testSet")
     p = JsonParser(v.validFiles, v.dirPath)
-    print(len(p.streams))
-
     processor = JsonProcessor(p.streams, "testUser")
 
     end = time.time()
