@@ -19,7 +19,6 @@ from jsonProcessor import JsonProcessor
 from jsonValidator import JsonValidator
 from mainMenu import *
 
-
 class UploadMenu:
 
     # ------------------------------------------------------------------------------------------- #
@@ -84,7 +83,7 @@ class UploadMenu:
         signUp_window = ctk.CTkToplevel(self.window)
 
         # Initialise new window
-        MainMenu(signUp_window, self.window)
+        MainMenu(signUp_window, self.window, self.username)
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -95,7 +94,8 @@ class UploadMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def __init__(self, window, mainWindow):
+    def __init__(self, window, mainWindow, username):
+        self.username = username
         self.input_path = ""
         self.input_dir = ""
 

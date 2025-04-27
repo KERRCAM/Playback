@@ -1,36 +1,31 @@
-"""
-This is the main menu for the application.
-It is also used to display the main menu of the application.
-
-
-"""
 # LIBRARY IMPORTS
 import customtkinter as ctk
 from tkinter import ttk
 from queries import Queries
-
 from PIL import Image
 
 # LOCAL IMPORTS
 from graphs import Graphs
 
+# ----------------------------------------------------------------------------------------------- #
 
 class MainMenu:
+    """
+    This is the main menu for the application.
+    It is also used to display the main menu of the application.
+    """
 
-    """
-    BitmapImage for images in XBM format.
-    PhotoImage for images in PGM, PPM, GIF and PNG formats. The latter is supported starting with Tk 8.6.
-    """
-    def imageProc(self):
-        
-        return
+    # ------------------------------------------------------------------------------------------- #
 
     def close_window(self, window):
         window.destroy()
         # Show the main window again
         self.prev_window.deiconify()
 
-    def __init__(self, window, mainWindow):
+    # ------------------------------------------------------------------------------------------- #
+
+    def __init__(self, window, mainWindow, username):
+        self.username = username
         self.window = window
         mainMenu = self.window
         self.prev_window = mainWindow
@@ -42,23 +37,28 @@ class MainMenu:
         mainMenu.geometry("1920x1080")
         mainMenu.resizable(width=True, height=True)
 
-        q = Queries()
-        print(q)
-        q.first_songs_year_time()
+        g = Graphs(self.username)
+        q = Queries(self.username)
+        songData = q.most_streamed
 
         print(songData)
-        table = ttk.Treeview(window, columns=('song', 'artist', 'streams', 'minuets'), show='headings')
-        table.heading('song', text='Song')
-        table.heading('artist', text='Artist')
-        table.heading('streams', text='Streams')
-        table.heading('minuets', text='Minuets')
-        table.grid(padx = 50, pady = 100)
-        table.place(x = 10, y = 50)
+        table = ttk.Treeview(window, columns = ('rank', 'song', 'artist', 'minuets', 'streams'), show='headings', selectmode='browse', height = 45, )
+        table.column('rank', width = 50, anchor = 'center')
+        table.heading('rank', text = 'Rank')
+        table.column('song', width = 300, anchor = 'w')
+        table.heading('song', text = 'Song')
+        table.column('artist', width = 250, anchor = 'w')
+        table.heading('artist', text = 'Artist')
+        table.column('minuets', width = 100, anchor = 'center')
+        table.heading('minuets', text = 'Minuets')
+        table.column('streams', width = 100, anchor = 'center')
+        table.heading('streams', text = 'Streams')
+        table.grid(padx = 5, pady = 5)
+        table.place(x = 10, y = 37)
 
-        j = 0
-        for i in songData:
-            table.insert('', j, values = (i['song'], i['artist'], i['streams'], i['minuets']))
-            j += 1
+        for i in range(0, 100):
+            current = songData[i]
+            table.insert('', i, values = (i + 1, current[0], current[1], current[2], current[3]))
 
 
         typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command=None)
@@ -68,10 +68,15 @@ class MainMenu:
 
         # type.get() # gets option
 
-        timeFrame = ctk.CTkComboBox(mainMenu, values=["2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017"], command=None)
+        sortBy = ctk.CTkComboBox(mainMenu, values=["Streams", "Time listened"], command = None)
+        sortBy.grid(padx=5, pady=5)
+        sortBy.set("Streams")
+        sortBy.place(x=180, y=5)
+
+        timeFrame = ctk.CTkComboBox(mainMenu, values=["All", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017"], command=None)
         timeFrame.grid(padx=5, pady=5)
-        timeFrame.set("2024")
-        timeFrame.place(x = 180, y = 5)
+        timeFrame.set("All")
+        timeFrame.place(x = 350, y = 5)
 
 
 
@@ -101,9 +106,7 @@ class MainMenu:
 
         mainMenu.mainloop()
 
-
-
-
+# ----------------------------------------------------------------------------------------------- #
 
 def main():
     root = ctk.CTk()

@@ -1,70 +1,102 @@
-"""
-
-
-"""
-# Library imports
+# LIBRARY IMPORTS
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
 
-
 # LOCAL IMPORTS
 from dbconnection import *
 from db import DB
 
+# ----------------------------------------------------------------------------------------------- #
+
 class Queries:
 
+# ----------------------------------------------------------------------------------------------- #
+
     def most_listened(self, limit):
-        """Top listened songs by the total minutes listened"""
+        """
+        Top listened songs by the total minutes listened
+        """
+
         self.cursor.execute("""
             SELECT songName, artist, timeListened, numberOfStreams
             FROM Songs
             ORDER BY timeListened DESC
             LIMIT %s
         """, (limit,))
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def most_streamed(self, limit):
-        """Most streamed songs"""
+        """
+        Most streamed songs
+        """
+
         self.cursor.execute("""
             SELECT songName, artist, timeListened, numberOfStreams
             FROM Songs
             ORDER BY numberOfStreams DESC
             LIMIT %s
         """, (limit,))
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def most_played_artists(self, limit):
-        """Most Played Artists"""
+        """
+        Most Played Artists
+        """
+
         self.cursor.execute("""
             SELECT artist, numberOfStreams
             FROM Artists
             ORDER BY numberOfStreams DESC
             LIMIT %s
         """, (limit,))
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def most_skipped_songs(self, limit):
-        """Most Skipped Songs"""
+        """
+        Most Skipped Songs
+        """
+
         self.cursor.execute("""
             SELECT songName, artist, timeListened, numberOfStreams, end_fwdbtn + end_backbtn AS total_skip
             FROM Songs
             ORDER BY total_skip DESC
             LIMIT %s
         """, (limit,))
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def time_of_day(self):
-        """Songs listened in each time of the day"""
+        """
+        Songs listened in each time of the day
+        """
+
         self.cursor.execute("""
             SELECT morning, afternoon, evening, night
             FROM Users
         """)
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def first_songs_year_time(self):
-        """Songs listened in each time of the day"""
+        """
+        Songs listened in each time of the day
+        """
+
         self.cursor.execute("""
             WITH firstDate AS (
             SELECT
@@ -79,10 +111,16 @@ class Queries:
         JOIN Songs ON Timestamps.songURI = Songs.songURI
         ORDER BY firstDate.year
         """)
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def top_artist_year(self, resultsNumber):
-        """Top artists in each year"""
+        """
+        Top artists in each year
+        """
+
         self.cursor.execute("""
             SELECT DISTINCT YEAR(timestamp) as year 
             FROM Timestamps 
@@ -91,7 +129,6 @@ class Queries:
 
         years = self.cursor.fetchall()
         total_years = [row[0] for row in years]
-
         year_dict = {}
 
         for i in total_years:
@@ -110,8 +147,13 @@ class Queries:
 
         return year_dict
 
+    # ------------------------------------------------------------------------------------------- #
+
     def first_songs_year_country(self):
-        """First songs listened in each country"""
+        """
+        First songs listened in each country
+        """
+
         self.cursor.execute("""
         WITH RankedStreams AS (
             SELECT C.countryCode, T.songURI, T.timestamp,
@@ -124,22 +166,32 @@ class Queries:
         JOIN Songs S ON R.songURI = S.songURI
         WHERE ranking <= 1
         ORDER BY countryCode, ranking
-
         """)
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def total_listening_time_country(self):
-        """Total streams listened in each country"""
+        """
+        Total streams listened in each country
+        """
+
         self.cursor.execute("""
             SELECT countryCode, count(numberOfStreams), sum(timeListened)
             FROM Countries
             GROUP BY countryCode
         """)
+
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
 
     def most_common_end_reason(self):
-        """Most common reason to end songs"""
+        """
+        Most common reason to end songs
+        """
+
         self.cursor.execute("""
             SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone = 1
             UNION ALL
@@ -152,21 +204,24 @@ class Queries:
             SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn = 1
             ORDER BY count DESC
         """)
-        result = (self.cursor.fetchall())
 
-        return result  
-    
-    def __init__(self):
+        return self.cursor.fetchall()
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def __init__(self, username):
+        self.username = username
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
-        self.most_listened = self.most_listened(self.cursor, 10)
-        self.most_streamed = self.most_streamed(self.cursor, 10)
-        self.most_played_artists = self.most_played_artists(self.cursor, 10)
-        self.most_skipped_songs = self.most_skipped_songs(self.cursor, 10)
-        self.top_artist_year = self.top_artist_year(self.cursor, 10)
-        self.time_of_day = self.time_of_day(self.cursor)
-        self.first_songs_year = self.first_songs_year_time(self.cursor)
-        self.total_listening_time_country = self.total_listening_time_country(self.cursor)
-        self.most_common_end_reason = self.most_common_end_reason(self.cursor)
-        print("Queries initialised")
+        self.most_listened = self.most_listened(100)
+        self.most_streamed = self.most_streamed(100)
+        self.most_played_artists = self.most_played_artists(100)
+        self.most_skipped_songs = self.most_skipped_songs(100)
+        self.top_artist_year = self.top_artist_year(100)
+        self.time_of_day = self.time_of_day()
+        self.first_songs_year = self.first_songs_year_time()
+        self.total_listening_time_country = self.total_listening_time_country()
+        self.most_common_end_reason = self.most_common_end_reason()
+
+# ----------------------------------------------------------------------------------------------- #

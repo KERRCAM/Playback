@@ -7,6 +7,8 @@ from uploadMenu import *
 from signUpMenu import *
 from dbconnection import *  # This is the connection to the database
 
+# ----------------------------------------------------------------------------------------------- #
+
 class LoginMenu:
 
     # ------------------------------------------------------------------------------------------- #
@@ -23,7 +25,7 @@ class LoginMenu:
             SELECT username, password
             FROM Users
             WHERE username = %s AND password = %s
-        """, (self.username, self.password))
+        """, (self.usernameField, self.passwordField))
         result = cursor.fetchone()
         if result:
             dbUsername, dbPassword = result
@@ -79,7 +81,7 @@ class LoginMenu:
         login_window = ctk.CTkToplevel(self.root)
 
         # initialize UploadMenu
-        UploadMenu(login_window, self.root)
+        UploadMenu(login_window, self.root, self.usernameField)
 
         return
 

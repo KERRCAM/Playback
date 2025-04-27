@@ -182,10 +182,11 @@ class Graphs:
         self.saveAsPng("mostCommonEndReason.png")
         plt.show()
 
-    def __init__(self):
+    def __init__(self, username):
+        self.username = username
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
-        self.queries = Queries()
+        self.queries = Queries(self.username)
 
 # ----------------------------------------------------------------------------------------------- #
