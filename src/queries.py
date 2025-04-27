@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
 
+
 # LOCAL IMPORTS
 from dbconnection import *
 
@@ -168,3 +169,4 @@ class quieries():
 
         # Close the connection
         db.close()
+
