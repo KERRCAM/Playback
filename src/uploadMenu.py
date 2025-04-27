@@ -47,12 +47,10 @@ class UploadMenu:
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
         mainMenuButton.grid(row=1, column=0, pady=10)
 
-        # extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=lambda: self.extraction(self.input_dir))
-        # extract_button.grid(row=1, column=1, pady=10)
-
-        temp_button = ctk.CTkButton(frame, text="Temp button to Menu", font=("Helvetica", 20),
+        # # Button to go to the main menu. May need to change the command to the main menu function
+        temp_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20),
                                     command=self.main_menu_segue)
-        temp_button.grid(row=2, column=0, pady=10)
+        temp_button.grid(row=1, column=1, pady=10)
 
         uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
         uploadmenu.mainloop()
@@ -75,6 +73,7 @@ class UploadMenu:
 
                 # Call the extraction method with the directory of the uploaded file
                 self.extraction(extract_dir)
+                
         except Exception as e:
             print(f"Error: {e}")   
 
