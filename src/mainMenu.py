@@ -49,9 +49,10 @@ class MainMenu:
 
         combobox.get() # gets option
         g = Graphs()
-        g.plot_top_artist_year(100, 2)
 
-
+        # g.plot_top_artist_year(100, 2)
+        # g.plot_total_listening_time_country()
+        g.plot_top_songs_listened(5)
         mainMenu.mainloop()
 
 def main():

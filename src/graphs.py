@@ -36,8 +36,9 @@ class Graphs:
         plt.savefig(results_dir + sample_file_name)
         plt.close()
 
-    def plot_total_listening_time_country(self, cursor):
-        countries = self.queries.total_listening_time_country(cursor)
+    def plot_total_listening_time_country(self):
+        countries = self.queries.total_listening_time_country
+        print(countries)
         country = [{row[0]} for row in countries]
         stats = [{row[2]} for row in countries]
 
@@ -56,7 +57,6 @@ class Graphs:
         plt.show()
 
     # The year (first year) that user started listening can be found by 0 as an argument
-
     def plot_top_artist_year(self, rankMax, yearNumber):
         artists_by_year = self.queries.top_artist_year
         print(artists_by_year)
@@ -82,17 +82,17 @@ class Graphs:
 
         plt.show()
 
-    def plot_first_songs(self, cursor):
+    def plot_first_songs(self):
         # need to fix
-        songs = self.queries.first_songs_year(cursor)
+        songs = self.queries.first_songs_year
         years = [row[2].year for row in songs]
         dates = [f"{row[2].year}:{row[2].month}:{row[2].day}" for row in songs]
 
         countries = [row[0] for row in songs]
         songNames = [row[1] for row in songs]
         
-    def plot_time_of_day(self, cursor):
-        songs = self.queries.time_of_day(cursor)
+    def plot_time_of_day(self):
+        songs = self.queries.time_of_day
         morning = [row[0] for row in songs][0]
         afternoon = [row[1] for row in songs][0]
         evening = [row[2] for row in songs][0]
@@ -106,8 +106,8 @@ class Graphs:
         self.saveAsPng("timeOfDay.png")
         plt.show()
     
-    def plot_most_skipped_songs(self, cursor, limit):
-        songs = self.queries.most_skipped_songs(cursor, limit)
+    def plot_most_skipped_songs(self, limit):
+        songs = self.queries.most_skipped_songs
         names = [f"{row[0]} ({row[1]})" for row in songs]
         times = [row[4] for row in songs]
         height = limit * 0.4
@@ -121,8 +121,8 @@ class Graphs:
 
         plt.show()
 
-    def plot_top_songs_streaming(self, cursor, limit):
-        songs = self.queries.most_streamed(cursor, limit)
+    def plot_top_songs_streaming(self, limit):
+        songs = self.queries.most_streamed
         names = [f"{row[0]} by {row[1]}" for row in songs]
         streams = [row[3] for row in songs]
         height = limit * 0.4
@@ -137,8 +137,8 @@ class Graphs:
         plt.show()
 
     # not sure about this
-    def plot_top_songs_listened(self, cursor, limit):
-        songs = self.queries.most_listened(cursor, limit)
+    def plot_top_songs_listened(self, limit):
+        songs = self.queries.most_listened
         names = [f"{row[0]} ({row[1]})" for row in songs]
         minutes = [row[2]/60 for row in songs]
         height = limit * 0.4
@@ -152,8 +152,8 @@ class Graphs:
 
         plt.show()
     
-    def plot_most_played_artists(self, cursor, limit):
-        artists = self.queries.most_played_artists(cursor, limit)
+    def plot_most_played_artists(self, limit):
+        artists = self.queries.most_played_artists
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         height = limit * 0.3
@@ -167,8 +167,8 @@ class Graphs:
 
         plt.show()
     
-    def plot_most_common_end_reason(self, cursor):
-        endReasons = self.queries.most_common_end_reason(cursor)
+    def plot_most_common_end_reason(self):
+        endReasons = self.queries.most_common_end_reason
         reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
