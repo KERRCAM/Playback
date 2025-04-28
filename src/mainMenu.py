@@ -1,4 +1,7 @@
 # LIBRARY IMPORTS
+import os
+from os.path import isfile, join
+from platform import system
 import customtkinter as ctk
 from tkinter import ttk
 from queries import Queries
@@ -37,30 +40,6 @@ class MainMenu:
         mainMenu.geometry("1920x1080")
         mainMenu.resizable(width=True, height=True)
 
-        g = Graphs(self.username)
-        q = Queries(self.username)
-        songData = q.most_streamed
-
-        print(songData)
-        table = ttk.Treeview(window, columns = ('rank', 'song', 'artist', 'minuets', 'streams'), show='headings', selectmode='browse', height = 45, )
-        table.column('rank', width = 50, anchor = 'center')
-        table.heading('rank', text = 'Rank')
-        table.column('song', width = 300, anchor = 'w')
-        table.heading('song', text = 'Song')
-        table.column('artist', width = 250, anchor = 'w')
-        table.heading('artist', text = 'Artist')
-        table.column('minuets', width = 100, anchor = 'center')
-        table.heading('minuets', text = 'Minuets')
-        table.column('streams', width = 100, anchor = 'center')
-        table.heading('streams', text = 'Streams')
-        table.grid(padx = 5, pady = 5)
-        table.place(x = 10, y = 37)
-
-        for i in range(0, 100):
-            current = songData[i]
-            table.insert('', i, values = (i + 1, current[0], current[1], current[2], current[3]))
-
-
         self.typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command = self.checkStates)
         self.typeOption.grid(padx=5, pady=5)
         self.typeOption.set("Song")
@@ -76,52 +55,69 @@ class MainMenu:
         self.timeFrame.set("All")
         self.timeFrame.place(x = 350, y = 5)
 
-        i1 = ctk.CTkImage(light_image=Image.open('results/topArtistYear.png'),
-                                        dark_image=Image.open('results/topArtistYear.png'),
-                                        size=(600, 280))  # Width x Height
-
-        g1 = ctk.CTkLabel(mainMenu, text="", image=i1)
-        g1.grid(padx=5, pady=5)
-        g1.place(x = 820, y = 40)
-
-        i2 = ctk.CTkImage(light_image=Image.open('results/mostPlayedArtists.png'),
-                                dark_image=Image.open('results/mostPlayedArtists.png'),
-                                size=(600, 280))  # Width x Height
-
-        g2 = ctk.CTkLabel(mainMenu, text="", image=i2)
-        g2.grid(padx=5, pady=5)
-        g2.place(x=820, y=320)
-
-        i3 = ctk.CTkImage(light_image=Image.open('results/timeOfDay.png'),
-                                dark_image=Image.open('results/timeOfDay.png'),
-                                size=(600, 280))  # Width x Height
-
-        g3 = ctk.CTkLabel(mainMenu, text="", image=i3)
-        g3.grid(padx=5, pady=5)
-        g3.place(x=820, y=600)
-
         mainMenu.mainloop()
 
     # ------------------------------------------------------------------------------------------- #
 
     def checkStates(self, idk):
         q = Queries(self.username)
+        g = Graphs(self.username)
         to = self.typeOption.get()
         sb = self.sortBy.get()
         tf = self.timeFrame.get()
 
+        filePath = os.path.dirname(os.path.realpath(__file__))
+        if system() == "Windows":
+            dirPath = os.path.relpath("..\\src\\results", filePath)  # hard coded path needs changed
+        else:
+            dirPath = os.path.relpath("../src/results", filePath)  # hard coded path needs changed
+        fileNames = [f for f in os.listdir(dirPath) if isfile(join(dirPath, f))]
+
         if to == "Song" and sb == "Streams":
-            data = q.most_streamed
+            data = q.most_streamed(100)
             self.songTable(data)
+
+            if not "plot_top_songs_streaming.png" in fileNames:
+                g.plot_top_songs_streaming(10)
+            self.graph1("results/plot_top_songs_streaming.png")
+            if not "plot_top_songs_listened.png" in fileNames:
+                g.plot_top_songs_listened(10)
+            self.graph2("results/plot_top_songs_listened.png")
+            if not "plot_most_played_artists.png" in fileNames:
+                g.plot_most_played_artists(10)
+            self.graph3("results/plot_most_played_artists.png")
+
         elif to == "Song" and sb == "Time listened":
-            data = q.most_listened
+            data = q.most_listened(100)
             self.songTable(data)
+            if not "plot_top_songs_listened.png" in fileNames:
+                g.plot_top_songs_listened(10)
+            self.graph1("results/plot_top_songs_listened.png")
+            if not "plot_top_songs_streaming.png" in fileNames:
+                g.plot_top_songs_streaming(10)
+            self.graph2("results/plot_top_songs_streaming.png")
+            if not "plot_most_played_artists.png" in fileNames:
+                g.plot_total_listening_time_country()
+            self.graph3("results/plot_total_listening_time_country.png")
+
+        elif to == "Show" and sb == "Streams":
+            data = q.most_played_episodes_podcast(100)
+            self.podcastTable(data)
+            if not "plot_most_played_episodes.png" in fileNames:
+                g.plot_most_played_episodes(10)
+            self.graph1("results/plot_top_songs_listened.png")
+            if not "plot_top_songs_streaming.png" in fileNames:
+                g.plot_top_songs_streaming(10)
+            self.graph2("results/plot_top_songs_streaming.png")
+            if not "plot_most_played_artists.png" in fileNames:
+                g.plot_total_listening_time_country()
+            self.graph3("results/plot_total_listening_time_country.png")
 
     # ------------------------------------------------------------------------------------------- #
 
     def songTable(self, data):
-        table = ttk.Treeview(self.window, columns=('rank', 'song', 'artist', 'minuets', 'streams'), show='headings',
-                             selectmode='browse', height=45, )
+        table = ttk.Treeview(self.window, columns=('rank', 'song', 'artist', 'seconds', 'streams'), show='headings',
+                                selectmode='browse', height=45, )
         table.column('rank', width=50, anchor='center')
         table.heading('rank', text='Rank')
         table.column('song', width=300, anchor='w')
@@ -141,18 +137,59 @@ class MainMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def graph1(self):
-        pass
+    def podcastTable(self, data):
+        table = ttk.Treeview(self.window, columns=('rank', 'show', 'seconds', 'streams'), show='headings',
+                                selectmode='browse', height=45, )
+        table.column('rank', width=50, anchor='center')
+        table.heading('rank', text='Rank')
+        table.column('show', width=400, anchor='w')
+        table.heading('show', text='Show')
+        table.column('minuets', width=175, anchor='center')
+        table.heading('minuets', text='Minuets')
+        table.column('streams', width=175, anchor='center')
+        table.heading('streams', text='Streams')
+        table.grid(padx=5, pady=5)
+        table.place(x=10, y=37)
+
+        for i in range(0, 100):
+            current = data[i]
+            table.insert('', i, values=(i + 1, current[0], current[2], current[1]))
 
     # ------------------------------------------------------------------------------------------- #
 
-    def graph2(self):
-        pass
+    def graph1(self, fileName):
+
+        i1 = ctk.CTkImage(light_image=Image.open(fileName),
+                            dark_image=Image.open(fileName),
+                            size=(600, 280))  # Width x Height
+
+        g1 = ctk.CTkLabel(self.window, text="", image=i1)
+        g1.grid(padx=5, pady=5)
+        g1.place(x=820, y=40)
 
     # ------------------------------------------------------------------------------------------- #
 
-    def graph3(self):
-        pass
+    def graph2(self, fileName):
+
+        i2 = ctk.CTkImage(light_image=Image.open(fileName),
+                            dark_image=Image.open(fileName),
+                            size=(600, 280))  # Width x Height
+
+        g2 = ctk.CTkLabel(self.window, text="", image=i2)
+        g2.grid(padx=5, pady=5)
+        g2.place(x=820, y=320)
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def graph3(self, fileName):
+
+        i3 = ctk.CTkImage(light_image=Image.open(fileName),
+                            dark_image=Image.open(fileName),
+                            size=(600, 280))  # Width x Height
+
+        g3 = ctk.CTkLabel(self.window, text="", image=i3)
+        g3.grid(padx=5, pady=5)
+        g3.place(x=820, y=600)
 
 # ----------------------------------------------------------------------------------------------- #
 

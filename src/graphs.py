@@ -43,8 +43,7 @@ class Graphs:
 
     def plot_total_listening_time_country(self):
 
-        countries = self.queries.total_listening_time_country
-        print(countries)
+        countries = self.queries.total_listening_time_country()
         country = [{row[0]} for row in countries]
         stats = [{row[2]} for row in countries]
 
@@ -67,7 +66,7 @@ class Graphs:
     # The year (first year) that user started listening can be found by 0 as an argument
     def plot_top_artist_year(self, rankMax, yearNumber):
 
-        artists_by_year = self.queries.top_artist_year
+        artists_by_year = self.queries.top_artist_year()
         years = list(artists_by_year.keys())
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
@@ -99,7 +98,7 @@ class Graphs:
 
     def plot_first_songs(self):
         # need to fix
-        songs = self.queries.first_songs_year
+        songs = self.queries.first_songs_year()
         years = [row[2].year for row in songs]
         dates = [f"{row[2].year}:{row[2].month}:{row[2].day}" for row in songs]
 
@@ -110,7 +109,7 @@ class Graphs:
 
     def plot_time_of_day(self):
 
-        songs = self.queries.time_of_day
+        songs = self.queries.time_of_day()
         morning = [row[0] for row in songs][0]
         afternoon = [row[1] for row in songs][0]
         evening = [row[2] for row in songs][0]
@@ -131,7 +130,7 @@ class Graphs:
 
     def plot_most_skipped_songs(self, limit):
 
-        songs = self.queries.most_skipped_songs
+        songs = self.queries.most_skipped_songs(10)
         names = [f"{row[0]} ({row[1]})" for row in songs]
         times = [row[4] for row in songs]
         height = limit * 0.4
@@ -152,7 +151,7 @@ class Graphs:
 
     def plot_top_songs_streaming(self, limit):
 
-        songs = self.queries.most_streamed
+        songs = self.queries.most_streamed(10)
         names = [f"{row[0]} by {row[1]}" for row in songs]
         streams = [row[3] for row in songs]
         height = limit * 0.4
@@ -172,7 +171,7 @@ class Graphs:
 
     def plot_top_songs_listened(self, limit):
 
-        songs = self.queries.most_listened
+        songs = self.queries.most_listened(10)
         names = [f"{row[0]} ({row[1]})" for row in songs]
         minutes = [row[2] / 60 for row in songs]
         height = limit * 0.4
@@ -194,7 +193,7 @@ class Graphs:
 
     def plot_most_played_artists(self, limit):
 
-        artists = self.queries.most_played_artists
+        artists = self.queries.most_played_artists(10)
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         height = limit * 0.3
@@ -214,8 +213,9 @@ class Graphs:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def plot_most_played_shows(self, limit):
-        shows = self.queries.most_played_shows_podcast
+    def plot_most_played_episodes(self, limit):
+
+        shows = self.queries.most_played_episodes_podcast(10)
         names = [f"{row[0]}" for row in shows]
         times = [row[1] for row in shows]
         height = limit * 0.3
@@ -224,19 +224,19 @@ class Graphs:
         plt.barh(names, times, color='green')
         plt.gca().set_facecolor(grey)
         plt.gca().set_xlabel('Times played', color="white")
-        plt.gca().set_title('Top Shows', color="white")
+        plt.gca().set_title('Top Episodes', color="white")
         plt.gca().tick_params(axis='x', colors="white")
         plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_most_played_shows.png")
+        self.saveAsPng("plot_most_played_episodes.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_common_end_reason(self):
 
-        endReasons = self.queries.most_common_end_reason
+        endReasons = self.queries.most_common_end_reason()
         reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
         y = np.array([counts[0], counts[1], counts[2], counts[3], counts[4]])
