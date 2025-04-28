@@ -59,7 +59,7 @@ class MainMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def checkStates(self, idk):
+    def checkStates(self, idk): # fix this
         q = Queries(self.username)
         g = Graphs(self.username)
         to = self.typeOption.get()
