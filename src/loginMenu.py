@@ -121,7 +121,7 @@ class LoginMenu:
             login_window = ctk.CTkToplevel(self.root)
 
             # initialize UploadMenu
-            UploadMenu(login_window, self.root, self.usernameField)
+            UploadMenu(login_window, self.root, username)
         else:
             # Show an error message if authentication fails
             messagebox.showerror("Error", "Invalid username or password.")

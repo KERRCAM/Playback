@@ -96,7 +96,7 @@ class UploadMenu:
             v = JsonValidator(output_dir)
             print(output_dir)
             p = JsonParser(v.validFiles, v.dirPath)
-            processor = JsonProcessor(p.streams, "test") # NEED TO CHANGE TO CURRENT USERNAME
+            processor = JsonProcessor(p.streams, self.username) # NEED TO CHANGE TO CURRENT USERNAME
 
             messagebox.showinfo("Success", f"Files extracted to {output_dir}")
         except Exception as e:
