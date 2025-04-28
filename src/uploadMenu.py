@@ -45,12 +45,12 @@ class UploadMenu:
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
-        mainMenuButton.grid(row=1, column=0, pady=10)
+        mainMenuButton.grid(row=1, column=0, pady=10, padx= 10)
 
         # # Button to go to the main menu. May need to change the command to the main menu function
         temp_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20),
                                     command=self.main_menu_segue)
-        temp_button.grid(row=1, column=1, pady=10)
+        temp_button.grid(row=1, column=1, pady=10, padx= 10)
 
         uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
         uploadmenu.mainloop()
