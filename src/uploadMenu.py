@@ -1,6 +1,6 @@
 # LIBRARY IMPORTS
 import customtkinter as ctk
-from zipfile import ZipFile # NEED TO INCLUDE IN DEPENDENCIES?
+from zipfile import ZipFile  # NEED TO INCLUDE IN DEPENDENCIES?
 from tkinter import filedialog, messagebox
 import os
 
@@ -10,6 +10,7 @@ from jsonProcessor import JsonProcessor
 from jsonValidator import JsonValidator
 from mainMenu import *
 
+
 # ----------------------------------------------------------------------------------------------- #
 
 class UploadMenu:
@@ -17,7 +18,7 @@ class UploadMenu:
     This class is used for managing user uploaded spotify JSON files and has a segue to Main Menu.
     """
 
-# ----------------------------------------------------------------------------------------------- #
+    # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, window, mainWindow, username):
         self.username = username
@@ -47,12 +48,10 @@ class UploadMenu:
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
         mainMenuButton.grid(row=1, column=0, pady=10)
 
-        # extract_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=lambda: self.extraction(self.input_dir))
-        # extract_button.grid(row=1, column=1, pady=10)
-
-        temp_button = ctk.CTkButton(frame, text="Temp button to Menu", font=("Helvetica", 20),
+        # # Button to go to the main menu. May need to change the command to the main menu function
+        temp_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20),
                                     command=self.main_menu_segue)
-        temp_button.grid(row=2, column=0, pady=10)
+        temp_button.grid(row=1, column=1, pady=10)
 
         uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
         uploadmenu.mainloop()
@@ -75,10 +74,11 @@ class UploadMenu:
 
                 # Call the extraction method with the directory of the uploaded file
                 self.extraction(extract_dir)
-        except Exception as e:
-            print(f"Error: {e}")   
 
-    # ------------------------------------------------------------------------------------------- #
+        except Exception as e:
+            print(f"Error: {e}")
+
+            # ------------------------------------------------------------------------------------------- #
 
     def extraction(self, output_dir):
         try:
@@ -97,7 +97,8 @@ class UploadMenu:
             v = JsonValidator(output_dir)
             print(output_dir)
             p = JsonParser(v.validFiles, v.dirPath)
-            processor = JsonProcessor(p.streams, "test") # NEED TO CHANGE TO CURRENT USERNAME
+            print(self.username)
+            processor = JsonProcessor(p.streams, self.username)  # NEED TO CHANGE TO CURRENT USERNAME
 
             messagebox.showinfo("Success", f"Files extracted to {output_dir}")
         except Exception as e:
@@ -128,12 +129,14 @@ class UploadMenu:
         # Show the main window again
         self.loginMenu.deiconify()
 
+
 # ----------------------------------------------------------------------------------------------- #
 
 def main():
     root = ctk.CTk()
     app = UploadMenu(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

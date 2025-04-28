@@ -1,8 +1,10 @@
 # LIBRARY IMPORTS
 import customtkinter as ctk
 from tkinter import messagebox
+import mysql.connector
 
 # LOCAL IMPORTS
+from dbconnection import DatabaseConnection
 
 
 # ----------------------------------------------------------------------------------------------- #
@@ -12,7 +14,7 @@ class SignUpMenu():
     This class is used to accredit username and password at the first time.
     """
 
-# ----------------------------------------------------------------------------------------------- #
+    # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, window, mainWindow):
         self.window = window
@@ -62,13 +64,6 @@ class SignUpMenu():
 
     # ------------------------------------------------------------------------------------------- #
 
-    # a method to verify username and password also create as well
-    def dataSQL(self):
-        # activate db
-        return
-
-    # ------------------------------------------------------------------------------------------- #
-
     # On closing, this function will transition back to the main window
     def close_window(self, window):
         window.destroy()
@@ -83,7 +78,7 @@ class SignUpMenu():
         password = self.passwordInfo.get()
 
         print(f"Username and Password: {username} {password}")
-        
+
         # This deletes datas in the entry box
         self.usernameInfo.delete(0, ctk.END)
         self.passwordInfo.delete(0, ctk.END)
@@ -92,22 +87,52 @@ class SignUpMenu():
             if self.sign_up_successful(username, password):
                 messagebox.showinfo("Success", "Account creation has been successfull")
             else:
-                messagebox.showerror("Error", "There is a error")
+                messagebox.showerror("Error", "Username already exists or an error occurred.")
         except Exception as e:
             messagebox.showerror("Error", e)
         return
 
     # ------------------------------------------------------------------------------------------- #
-    
+
     def sign_up_successful(self, username, password):
         try:
             # Check if username exists, then insert
+            # Establish database connection
+            db = DatabaseConnection()
+            connection = db.connection_database()
+            cursor = connection.cursor()
 
+            # Check if the username already exists
+            cursor.execute("""
+                SELECT username
+                FROM Users
+                WHERE username = %s
+            """, (username,))
+            result = cursor.fetchone()
 
+            if result:
+                messagebox.showerror("Error", "This username already exists.")
+                return False
+
+                # Insert the new user into the database
+            cursor.execute("""
+                INSERT INTO Users (username, password)
+                VALUES (%s, %s)
+            """, (username, password))
+            connection.commit()
+
+            print("Sign-up successful.")
             return True
-        except Exception as e:
-            print(f"Error: {e}")
+
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
             return False
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -115,6 +140,7 @@ def main():
     root = ctk.CTk()
     app = SignUpMenu(root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()

@@ -58,39 +58,34 @@ class LoginMenu:
     # ------------------------------------------------------------------------------------------- #
 
     # a method to verify username and password also create as well
-    def dataSQL(self):
-        # activate db   
-        #Establish database connection
-        db = DatabaseConnection()                
-        connection = db.connection_database()
-        cursor = connection.cursor()
+    def user_authentication(self, username, password):
+        try:
+            # activate db
+            #Establish database connection
+            db = DatabaseConnection()
+            connection = db.connection_database()
+            cursor = connection.cursor()
 
-        cursor.execute("""
-            SELECT username, password
-            FROM Users
-            WHERE username = %s AND password = %s
-        """, (self.usernameField, self.passwordField))
-        result = cursor.fetchone()
-        if result:
-            dbUsername, dbPassword = result
-        else:
-            dbUsername, dbPassword = None, None
-
-        return dbUsername, dbPassword
-
-    # ------------------------------------------------------------------------------------------- #
-
-    # username and password verification and DB STUFFS
-    def user_authentication(self):
-        dbUsername, dbPassword = self.dataSQL()
-        if self.usernameField.get() == dbUsername and self.passwordField.get() == dbPassword:
-            print("Login successful")
-            return True
-        else:
-            print("Login failed")
+            cursor.execute("""
+                SELECT username, password
+                FROM Users
+                WHERE username = %s AND password = %s
+            """, (username, password))
+            result = cursor.fetchone()
+            if result:
+                print("Login successful")
+                return True
+            else:
+                print("Login failed")
+                return False
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
             return False
-
-    # ------------------------------------------------------------------------------------------- #
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
 
     # the button methods will do the transition to other screens and some stuffs
     def signUpSegue(self):
@@ -112,22 +107,24 @@ class LoginMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def loginSegue(self):
+    def loginSegue(self,):
         username = self.usernameField.get()
         password = self.passwordField.get()
 
         print(f"Login attempt: {username} {password}")
-        
-        # Hide the main window
-        self.root.withdraw()
 
-        # Create the toplevel window
-        login_window = ctk.CTkToplevel(self.root)
+        if self.user_authentication(username, password):
+            # Hide the main window
+            self.root.withdraw()
 
-        # initialize UploadMenu
-        UploadMenu(login_window, self.root, self.usernameField)
+            # Create the toplevel window
+            login_window = ctk.CTkToplevel(self.root)
 
-        return
+            # initialize UploadMenu
+            UploadMenu(login_window, self.root, self.usernameField.get())
+        else:
+            # Show an error message if authentication fails
+            messagebox.showerror("Error", "Invalid username or password.")
 
 # ----------------------------------------------------------------------------------------------- #
 

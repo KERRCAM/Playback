@@ -15,7 +15,7 @@ class Queries:
 # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, username):
-        self.username = "test" # todo - change later ---------------------- #########
+        self.username = username # todo - change later ---------------------- #########
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
