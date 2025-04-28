@@ -85,6 +85,7 @@ class SignUpMenu():
         try:
             if self.sign_up_successful(username, password):
                 messagebox.showinfo("Success", "Account creation has been successfull")
+                self.close_window(self.window)
             else:
                 messagebox.showerror("Error", "Username already exists or an error occurred.")
         except Exception as e:
