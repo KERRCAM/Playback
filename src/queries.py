@@ -15,19 +15,11 @@ class Queries:
 # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, username):
-        self.username = username # todo - change later ---------------------- #########
+        self.username = username
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
-        self.most_listened = self.most_listened(100)
-        self.most_streamed = self.most_streamed(100)
-        self.most_played_artists = self.most_played_artists(100)
-        self.most_played_shows_podcast = self.most_played_shows_podcast(100)
-        self.most_skipped_songs = self.most_skipped_songs(100)
-        self.top_artist_year = self.top_artist_year(100)
-        self.time_of_day = self.time_of_day()
-        self.first_songs_year = self.first_songs_year_time()
-        self.total_listening_time_country = self.total_listening_time_country()
+
         #self.most_common_end_reason = self.most_common_end_reason()
 
     # ------------------------------------------------------------------------------------------- #
@@ -72,7 +64,7 @@ class Queries:
         """
 
         self.cursor.execute("""
-                    SELECT artist, numberOfStreams
+                    SELECT artist, numberOfStreams, timeListened
                     FROM Artists
                     WHERE artist != 'null' and username = %s
                     ORDER BY numberOfStreams DESC
@@ -83,13 +75,13 @@ class Queries:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def most_played_shows_podcast(self, limit):
+    def most_played_episodes_podcast(self, limit):
         """
         Most Played Shows
         """
 
         self.cursor.execute("""
-                SELECT showName, numberOfStreams
+                SELECT showName, numberOfStreams, timeListened
                 FROM Episodes
                 WHERE showName != 'null' and username = %s
                 ORDER BY numberOfStreams DESC
