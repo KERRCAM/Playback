@@ -3,7 +3,7 @@
 ### Overview
 Playback is a desktop app for analysing your Spotify extended streaming history.
 
-### Setup
+### Setup:
 You will need a Python installation version 3.9 or later.
 
 You will then need the following dependencies.
@@ -13,26 +13,27 @@ You will then need the following dependencies.
 pip3 install customtkinter
 ```
 
-#### numpy
+#### numpy:
 ```
 pip3 install numpy
 ```
 
-#### MySQL connector
+#### MySQL connector:
 ```
 pip3 install mysql-connector-python
 ```
 
-#### matplot
+#### matplot:
 ```
 pip3 install matplotlib
 ```
 
-#### Database
+#### Database:
 You will need to download a MySQL server from this link: https://www.oracle.com/mysql/technologies/mysql-enterprise-edition-downloads.html.
 
 After installation, run the SQL commands from the databaseInitialisation.sql file on your local server to set up the database.
 
+### How to use:
 When you start the app, it will display the login page. 
 ![LoginMenu](https://github.com/user-attachments/assets/24f18261-d590-458c-8cee-61f1917d2254)
 
