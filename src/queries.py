@@ -15,19 +15,20 @@ class Queries:
 # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, username):
-        self.username = username
+        self.username = "test" # todo - change later ---------------------- #########
         connection = DB()
         self.db = connection.db
         self.cursor = connection.cursor
         self.most_listened = self.most_listened(100)
         self.most_streamed = self.most_streamed(100)
         self.most_played_artists = self.most_played_artists(100)
+        self.most_played_shows_podcast = self.most_played_shows_podcast(100)
         self.most_skipped_songs = self.most_skipped_songs(100)
         self.top_artist_year = self.top_artist_year(100)
         self.time_of_day = self.time_of_day()
         self.first_songs_year = self.first_songs_year_time()
         self.total_listening_time_country = self.total_listening_time_country()
-        self.most_common_end_reason = self.most_common_end_reason()
+        #self.most_common_end_reason = self.most_common_end_reason()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -37,11 +38,12 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT songName, artist, timeListened, numberOfStreams
-            FROM Songs
-            ORDER BY timeListened DESC
-            LIMIT %s
-        """, (limit,))
+                    SELECT songName, artist, timeListened, numberOfStreams
+                    FROM Songs
+                    WHERE artist != 'null' and username = %s
+                    ORDER BY timeListened DESC
+                    LIMIT %s
+                """, (self.username, limit,))
 
         return self.cursor.fetchall()
 
@@ -53,11 +55,12 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT songName, artist, timeListened, numberOfStreams
-            FROM Songs
-            ORDER BY numberOfStreams DESC
-            LIMIT %s
-        """, (limit,))
+                    SELECT songName, artist, timeListened, numberOfStreams
+                    FROM Songs
+                    WHERE artist != 'null' and username = %s
+                    ORDER BY numberOfStreams DESC
+                    LIMIT %s
+                """, (self.username, limit,))
 
         return self.cursor.fetchall()
 
@@ -69,15 +72,33 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT artist, numberOfStreams
-            FROM Artists
-            ORDER BY numberOfStreams DESC
-            LIMIT %s
-        """, (limit,))
+                    SELECT artist, numberOfStreams
+                    FROM Artists
+                    WHERE artist != 'null' and username = %s
+                    ORDER BY numberOfStreams DESC
+                    LIMIT %s
+                """, (self.username, limit,))
 
         return self.cursor.fetchall()
 
     # ------------------------------------------------------------------------------------------- #
+
+    def most_played_shows_podcast(self, limit):
+        """
+        Most Played Shows
+        """
+
+        self.cursor.execute("""
+                SELECT showName, numberOfStreams
+                FROM Episodes
+                WHERE showName != 'null' and username = %s
+                ORDER BY numberOfStreams DESC
+                LIMIT %s
+            """, (self.username, limit,))
+
+        return self.cursor.fetchall()
+
+# ------------------------------------------------------------------------------------------- #
 
     def most_skipped_songs(self, limit):
         """
@@ -85,11 +106,12 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT songName, artist, timeListened, numberOfStreams, end_fwdbtn + end_backbtn AS total_skip
-            FROM Songs
-            ORDER BY total_skip DESC
-            LIMIT %s
-        """, (limit,))
+                    SELECT songName, artist, timeListened, numberOfStreams, end_fwdbtn + end_backbtn AS total_skip
+                    FROM Songs
+                    WHERE artist != 'null' and username = %s
+                    ORDER BY total_skip DESC
+                    LIMIT %s
+                """, (self.username, limit,))
 
         return self.cursor.fetchall()
 
@@ -103,7 +125,8 @@ class Queries:
         self.cursor.execute("""
             SELECT morning, afternoon, evening, night
             FROM Users
-        """)
+            WHERE username = %s
+        """, (self.username,))
 
         return self.cursor.fetchall()
 
@@ -115,19 +138,20 @@ class Queries:
         """
 
         self.cursor.execute("""
-            WITH firstDate AS (
-            SELECT
-                YEAR(timestamp) as year,
-                MIN(timestamp) as first
-            FROM Timestamps
-            GROUP BY YEAR(timestamp)
-        )
-        SELECT firstDate.year, Songs.songName, Songs.artist, firstDate.first as time_played 
-        FROM firstDate    
-        JOIN Timestamps ON firstDate.first = Timestamps.timestamp
-        JOIN Songs ON Timestamps.songURI = Songs.songURI
-        ORDER BY firstDate.year
-        """)
+                    WITH firstDate AS (
+                    SELECT
+                        YEAR(timestamp) as year,
+                        MIN(timestamp) as first
+                    FROM Timestamps
+                    GROUP BY YEAR(timestamp)
+                )
+                SELECT firstDate.year, Songs.songName, Songs.artist, firstDate.first as time_played 
+                FROM firstDate    
+                JOIN Timestamps ON firstDate.first = Timestamps.timestamp
+                JOIN Songs ON Timestamps.songURI = Songs.songURI
+                WHERE Songs.artist != 'null' and Songs.username = %s
+                ORDER BY firstDate.year
+                """, (self.username,))
 
         return self.cursor.fetchall()
 
@@ -139,10 +163,11 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT DISTINCT YEAR(timestamp) as year 
-            FROM Timestamps 
-            ORDER BY year DESC
-        """)
+                    SELECT DISTINCT YEAR(timestamp) as year 
+                    FROM Timestamps 
+                    WHERE artist != 'null' and username = %s
+                    ORDER BY year DESC
+                """, (self.username,))
 
         years = self.cursor.fetchall()
         total_years = [row[0] for row in years]
@@ -150,16 +175,15 @@ class Queries:
 
         for i in total_years:
             self.cursor.execute("""
-            SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
-            FROM Songs S 
-            JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
-            JOIN Artists A ON S.artist = A.artist AND S.username = A.username
-            WHERE YEAR(T.timestamp) = %s and S.artist != 'null'
-            GROUP BY A.artist
-            ORDER BY total_time DESC
-            LIMIT %s
-            """, (i, resultsNumber))
-
+                    SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
+                    FROM Songs S 
+                    JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
+                    JOIN Artists A ON S.artist = A.artist AND S.username = A.username
+                    WHERE YEAR(T.timestamp) = %s and S.artist != 'null' and S.username = %s
+                    GROUP BY A.artist
+                    ORDER BY total_time DESC
+                    LIMIT %s
+                    """, (i, self.username, resultsNumber,))
             year_dict[i] = self.cursor.fetchall()
 
         return year_dict
@@ -172,18 +196,18 @@ class Queries:
         """
 
         self.cursor.execute("""
-        WITH RankedStreams AS (
-            SELECT C.countryCode, T.songURI, T.timestamp,
-            ROW_NUMBER() OVER (PARTITION BY C.countryCode ORDER BY T.timestamp) as ranking
-            FROM Timestamps T
-            JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
-        )     
-        SELECT countryCode, S.songName, timestamp
-        FROM RankedStreams R
-        JOIN Songs S ON R.songURI = S.songURI
-        WHERE ranking <= 1
-        ORDER BY countryCode, ranking
-        """)
+                WITH RankedStreams AS (
+                    SELECT C.countryCode, T.songURI, T.timestamp,
+                    ROW_NUMBER() OVER (PARTITION BY C.countryCode ORDER BY T.timestamp) as ranking
+                    FROM Timestamps T
+                    JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
+                )     
+                SELECT countryCode, S.songName, timestamp
+                FROM RankedStreams R
+                JOIN Songs S ON R.songURI = S.songURI
+                WHERE ranking <= 1 AND S.songName != 'null' AND C.username = %s
+                ORDER BY countryCode, ranking
+                """, (self.username, ))
 
         return self.cursor.fetchall()
 
@@ -197,8 +221,9 @@ class Queries:
         self.cursor.execute("""
             SELECT countryCode, count(numberOfStreams), sum(timeListened)
             FROM Countries
+            WHERE username = %s
             GROUP BY countryCode
-        """)
+        """, (self.username,))
 
         return self.cursor.fetchall()
 
@@ -210,17 +235,18 @@ class Queries:
         """
 
         self.cursor.execute("""
-            SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone = 1
-            UNION ALL
-            SELECT 'used back button' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_backbtn = 1
-            UNION ALL
-            SELECT 'remote' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_remote = 1
-            UNION ALL
-            SELECT 'finished playing' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_endplay = 1
-            UNION ALL
-            SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn = 1
-            ORDER BY count DESC
-        """)
+                    SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone = 1
+                    UNION ALL
+                    SELECT 'used back button' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_backbtn = 1
+                    UNION ALL
+                    SELECT 'remote' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_remote = 1
+                    UNION ALL
+                    SELECT 'finished playing' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_endplay = 1
+                    UNION ALL
+                    SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn = 1
+                    WHERE username = %s
+                    ORDER BY count DESC
+                """, (self.username, ))
 
         return self.cursor.fetchall()
 

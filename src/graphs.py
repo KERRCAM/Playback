@@ -17,6 +17,7 @@ class Graphs:
     # ------------------------------------------------------------------------------------------- #
 
     def __init__(self, username):
+
         self.username = username
         connection = DB()
         self.db = connection.db
@@ -27,6 +28,7 @@ class Graphs:
 
     @staticmethod
     def saveAsPng(fileName):
+
         script_dir = os.path.dirname("./src")
         results_dir = os.path.join(script_dir, 'Results/')
 
@@ -40,6 +42,7 @@ class Graphs:
     # ------------------------------------------------------------------------------------------- #
 
     def plot_total_listening_time_country(self):
+
         countries = self.queries.total_listening_time_country
         print(countries)
         country = [{row[0]} for row in countries]
@@ -52,24 +55,32 @@ class Graphs:
         mylabels = []
         for i in range(len(country)):
             mylabels.append(f'{list(country[i])[0]}: {float("{:.2f}".format((y[i] / sum(y)) * 100))}%')
-
-        plt.figure(facecolor='black')
+        grey = "#363636"
+        plt.figure(facecolor=grey)
         plt.pie(y, labels=mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
 
-        self.saveAsPng("totalListeningTimeCountry.png")
+        self.saveAsPng("plot_total_listening_time_country.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     # The year (first year) that user started listening can be found by 0 as an argument
     def plot_top_artist_year(self, rankMax, yearNumber):
+
         artists_by_year = self.queries.top_artist_year
-        print(artists_by_year)
         years = list(artists_by_year.keys())
         exactYear = years[yearNumber]
         names = [a[0] for a in artists_by_year[exactYear]]
         minutes = [a[1] / 3600 for a in artists_by_year[exactYear]]
         height = rankMax * 0.05
+        grey = "#363636"
+        plt.gca().set_facecolor(grey)
+        plt.gca().figure.set_facecolor(grey)
+        plt.gca().set_xlabel('Total Minutes Played', color="white")
+        plt.gca().set_title(f'Top artists of {exactYear}', color="white")
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+
         plt.figure(figsize=(8, height))
         bar = plt.barh(names, minutes, color='green')
         plt.bar_label(
@@ -79,12 +90,9 @@ class Graphs:
             fontweight='bold',
             padding=3
         )
-        plt.xlabel('Total Minutes Played')
-        plt.title(f'Top artists of {exactYear}')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("topArtistYear.png")
-
+        self.saveAsPng(f"plot_top_artist_year_{exactYear}.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
@@ -101,6 +109,7 @@ class Graphs:
     # ------------------------------------------------------------------------------------------- #
 
     def plot_time_of_day(self):
+
         songs = self.queries.time_of_day
         morning = [row[0] for row in songs][0]
         afternoon = [row[1] for row in songs][0]
@@ -112,83 +121,121 @@ class Graphs:
                     f'Afternoon: {float("{:.2f}".format((afternoon / sum(y)) * 100))}%',
                     f'Evening: {float("{:.2f}".format((evening / sum(y)) * 100))}%',
                     f'Night: {float("{:.2f}".format((night / sum(y)) * 100))}%']
-        plt.figure(facecolor='black')
+        grey = "#363636"
+        plt.figure(facecolor=grey)
         plt.pie(y, labels=mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
-        self.saveAsPng("timeOfDay.png")
+        self.saveAsPng("plot_time_of_day.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_skipped_songs(self, limit):
+
         songs = self.queries.most_skipped_songs
         names = [f"{row[0]} ({row[1]})" for row in songs]
         times = [row[4] for row in songs]
         height = limit * 0.4
+        grey = "#363636"
         plt.figure(figsize=(8, height))
         plt.barh(names, times, color='green')
-        plt.xlabel('Times Skipped')
-        plt.title('Top Skipped Songs')
+        plt.gca().set_facecolor(grey)
+        plt.gca().figure.set_facecolor(grey)
+        plt.gca().set_xlabel('Times Skipped', color="white")
+        plt.gca().set_title('Top Skipped Songs', color="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("mostSkippedSongs.png")
+        self.saveAsPng("plot_most_skipped_songs.png")
 
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_top_songs_streaming(self, limit):
+
         songs = self.queries.most_streamed
         names = [f"{row[0]} by {row[1]}" for row in songs]
         streams = [row[3] for row in songs]
         height = limit * 0.4
+        grey = "#363636"
         plt.figure(figsize=(8, height))
         plt.barh(names, streams, color='green')
-        plt.xlabel('Times streamed')
-        plt.title('Top Streamed Songs')
+        plt.gca().set_facecolor(grey)
+        plt.gca().figure.set_facecolor(grey)
+        plt.gca().set_xlabel('Times Streamed', color="white")
+        plt.gca().set_title('Top Streamed Songs', color="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("topSongsStreaming.png")
-
+        self.saveAsPng("plot_top_songs_streaming.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
-    # not sure about this
     def plot_top_songs_listened(self, limit):
+
         songs = self.queries.most_listened
         names = [f"{row[0]} ({row[1]})" for row in songs]
         minutes = [row[2] / 60 for row in songs]
         height = limit * 0.4
+        grey = "#363636"
         plt.figure(figsize=(8, height))
         plt.barh(names, minutes, color='green')
-        plt.xlabel('Minutes listened')
-        plt.title('Top Songs by Total Minutes Listened')
+        plt.gca().set_facecolor(grey)
+        plt.gca().figure.set_facecolor(grey)
+        plt.gca().set_xlabel('Minutes listened', color="white")
+        plt.gca().set_title('Top Songs by Total Minutes Listened', color="white")
+        plt.gca().tick_params(axis='x', colors="white")
+        plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("topSongsListened.png")
-
+        self.saveAsPng("plot_top_songs_listened.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_played_artists(self, limit):
+
         artists = self.queries.most_played_artists
         names = [f"{row[0]}" for row in artists]
         times = [row[1] for row in artists]
         height = limit * 0.3
+        grey = "#363636"
         plt.figure(figsize=(8, height))
         plt.barh(names, times, color='green')
-        plt.xlabel('Times played')
-        plt.title('Top artists')
+        plt.gca().set_facecolor(grey)
+        plt.gca().figure.set_facecolor(grey)
+        plt.gca().set_xlabel('Times played', color="white")
+        plt.gca().set_title('Top artists', color="white")
+        plt.gca().tick_params(axis='x', colors="white")
+        plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("mostPlayedArtists.png")
+        self.saveAsPng("plot_most_played_artists.png")
+        plt.show()
 
+    # ------------------------------------------------------------------------------------------- #
+
+    def plot_most_played_shows(self, limit):
+        shows = self.queries.most_played_shows_podcast
+        names = [f"{row[0]}" for row in shows]
+        times = [row[1] for row in shows]
+        height = limit * 0.3
+        grey = "#363636"
+        plt.figure(figsize=(8, height))
+        plt.barh(names, times, color='green')
+        plt.gca().set_facecolor(grey)
+        plt.gca().set_xlabel('Times played', color="white")
+        plt.gca().set_title('Top Shows', color="white")
+        plt.gca().tick_params(axis='x', colors="white")
+        plt.gca().tick_params(axis='y', colors="white")
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+        self.saveAsPng("plot_most_played_shows.png")
         plt.show()
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_common_end_reason(self):
+
         endReasons = self.queries.most_common_end_reason
         reasons = [row[0] for row in endReasons]
         counts = [row[1] for row in endReasons]
@@ -196,9 +243,10 @@ class Graphs:
         mylabels = [f"{reasons[0]}: {counts[0]}", f"{reasons[1]}: {counts[1]}",
                     f"{reasons[2]}: {counts[2]}", f"{reasons[3]}: {counts[3]}",
                     f"{reasons[4]}: {counts[4]}"]
-        plt.figure(facecolor='black', figsize=(8, 4))
+        grey = "#363636"
+        plt.figure(facecolor=grey, figsize=(8, 4))
         plt.pie(y, labels=mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
-        self.saveAsPng("mostCommonEndReason.png")
+        self.saveAsPng("plot_most_common_end_reason.png")
         plt.show()
 
 # ----------------------------------------------------------------------------------------------- #

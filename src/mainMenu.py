@@ -66,8 +66,6 @@ class MainMenu:
         self.typeOption.set("Song")
         self.typeOption.place(x = 10, y = 5)
 
-        print(self.typeOption.get()) # gets option
-
         self.sortBy = ctk.CTkComboBox(mainMenu, values=["Streams", "Time listened"], command = self.checkStates)
         self.sortBy.grid(padx=5, pady=5)
         self.sortBy.set("Streams")
