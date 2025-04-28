@@ -144,7 +144,18 @@ CREATE TABLE Countries (
 
 select * from Songs ORDER BY timeListened DESC;
 
+select * from Timestamps;
+
 SELECT * FROM Albums ORDER BY timeListened DESC;
+
+SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
+                    FROM Songs S 
+                    JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
+                    JOIN Artists A ON S.artist = A.artist AND S.username = A.username
+                    WHERE YEAR(T.timestamp) = '2024' and S.artist != 'null' and S.username = 'test'
+                    GROUP BY A.artist
+                    ORDER BY total_time DESC
+                    LIMIT 100;
 
 
 DELETE FROM Songs;

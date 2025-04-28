@@ -7,74 +7,11 @@ from uploadMenu import *
 from signUpMenu import *
 from dbconnection import *  # This is the connection to the database
 
+# ----------------------------------------------------------------------------------------------- #
+
 class LoginMenu:
-    # a method to verify username and password also create as well
-    def dataSQL(self):
-        # activate db   
-        #Establish database connection
-        db = DatabaseConnection()                
-        connection = db.connection_database()
-        cursor = connection.cursor()
 
-        cursor.execute("""
-            SELECT username, password
-            FROM Users
-            WHERE username = %s AND password = %s
-        """, (self.username, self.password))
-        result = cursor.fetchone()
-        if result:
-            dbUsername, dbPassword = result
-        else:
-            dbUsername, dbPassword = None, None
-
-        return dbUsername, dbPassword
-    
-
-    # username and password verification and DB STUFFS
-    def user_authentication(self):
-        dbUsername, dbPassword = self.dataSQL()
-        if self.username == dbUsername and self.password == dbPassword:
-            print("Login successful")
-            return True
-        else:
-            print("Login failed")
-            return False
-
-
-    # the button methods will do the transition to other screens and some stuffs
-    def signUpSegue(self):
-        username = self.usernameField.get()
-        password = self.passwordField.get()
-
-        print(f"{username} {password}")
-
-        # Hide the main window
-        self.root.withdraw()
-
-        # Create the toplevel window
-        signUp_window = ctk.CTkToplevel(self.root)
-
-        # initialize UploadMenu
-        SignUpMenu(signUp_window, self.root)
-
-        return
-
-    def loginSegue(self):
-        username = self.usernameField.get()
-        password = self.passwordField.get()
-
-        print(f"Login attempt: {username} {password}")
-        
-        # Hide the main window
-        self.root.withdraw()
-
-        # Create the toplevel window
-        login_window = ctk.CTkToplevel(self.root)
-
-        # initialize UploadMenu
-        UploadMenu(login_window, self.root)
-
-        return
+# ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, root):
         self.root = root
@@ -118,6 +55,78 @@ class LoginMenu:
         SignUpButton = ctk.CTkButton(frame, text="Sign up", command=self.signUpSegue)
         SignUpButton.grid(row=3, column=1, padx=10, pady=20)
 
+    # ------------------------------------------------------------------------------------------- #
+
+    # a method to verify username and password also create as well
+    def user_authentication(self, username, password):
+        try:
+            # activate db
+            #Establish database connection
+            db = DatabaseConnection()
+            connection = db.connection_database()
+            cursor = connection.cursor()
+
+            cursor.execute("""
+                SELECT username, password
+                FROM Users
+                WHERE username = %s AND password = %s
+            """, (username, password))
+            result = cursor.fetchone()
+            if result:
+                print("Login successful")
+                return True
+            else:
+                print("Login failed")
+                return False
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+
+    # the button methods will do the transition to other screens and some stuffs
+    def signUpSegue(self):
+        username = self.usernameField.get()
+        password = self.passwordField.get()
+
+        print(f"{username} {password}")
+
+        # Hide the main window
+        self.root.withdraw()
+
+        # Create the toplevel window
+        signUp_window = ctk.CTkToplevel(self.root)
+
+        # initialize UploadMenu
+        SignUpMenu(signUp_window, self.root)
+
+        return
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def loginSegue(self,):
+        username = self.usernameField.get()
+        password = self.passwordField.get()
+
+        print(f"Login attempt: {username} {password}")
+
+        if self.user_authentication(username, password):
+            # Hide the main window
+            self.root.withdraw()
+
+            # Create the toplevel window
+            login_window = ctk.CTkToplevel(self.root)
+
+            # initialize UploadMenu
+            UploadMenu(login_window, self.root, self.usernameField.get())
+        else:
+            # Show an error message if authentication fails
+            messagebox.showerror("Error", "Invalid username or password.")
+
+# ----------------------------------------------------------------------------------------------- #
 
 def main():
     root = ctk.CTk()
