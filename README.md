@@ -5,6 +5,7 @@ Playback is a desktop app for analysing your Spotify extended streaming history.
 
 ### Setup:
 You will need a Python installation version 3.9 or later.
+You can then download our repository at https://github.com/KERRCAM/Playback.
 
 You will then need the following dependencies.
 
