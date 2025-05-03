@@ -56,16 +56,16 @@ class SignUpMenu():
         self.passwordInfo.grid(row=2, column=1, padx=10, pady=10)
 
         # Button to sign Up
-        signUpButton = ctk.CTkButton(frame, text="Submit", command=self.get_user_info)
+        signUpButton = ctk.CTkButton(frame, text="Submit", command=self.getUserInfo)
         signUpButton.grid(row=3, column=1, padx=10, pady=20)
 
-        signMenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(signMenu))
+        signMenu.protocol("WM_DELETE_WINDOW", lambda: self.closeWindow(signMenu))
         signMenu.mainloop()
 
     # ------------------------------------------------------------------------------------------- #
 
     # On closing, this function will transition back to the main window
-    def close_window(self, window):
+    def closeWindow(self, window):
         window.destroy()
         # Show the main window again
         self.loginMenu.deiconify()
@@ -73,7 +73,7 @@ class SignUpMenu():
     # ------------------------------------------------------------------------------------------- #
 
     # Gets username and password from the entry box
-    def get_user_info(self):
+    def getUserInfo(self):
         username = self.usernameInfo.get()
         password = self.passwordInfo.get()
 
@@ -84,8 +84,8 @@ class SignUpMenu():
         self.passwordInfo.delete(0, ctk.END)
 
         try:
-            if self.sign_up_successful(username, password):
-                messagebox.showinfo("Success", "Account creation has been successfull")
+            if self.signUpSuccessful(username, password):
+                messagebox.showinfo("Success", "Account creation has been successful")
             else:
                 messagebox.showerror("Error", "Username already exists or an error occurred.")
         except Exception as e:
@@ -94,12 +94,13 @@ class SignUpMenu():
 
     # ------------------------------------------------------------------------------------------- #
 
-    def sign_up_successful(self, username, password):
+    @staticmethod
+    def signUpSuccessful(username, password):
         try:
             # Check if username exists, then insert
             # Establish database connection
             db = DatabaseConnection()
-            connection = db.connection_database()
+            connection = db.connection
             cursor = connection.cursor()
 
             # Check if the username already exists
@@ -132,7 +133,6 @@ class SignUpMenu():
                 cursor.close()
             if connection:
                 connection.close()
-
 
 # ----------------------------------------------------------------------------------------------- #
 

@@ -22,10 +22,8 @@ class Stream:
         ts = dt.strftime("%Y-%m-%d %H:%M:%S")
         self.ts = ts
         self.platform = stream["platform"]
-
         ms = int(stream["ms_played"]) / 1000 # convertion from ms to seconds, 60000 for mins
         self.ms_played = ms
-
         self.conn_country = stream["conn_country"]
         self.master_metadata_track_name = stream["master_metadata_track_name"]
         self.master_metadata_album_artist_name = stream["master_metadata_album_artist_name"]
@@ -34,10 +32,8 @@ class Stream:
         self.episode_name = stream["episode_name"]
         self.episode_show_name = stream["episode_show_name"]
         self.spotify_episode_uri = stream["spotify_episode_uri"]
-
         rs = stream["reason_start"].replace('-', '_')
         self.reason_start = rs
-
         re = stream["reason_end"].replace('-', '_')
         self.reason_end = re
 
