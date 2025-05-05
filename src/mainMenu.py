@@ -101,13 +101,13 @@ class MainMenu:
             self.graph3("results/plot_total_listening_time_country.png")
 
         elif to == "Show" and sb == "Streams":
-            data = q.most_played_episodes_podcast(100)
+            data = q.most_played_episodes(100)
             self.podcastTable(data)
             if not "plot_most_played_episodes.png" in fileNames:
                 g.plot_most_played_episodes(10)
             self.graph1("results/plot_top_songs_listened.png")
-            if not "plot_top_songs_streaming.png" in fileNames:
-                g.plot_top_songs_streaming(10)
+            if not "plot_most_played_podcasts.png" in fileNames:
+                g.plot_most_played_podcasts(10)
             self.graph2("results/plot_top_songs_streaming.png")
             if not "plot_most_played_artists.png" in fileNames:
                 g.plot_total_listening_time_country()
