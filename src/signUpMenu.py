@@ -5,7 +5,7 @@ import mysql.connector
 
 # LOCAL IMPORTS
 from dbconnection import DatabaseConnection
-
+from db import *
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -21,6 +21,10 @@ class SignUpMenu():
         signMenu = self.window
         # THIS IS USED FOR NAVIGATING BACK TO THE ORIGINAL WINDOW.
         self.loginMenu = mainWindow
+
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("green")
@@ -84,9 +88,9 @@ class SignUpMenu():
         self.passwordInfo.delete(0, ctk.END)
 
         try:
-            if self.sign_up_successful(username, password):
+            if self.signUpSuccessful(username, password):
                 messagebox.showinfo("Success", "Account creation has been successfull")
-                self.close(self.window)
+                self.closeWindow(self.window)
             else:
                 messagebox.showerror("Error", "Username already exists or an error occurred.")
         except Exception as e:
@@ -95,33 +99,29 @@ class SignUpMenu():
 
     # ------------------------------------------------------------------------------------------- #
 
-    @staticmethod
-    def signUpSuccessful(username, password):
+    def signUpSuccessful(self, username, password):
         try:
             # Check if username exists, then insert
             # Establish database connection
-            db = DatabaseConnection()
-            connection = db.connection
-            cursor = connection.cursor()
 
             # Check if the username already exists
-            cursor.execute("""
+            self.cursor.execute("""
                 SELECT username
                 FROM Users
                 WHERE username = %s
             """, (username,))
-            result = cursor.fetchone()
+            result = self.cursor.fetchone()
 
             if result:
                 messagebox.showerror("Error", "This username already exists.")
                 return False
 
                 # Insert the new user into the database
-            cursor.execute("""
+            self.cursor.execute("""
                 INSERT INTO Users (username, password)
                 VALUES (%s, %s)
             """, (username, password))
-            connection.commit()
+            self.db.commit()
 
             print("Sign-up successful.")
             return True
@@ -130,10 +130,10 @@ class SignUpMenu():
             print(f"Database error: {err}")
             return False
         finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
+            if self.cursor:
+                self.cursor.close()
+            if self.db:
+                self.db.close()
 
 # ----------------------------------------------------------------------------------------------- #
 

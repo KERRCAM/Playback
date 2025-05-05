@@ -20,9 +20,10 @@ class UploadMenu:
 
     # ----------------------------------------------------------------------------------------------- #
 
-    def __init__(self, window, mainWindow, username):
+    def __init__(self, window, mainWindow, username, password):
 
         self.username = username
+        self.password = password
         self.input_path = ""
         self.input_dir = ""
         self.window = window
@@ -98,7 +99,7 @@ class UploadMenu:
             print(output_dir)
             p = JsonParser(v.validFiles, v.dirPath)
             print(self.username)
-            processor = JsonProcessor(p.streams, self.username)  # NEED TO CHANGE TO CURRENT USERNAME
+            processor = JsonProcessor(p.streams, self.username, self.password)  # NEED TO CHANGE TO CURRENT USERNAME
 
             messagebox.showinfo("Success", f"Files extracted to {output_dir}")
         except Exception as e:

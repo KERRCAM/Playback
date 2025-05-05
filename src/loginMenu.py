@@ -6,6 +6,7 @@ import mysql.connector
 from uploadMenu import *
 from signUpMenu import *
 from dbconnection import *  # This is the connection to the database
+from db import *
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -16,6 +17,10 @@ class LoginMenu:
     def __init__(self, root):
         self.root = root
         app = self.root
+
+        connection = DB()
+        self.db = connection.db
+        self.cursor = connection.cursor
 
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("green")
@@ -58,8 +63,7 @@ class LoginMenu:
     # ------------------------------------------------------------------------------------------- #
 
     # a method to verify username and password also create as well
-    @staticmethod
-    def userAuthentication(username, password):
+    def userAuthentication(self, username, password):
         try:
             # activate db
             #Establish database connection
@@ -83,10 +87,10 @@ class LoginMenu:
             print(f"Database error: {err}")
             return False
         finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
+            if self.cursor:
+                self.cursor.close()
+            if self.db:
+                self.db.close()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -124,7 +128,7 @@ class LoginMenu:
             login_window = ctk.CTkToplevel(self.root)
 
             # initialize UploadMenu
-            UploadMenu(login_window, self.root, self.usernameField.get())
+            UploadMenu(login_window, self.root, username, password)
         else:
             # Show an error message if authentication fails
             messagebox.showerror("Error", "Invalid username or password.")

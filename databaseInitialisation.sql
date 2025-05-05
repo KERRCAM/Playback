@@ -1,10 +1,6 @@
 -- may be an issue, as would need some way to create the database instance on a users local machine
 
-drop database playback;
-drop table Episodes;
-drop table Songs;
-drop table TimeStamps;
-drop table Countries;
+
 
 create database playback;
 
@@ -141,6 +137,9 @@ CREATE TABLE Countries (
     PRIMARY KEY(username, countryCode)
 );
 
+select * from Users;
+
+commit;
 
 select * from Songs ORDER BY timeListened DESC;
 
@@ -157,6 +156,12 @@ SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
                     ORDER BY total_time DESC
                     LIMIT 100;
 
+
+drop database playback;
+drop table Episodes;
+drop table Songs;
+drop table TimeStamps;
+drop table Countries;
 
 DELETE FROM Songs;
 DELETE FROM Albums;

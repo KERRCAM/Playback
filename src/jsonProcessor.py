@@ -15,7 +15,7 @@ class JsonProcessor:
 
 # ----------------------------------------------------------------------------------------------- #
 
-    def __init__(self, streams, username):
+    def __init__(self, streams, username, password):
         """
         Constructor for processor class.
         Contains all the dictionary defaults and database connection setup.
@@ -27,6 +27,7 @@ class JsonProcessor:
 
         self.streams = streams
         self.username = username
+        self.password = password
 
         self.songs = {}
         self.albums = {}
@@ -287,7 +288,7 @@ class JsonProcessor:
             self.user["numberOfStreams"] += 1
             self.user[f"{timeOfDay}"] += 1
         else:
-            sql = f"INSERT INTO Users (username, timeListened, numberOfStreams, {timeOfDay}) VALUES (\"{self.username}\", {i.ms_played}, {1}, {1})"
+            sql = f"INSERT INTO Users (username, password, timeListened, numberOfStreams, {timeOfDay}) VALUES (\"{self.username}\", \"{self.password}\", {i.ms_played}, {1}, {1})"
             self.cursor.execute(sql)
             self.user["timeListened"] = i.ms_played
             self.user["numberOfStreams"] = 1
