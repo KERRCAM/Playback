@@ -78,13 +78,13 @@ class SignUpMenu():
 
         print(f"Username and Password: {username} {password}")
         
-        # This deletes datas in the entry box
+        # This deletes data in the entry box
         self.usernameInfo.delete(0, ctk.END)
         self.passwordInfo.delete(0, ctk.END)
 
         try:
             if self.sign_up_successful(username, password):
-                messagebox.showinfo("Success", "Account creation has been successfull")
+                messagebox.showinfo("Success", "Account creation has been successful")
                 self.close_window(self.window)
             else:
                 messagebox.showerror("Error", "Username already exists or an error occurred.")
