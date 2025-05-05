@@ -114,7 +114,7 @@ class SignUpMenu():
                 messagebox.showerror("Error", "This username already exists.")
                 return False
 
-                    # Insert the new user into the database
+            # Insert the new user into the database
             cursor.execute("""
                 INSERT INTO Users (username, password)
                 VALUES (%s, %s)
