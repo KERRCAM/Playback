@@ -84,8 +84,9 @@ class SignUpMenu():
         self.passwordInfo.delete(0, ctk.END)
 
         try:
-            if self.signUpSuccessful(username, password):
-                messagebox.showinfo("Success", "Account creation has been successful")
+            if self.sign_up_successful(username, password):
+                messagebox.showinfo("Success", "Account creation has been successfull")
+                self.close(self.window)
             else:
                 messagebox.showerror("Error", "Username already exists or an error occurred.")
         except Exception as e:
