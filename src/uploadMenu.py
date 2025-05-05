@@ -21,10 +21,10 @@ class UploadMenu:
     # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, window, mainWindow, username):
+
         self.username = username
         self.input_path = ""
         self.input_dir = ""
-
         self.window = window
         uploadmenu = self.window
         self.loginMenu = mainWindow

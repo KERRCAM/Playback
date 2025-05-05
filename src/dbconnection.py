@@ -2,7 +2,7 @@
 import mysql.connector
 
 # LOCAL IMPORTS
-
+from db import DB
 
 # ----------------------------------------------------------------------------------------------- #
 
@@ -13,23 +13,8 @@ class DatabaseConnection:
     def __init__(self):
         """Initialize the database connection."""
         self.connection = None
-
-    # ------------------------------------------------------------------------------------------- #
-
-    def connection_database(self):
-        """Connect to the MySQL database."""
-        try:
-            self.connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="Playback"
-            )
-            print("Database connection established.")
-            return self.connection
-        except mysql.connector.Error as err:
-            print(f"Error: {err}")
-            raise
+        connection = DB()
+        self.connection = connection.db
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -212,14 +197,13 @@ class DatabaseConnection:
             print(f"Error: {err}")
             raise
         finally:
-            if cursor:
-                cursor.close()
+            if self.connection.cursor():
+                self.connection.cursor.close()
 
 # ----------------------------------------------------------------------------------------------- #
 
 if __name__ == "__main__":
     db = DatabaseConnection()
-    db.connection_database()
     db.test_connection()
     db.create_tables()
     db.close()

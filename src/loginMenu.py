@@ -58,7 +58,8 @@ class LoginMenu:
     # ------------------------------------------------------------------------------------------- #
 
     # a method to verify username and password also create as well
-    def user_authentication(self, username, password):
+    @staticmethod
+    def userAuthentication(username, password):
         try:
             # activate db
             #Establish database connection
@@ -87,6 +88,8 @@ class LoginMenu:
             if connection:
                 connection.close()
 
+    # ------------------------------------------------------------------------------------------- #
+
     # the button methods will do the transition to other screens and some stuffs
     def signUpSegue(self):
         username = self.usernameField.get()
@@ -107,13 +110,13 @@ class LoginMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def loginSegue(self,):
+    def loginSegue(self):
         username = self.usernameField.get()
         password = self.passwordField.get()
 
         print(f"Login attempt: {username} {password}")
 
-        if self.user_authentication(username, password):
+        if self.userAuthentication(username, password):
             # Hide the main window
             self.root.withdraw()
 

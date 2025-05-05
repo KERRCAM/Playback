@@ -20,13 +20,6 @@ class MainMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def close_window(self, window):
-        window.destroy()
-        # Show the main window again
-        self.prev_window.deiconify()
-
-    # ------------------------------------------------------------------------------------------- #
-
     def __init__(self, window, mainWindow, username):
         self.username = username
         self.window = window
@@ -59,7 +52,14 @@ class MainMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def checkStates(self, idk): # fix this
+    def close_window(self, window):
+        window.destroy()
+        # Show the main window again
+        self.prev_window.deiconify()
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def checkStates(self, holder): # fix this
         q = Queries(self.username)
         g = Graphs(self.username)
         to = self.typeOption.get()
@@ -113,6 +113,19 @@ class MainMenu:
                 g.plot_total_listening_time_country()
             self.graph3("results/plot_total_listening_time_country.png")
 
+        elif to == "Artist" and sb == "Time listened":
+            data = q.most_played_artists(100)
+            self.artistTable(data)
+            if not "plot_most_played_artists.png" in fileNames:
+                g.plot_most_played_artists(10)
+            self.graph1("results/plot_most_played_artists.png")
+            if not "plot_top_songs_streaming.png" in fileNames:
+                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
+            self.graph2("results/plot_top_songs_streaming.png")
+            if not "plot_total_listening_time_country.png" in fileNames:
+                g.plot_total_listening_time_country()
+            self.graph3("results/plot_total_listening_time_country.png")
+
     # ------------------------------------------------------------------------------------------- #
 
     def songTable(self, data):
@@ -138,12 +151,34 @@ class MainMenu:
     # ------------------------------------------------------------------------------------------- #
 
     def podcastTable(self, data):
+
         table = ttk.Treeview(self.window, columns=('rank', 'show', 'seconds', 'streams'), show='headings',
                                 selectmode='browse', height=45, )
         table.column('rank', width=50, anchor='center')
         table.heading('rank', text='Rank')
         table.column('show', width=400, anchor='w')
         table.heading('show', text='Show')
+        table.column('seconds', width=175, anchor='center')
+        table.heading('seconds', text='Seconds')
+        table.column('streams', width=175, anchor='center')
+        table.heading('streams', text='Streams')
+        table.grid(padx=5, pady=5)
+        table.place(x=10, y=37)
+
+        for i in range(0, 100):
+            current = data[i]
+            table.insert('', i, values=(i + 1, current[0], current[2], current[1]))
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def artistTable(self, data):
+
+        table = ttk.Treeview(self.window, columns=('rank', 'artist', 'seconds', 'streams'), show='headings',
+                                selectmode='browse', height=45, )
+        table.column('rank', width=50, anchor='center')
+        table.heading('rank', text='Rank')
+        table.column('artist', width=400, anchor='w')
+        table.heading('artist', text='Artist')
         table.column('seconds', width=175, anchor='center')
         table.heading('seconds', text='Seconds')
         table.column('streams', width=175, anchor='center')
