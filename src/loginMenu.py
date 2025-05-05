@@ -72,7 +72,7 @@ class LoginMenu:
                 WHERE username = %s AND password = %s
             """, (username, password))
             result = cursor.fetchone()
-            if result.count == 2:
+            if result.count:
                 print("Login successful")
                 return True
             else:
