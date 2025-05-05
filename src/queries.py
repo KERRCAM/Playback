@@ -8,11 +8,12 @@ from matplotlib.font_manager import FontProperties
 from dbconnection import *
 from db import DB
 
+
 # ----------------------------------------------------------------------------------------------- #
 
 class Queries:
 
-# ----------------------------------------------------------------------------------------------- #
+    # ----------------------------------------------------------------------------------------------- #
 
     def __init__(self, username):
         self.username = username
@@ -20,7 +21,7 @@ class Queries:
         self.db = connection.db
         self.cursor = connection.cursor
 
-        #self.most_common_end_reason = self.most_common_end_reason()
+        # self.most_common_end_reason = self.most_common_end_reason()
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -30,7 +31,7 @@ class Queries:
         """
 
         self.cursor.execute("""
-                    SELECT songName, artist, timeListened, numberOfStreams
+                    SELECT songName, artist, timeListened, numberOfStreams, album
                     FROM Songs
                     WHERE artist != 'null' and username = %s
                     ORDER BY timeListened DESC
@@ -47,7 +48,7 @@ class Queries:
         """
 
         self.cursor.execute("""
-                    SELECT songName, artist, timeListened, numberOfStreams
+                    SELECT songName, artist, timeListened, numberOfStreams, album
                     FROM Songs
                     WHERE artist != 'null' and username = %s
                     ORDER BY numberOfStreams DESC
@@ -75,22 +76,38 @@ class Queries:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def most_played_episodes_podcast(self, limit):
+    def most_played_podcast(self, limit):
         """
         Most Played Shows
         """
 
         self.cursor.execute("""
-                SELECT showName, numberOfStreams, timeListened
+                SELECT showName, SUM(numberOfStreams) as numberOfStreams, SUM(timeListened) as timeListened
                 FROM Episodes
                 WHERE showName != 'null' and username = %s
+                GROUP BY showName
                 ORDER BY numberOfStreams DESC
                 LIMIT %s
             """, (self.username, limit,))
 
         return self.cursor.fetchall()
 
-# ------------------------------------------------------------------------------------------- #
+    def most_played_episodes(self, limit):
+        """
+        Most Played Episodes
+        """
+
+        self.cursor.execute("""
+                SELECT episodeName, numberOfStreams, timeListened, showName
+                FROM Episodes
+                WHERE episodeName != 'null' and username = %s
+                ORDER BY timeListened DESC
+                LIMIT %s
+            """, (self.username, limit,))
+
+        return self.cursor.fetchall()
+
+    # ------------------------------------------------------------------------------------------- #
 
     def most_skipped_songs(self, limit):
         """
@@ -124,83 +141,61 @@ class Queries:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def first_songs_year_time(self):
+    def first_songs_year_time(self, yearInput, limit):
         """
-        Songs listened in each time of the day
+        First songs of each year
         """
+        self.cursor.execute("""
+            SELECT MIN(timestamp)
+            FROM Timestamps
+            WHERE songURI != 'null' and username = %s and YEAR(timestamp) = %s
+        """, (self.username, yearInput))
+
+        result = self.cursor.fetchone()
+        date = result[0].strftime('%Y-%m-%d')
 
         self.cursor.execute("""
-                    WITH firstDate AS (
-                    SELECT
-                        YEAR(timestamp) as year,
-                        MIN(timestamp) as first
-                    FROM Timestamps
-                    GROUP BY YEAR(timestamp)
-                )
-                SELECT firstDate.year, Songs.songName, Songs.artist, firstDate.first as time_played 
-                FROM firstDate    
-                JOIN Timestamps ON firstDate.first = Timestamps.timestamp
-                JOIN Songs ON Timestamps.songURI = Songs.songURI
-                WHERE Songs.artist != 'null' and Songs.username = %s
-                ORDER BY firstDate.year
-                """, (self.username,))
-
+            SELECT S.songName, S.artist, S.numberOfStreams, S.timeListened, S.album
+            FROM Songs S
+            JOIN Timestamps T ON T.songURI = S.songURI 
+            WHERE S.artist!= 'null' and S.username = %s and DATE(T.timestamp) = %s
+            ORDER BY S.timeListened
+            LIMIT %s
+        """, (self.username, date, limit))
         return self.cursor.fetchall()
 
     # ------------------------------------------------------------------------------------------- #
 
-    def top_artist_year(self, resultsNumber):
+    def top_artist_year(self, yearInput, limit):
         """
-        Top artists in each year
+        Top artists in given year (yearInput)
         """
 
         self.cursor.execute("""
-                    SELECT DISTINCT YEAR(timestamp) as year 
-                    FROM Timestamps 
-                    WHERE artist != 'null' and username = %s
-                    ORDER BY year DESC
-                """, (self.username,))
-
-        years = self.cursor.fetchall()
-        total_years = [row[0] for row in years]
-        year_dict = {}
-
-        for i in total_years:
-            self.cursor.execute("""
-                    SELECT A.artist, SUM(S.timeListened) AS total_time, COUNT(*) AS total_stream
-                    FROM Songs S 
-                    JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
-                    JOIN Artists A ON S.artist = A.artist AND S.username = A.username
-                    WHERE YEAR(T.timestamp) = %s and S.artist != 'null' and S.username = %s
-                    GROUP BY A.artist
-                    ORDER BY total_time DESC
-                    LIMIT %s
-                    """, (i, self.username, resultsNumber,))
-            year_dict[i] = self.cursor.fetchall()
-
-        return year_dict
+        SELECT A.artist, SUM(S.timeListened), SUM(S.numberOfStreams)
+        FROM Songs S 
+        JOIN Timestamps T ON S.songURI = T.songURI AND S.username = T.username
+        JOIN Artists A ON S.artist = A.artist AND S.username = A.username
+        WHERE YEAR(T.timestamp) = %s and S.artist != 'null' and S.username = %s
+        GROUP BY A.artist
+        ORDER BY SUM(S.timeListened) DESC
+        LIMIT %s
+        """, (yearInput, self.username, limit,))
+        return self.cursor.fetchall()
 
     # ------------------------------------------------------------------------------------------- #
 
-    def first_songs_year_country(self):
+    def top_albums(self, limit):
         """
-        First songs listened in each country
+        Top albums
         """
-
         self.cursor.execute("""
-                WITH RankedStreams AS (
-                    SELECT C.countryCode, T.songURI, T.timestamp,
-                    ROW_NUMBER() OVER (PARTITION BY C.countryCode ORDER BY T.timestamp) as ranking
-                    FROM Timestamps T
-                    JOIN Countries C ON C.songURI = T.songURI AND C.username = T.username
-                )     
-                SELECT countryCode, S.songName, timestamp
-                FROM RankedStreams R
-                JOIN Songs S ON R.songURI = S.songURI
-                WHERE ranking <= 1 AND S.songName != 'null' AND C.username = %s
-                ORDER BY countryCode, ranking
-                """, (self.username, ))
-
+            SELECT album, timeListened, numberOfStreams
+            FROM Albums
+            WHERE album != 'null' and username = %s
+            ORDER BY timeListened DESC
+            LIMIT %s
+        """, (self.username, limit))
         return self.cursor.fetchall()
 
     # ------------------------------------------------------------------------------------------- #
@@ -227,19 +222,22 @@ class Queries:
         """
 
         self.cursor.execute("""
-                    SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone = 1
+                    SELECT 'track finished' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_trackdone <=1 AND username = %s
                     UNION ALL
-                    SELECT 'used back button' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_backbtn = 1
+                    SELECT 'used back button' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_backbtn <=1 AND username = %s
                     UNION ALL
-                    SELECT 'remote' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_remote = 1
+                    SELECT 'remote' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_remote <=1 AND username = %s
                     UNION ALL
-                    SELECT 'finished playing' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_endplay = 1
+                    SELECT 'finished playing' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_endplay <=1 AND username = %s
                     UNION ALL
-                    SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn = 1
-                    WHERE username = %s
+                    SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_fwdbtn <= 1 AND username = %s
+                    UNION ALL
+                    SELECT 'skipped' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE end_logout <= 1 AND username = %s
+                    UNION ALL
+                    SELECT 'Unexpected or Unknown' AS ending_reasons, COUNT(*) AS count FROM Songs WHERE (end_unexpected_exit_while_paused <= 1 OR  end_unexpected_exit <= 1 OR end_unknown <= 1)AND username = %s      
                     ORDER BY count DESC
-                """, (self.username, ))
-
+                """, (
+        self.username, self.username, self.username, self.username, self.username, self.username, self.username))
         return self.cursor.fetchall()
 
 # ----------------------------------------------------------------------------------------------- #
