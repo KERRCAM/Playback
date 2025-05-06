@@ -294,21 +294,4 @@ class JsonProcessor:
             self.user["numberOfStreams"] = 1
             self.user[f"{timeOfDay}"] = 1
 
-    # ------------------------------------------------------------------------------------------- #
-
-# FOR TESTING ONLY
-def main():
-    start = time.time()
-    v = JsonValidator("testFiles/testSet")
-    p = JsonParser(v.validFiles, v.dirPath)
-    print(len(p.streams))
-
-    processor = JsonProcessor(p.streams, "testUser")
-
-    end = time.time()
-    print("Program run time = ", end - start, " seconds")
-
-if __name__ == "__main__":
-    main()
-
 # ----------------------------------------------------------------------------------------------- #

@@ -23,7 +23,7 @@ class DatabaseConnection:
             self.connection = mysql.connector.connect(
                 host="localhost",
                 user="root",
-                password="seldomsmart456",
+                password="",
                 database="Playback"
             )
             print("Database connection established.")
@@ -218,10 +218,3 @@ class DatabaseConnection:
 
 
 # ----------------------------------------------------------------------------------------------- #
-
-if __name__ == "__main__":
-    db = DatabaseConnection()
-    db.connection_database()
-    db.test_connection()
-    db.create_tables()
-    db.close()

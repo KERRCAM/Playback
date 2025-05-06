@@ -420,17 +420,3 @@ class JsonValidator:
         return validFiles
 
 # ----------------------------------------------------------------------------------------------- #
-
-# FOR TESTING ONLY
-def main():
-    start = time.time()
-    v = JsonValidator("testFiles/testSet")
-    end = time.time()
-    print("Program run time = ", end - start, " seconds")
-
-if __name__ == "__main__":
-    main()
-
-# ----------------------------------------------------------------------------------------------- #
-
-

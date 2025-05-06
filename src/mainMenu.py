@@ -59,7 +59,11 @@ class MainMenu:
 
     # ------------------------------------------------------------------------------------------- #
 
-    def checkStates(self, holder): # fix this
+    def checkStates(self, holder):
+        """
+        Checks
+        """
+
         q = Queries(self.username)
         g = Graphs(self.username)
         to = self.typeOption.get()
@@ -68,9 +72,9 @@ class MainMenu:
 
         filePath = os.path.dirname(os.path.realpath(__file__))
         if system() == "Windows":
-            dirPath = os.path.relpath("..\\src\\results", filePath)  # hard coded path needs changed
+            dirPath = os.path.relpath("..\\src\\results", filePath)
         else:
-            dirPath = os.path.relpath("../src/results", filePath)  # hard coded path needs changed
+            dirPath = os.path.relpath("../src/results", filePath)
         fileNames = [f for f in os.listdir(dirPath) if isfile(join(dirPath, f))]
 
         if to == "Song" and sb == "Streams":
@@ -308,11 +312,3 @@ class MainMenu:
         g3.place(x=820, y=600)
 
 # ----------------------------------------------------------------------------------------------- #
-
-def main():
-    root = ctk.CTk()
-    app = MainMenu(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()

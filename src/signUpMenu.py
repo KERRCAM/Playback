@@ -136,12 +136,3 @@ class SignUpMenu():
                 self.db.close()
 
 # ----------------------------------------------------------------------------------------------- #
-
-def main():
-    root = ctk.CTk()
-    app = SignUpMenu(root)
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

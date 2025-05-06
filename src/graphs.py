@@ -344,3 +344,5 @@ class Graphs:
         plt.gca().tick_params(axis='y', pad=15)
         plt.tight_layout(pad=2)
         self.saveAsPng(f"{self.username}_plot_first_songs_year_time_{year}.png")
+
+# ----------------------------------------------------------------------------------------------- #

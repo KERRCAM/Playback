@@ -132,12 +132,3 @@ class UploadMenu:
 
 
 # ----------------------------------------------------------------------------------------------- #
-
-def main():
-    root = ctk.CTk()
-    app = UploadMenu(root)
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()

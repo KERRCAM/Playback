@@ -232,18 +232,4 @@ class JsonParser:
 
             self.parseFile(file)
 
-    # ------------------------------------------------------------------------------------------- #
-
-# FOR TESTING ONLY
-def main():
-    start = time.time()
-    v = JsonValidator("testFiles/testSet")
-    p = JsonParser(v.validFiles, v.dirPath)
-    print(len(p.streams))
-    end = time.time()
-    print("Program run time = ", end - start, " seconds")
-
-if __name__ == "__main__":
-    main()
-
 # ----------------------------------------------------------------------------------------------- #
