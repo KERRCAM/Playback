@@ -21,18 +21,7 @@ class JsonProcessor:
         Contains all the dictionary defaults and database connection setup.
         """
                     
-        """
-        THE CONNECTION TO LINUX SERVER
-        DELETE BEFORE FINAL PROJECT
 
-        Host lxfarm01.csc.liv.ac.uk
-        HostName lxfarm01.csc.liv.ac.uk 
-        User psubattu
-
-        Host lxfarm*.csc.liv.ac.uk
-        User psubattu
-        Macs hmac-sha2-512                        
-        """
 
         connection = DB()
         self.db = connection.db

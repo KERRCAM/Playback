@@ -39,7 +39,7 @@ class MainMenu:
 
         g = Graphs(self.username)
         q = Queries(self.username)
-        songData = q.most_streamed
+        songData = q.most_streamed(100)
 
         print(songData)
         table = ttk.Treeview(window, columns = ('rank', 'song', 'artist', 'minuets', 'streams'), show='headings', selectmode='browse', height = 45, )
@@ -56,10 +56,8 @@ class MainMenu:
         table.grid(padx = 5, pady = 5)
         table.place(x = 10, y = 37)
 
-        for i in range(0, 100):
-            current = songData[i]
-            table.insert('', i, values = (i + 1, current[0], current[1], current[2], current[3]))
-
+        for i, current in enumerate(songData):
+            table.insert('', i, values=(i + 1, current[0], current[1], current[2], current[3]))
 
         self.typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command = self.checkStates)
         self.typeOption.grid(padx=5, pady=5)

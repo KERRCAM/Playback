@@ -92,9 +92,9 @@ class JsonValidator:
 
         filePath = os.path.dirname(os.path.realpath(__file__))
         if system() == "Windows":
-            dirPath = os.path.relpath("..\\testFiles\\testSet", filePath) # hard coded path needs changed
+            dirPath = os.path.relpath(folderName, filePath) # hard coded path needs changed
         else:
-            dirPath = os.path.relpath("../testFiles/testSet" ,filePath) # hard coded path needs changed
+            dirPath = os.path.relpath(folderName, filePath) # hard coded path needs changed
         fileNames = [f for f in listdir(dirPath) if isfile(join(dirPath, f))]
 
         jsonFiles = []
@@ -110,7 +110,6 @@ class JsonValidator:
         """
         Moves curr char pointer to next char in input and increments current column.
         """
-
         self.pos += 1
         self.currChar = self.currContents[self.pos]
         self.column += 1
@@ -124,7 +123,6 @@ class JsonValidator:
 
         :return: None if valid, True if error occurs
         """
-
         while ( self.currChar == ' '
                 or self.currChar == '\n'
                 or self.currChar == '\r'
@@ -411,7 +409,7 @@ class JsonValidator:
 
         for file in fileNames:
             if system() == "Windows":
-                if self.validateFile(dirPath + "\\\\" + file):
+                if self.validateFile(dirPath + "/" + file):
                     validFiles.append(file)
             else:
                 if self.validateFile(dirPath + "/" + file):

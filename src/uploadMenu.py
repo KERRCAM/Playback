@@ -44,11 +44,11 @@ class UploadMenu:
         label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
-        mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
-        mainMenuButton.grid(row=1, column=0, pady=10, padx= 10)
+        self.mainMenuButton = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20), command=self.UploadAction)
+        self.mainMenuButton.grid(row=1, column=0, pady=10, padx= 10)
 
-        # # Button to go to the main menu. May need to change the command to the main menu function
-        temp_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20),
+        # # Button to go to the main menu.
+        temp_button = ctk.CTkButton(frame, text="Menu", font=("Helvetica", 20),
                                     command=self.main_menu_segue)
         temp_button.grid(row=1, column=1, pady=10, padx= 10)
 
@@ -67,7 +67,7 @@ class UploadMenu:
                 return
             else:
                 # Get the directory of the uploaded file
-                self.input_dir = os.path.dirname(self.input_path)
+                self.input_dir = os.path.dirname(os.path.dirname(self.input_path))
                 extract_dir = os.path.join(self.input_dir, "extracted_files")
 
                 # Call the extraction method with the directory of the uploaded file

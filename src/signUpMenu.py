@@ -56,7 +56,7 @@ class SignUpMenu():
 
         # Button to sign Up
         signUpButton = ctk.CTkButton(frame, text="Submit", command=self.get_user_info)
-        signUpButton.grid(row=3, column=1, padx=10, pady=20)
+        signUpButton.grid(row=3, column=1, padx=10, pady=20, columnspan=2)
 
         signMenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(signMenu))
         signMenu.mainloop()
@@ -113,12 +113,12 @@ class SignUpMenu():
             if result:
                 messagebox.showerror("Error", "This username already exists.")
                 return False
-
+                
             # Insert the new user into the database
             cursor.execute("""
                 INSERT INTO Users (username, password)
                 VALUES (%s, %s)
-            """, (username, password))
+                """, (username, password))
             connection.commit()
 
             print("Sign-up successful.")
@@ -128,11 +128,9 @@ class SignUpMenu():
             print(f"Database error: {err}")
             return False
         finally:
-            if cursor:
+            if cursor: 
                 cursor.close()
-            if connection:
                 connection.close()
-
 # ----------------------------------------------------------------------------------------------- #
 
 def main():

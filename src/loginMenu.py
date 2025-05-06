@@ -5,14 +5,15 @@ import mysql.connector
 # LOCAL IMPORTS
 from uploadMenu import *
 from signUpMenu import *
+from mainMenu import *
 from dbconnection import *  # This is the connection to the database
 
 # ----------------------------------------------------------------------------------------------- #
 
 class LoginMenu:
-
 # ----------------------------------------------------------------------------------------------- #
-
+   #firstTimeLogin = true  # This variable is used to check if the user has logged in before
+    
     def __init__(self, root):
         self.root = root
         app = self.root
@@ -58,7 +59,7 @@ class LoginMenu:
     # ------------------------------------------------------------------------------------------- #
 
     # a method to verify username and password also create as well
-    def user_authentication(self, username, password):
+    def user_authentication(self, username, password): 
         try:
             # activate db   
             #Establish database connection
@@ -72,7 +73,7 @@ class LoginMenu:
                 WHERE username = %s AND password = %s
             """, (username, password))
             result = cursor.fetchone()
-            if result.count:
+            if result:
                 print("Login successful")
                 return True
             else:
@@ -99,10 +100,8 @@ class LoginMenu:
 
         # Create the toplevel window
         signUp_window = ctk.CTkToplevel(self.root)
-
         # initialize UploadMenu
         SignUpMenu(signUp_window, self.root)
-
         return
 
     # ------------------------------------------------------------------------------------------- #
@@ -116,12 +115,11 @@ class LoginMenu:
         if self.user_authentication(username, password):            
             # Hide the main window
             self.root.withdraw()
-
-            # Create the toplevel window
+            # Create the toplevelWindow
             login_window = ctk.CTkToplevel(self.root)
-
             # initialize UploadMenu
             UploadMenu(login_window, self.root, username)
+            
         else:
             # Show an error message if authentication fails
             messagebox.showerror("Error", "Invalid username or password.")
