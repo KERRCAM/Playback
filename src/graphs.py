@@ -71,7 +71,7 @@ class Graphs:
         )
         legend.get_title().set_color('white')
         plt.tight_layout()
-        self.saveAsPng("plot_total_listening_time_country.png")
+        self.saveAsPng(f"{self.username}_plot_total_listening_time_country.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -92,7 +92,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors= 'white')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng(f"plot_top_artist_year_{yearNumber}.png")
+        self.saveAsPng(f"{self.username}_plot_top_artist_year_{yearNumber}.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -116,7 +116,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors= 'white')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_top_albums.png")
+        self.saveAsPng(f"{self.username}_plot_top_albums.png")
 
 
     # ------------------------------------------------------------------------------------------- #
@@ -124,27 +124,43 @@ class Graphs:
     def plot_time_of_day(self):
 
         songs = self.queries.time_of_day()
-        morning = [row[0] for row in songs][0]
-        afternoon = [row[1] for row in songs][0]
-        evening = [row[2] for row in songs][0]
-        night = [row[3] for row in songs][0]
+        counts = songs[0]
+        labels = ['Morning', 'Afternoon', 'Evening', 'Night']
 
-        y = np.array([morning, afternoon, evening, night])
-        mylabels = [f'Morning: {float("{:.2f}".format((morning / sum(y)) * 100))}%',
-                    f'Afternoon: {float("{:.2f}".format((afternoon / sum(y)) * 100))}%',
-                    f'Evening: {float("{:.2f}".format((evening / sum(y)) * 100))}%',
-                    f'Night: {float("{:.2f}".format((night / sum(y)) * 100))}%']
+        colors = plt.cm.tab20.colors[:len(labels)]
         grey = "#363636"
-        plt.figure(facecolor=grey)
-        plt.pie(y, labels=mylabels, textprops={'color': 'white', 'fontweight': 'bold'})
-        self.saveAsPng("plot_time_of_day.png")
+
+        plt.figure(facecolor=grey, figsize=(8, 4))
+        plt.title("Time of Day Listening", color='white')
+
+        wedges, _ = plt.pie(
+            counts,
+            colors=colors,
+            textprops={'color': 'white'}
+        )
+
+        legend = plt.legend(
+            wedges,
+            [f"{label}: {count / sum(counts) * 100:.1f}% ({count})"
+                for label, count in zip(labels, counts)],
+            title="Times",
+            loc="center left",
+            bbox_to_anchor=(1, 0.5),
+            facecolor=grey,
+            labelcolor='white'
+        )
+
+        legend.get_title().set_color('white')
+
+        plt.tight_layout()
+        self.saveAsPng(f"{self.username}_plot_time_of_day.png")
 
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_skipped_songs(self, limit):
 
         songs = self.queries.most_skipped_songs(10)
-        names = [f"{row[0]} ({row[1]})" for row in songs]
+        names = [f"{row[0]} ({row[1]})"[0:40] for row in songs]
         times = [row[4] for row in songs]
         height = limit * 0.6
         grey = "#363636"
@@ -158,7 +174,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_most_skipped_songs.png")
+        self.saveAsPng(f"{self.username}_plot_most_skipped_songs.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -179,7 +195,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_top_songs_streaming.png")
+        self.saveAsPng(f"{self.username}_plot_top_songs_streaming.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -200,7 +216,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_top_songs_listened.png")
+        self.saveAsPng(f"{self.username}_plot_top_songs_listened.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -221,7 +237,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors="white")
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_most_played_artists.png")
+        self.saveAsPng(f"{self.username}_plot_most_played_artists.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -241,8 +257,8 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors= 'white')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_most_played_podcasts.png")
-    
+        self.saveAsPng(f"{self.username}_plot_most_played_podcasts.png")
+
     # ------------------------------------------------------------------------------------------- #
 
     def plot_most_played_episodes(self, limit):
@@ -266,7 +282,7 @@ class Graphs:
         plt.gca().tick_params(axis='y', colors= 'white')
         plt.gca().invert_yaxis()
         plt.tight_layout()
-        self.saveAsPng("plot_most_played_episodes.png")
+        self.saveAsPng(f"{self.username}_plot_most_played_episodes.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -299,7 +315,7 @@ class Graphs:
         )
         legend.get_title().set_color('white')
         plt.tight_layout()
-        self.saveAsPng("plot_most_common_end_reason.png")
+        self.saveAsPng(f"{self.username}_plot_most_common_end_reason.png")
 # ----------------------------------------------------------------------------------------------- #
     # Type the year as 2025, 2024 etc.
     def plot_first_songs_year_time(self, year, limit):
@@ -327,4 +343,4 @@ class Graphs:
         plt.ylim(len(songs) - 0.5, -0.5)
         plt.gca().tick_params(axis='y', pad=15)
         plt.tight_layout(pad=2)
-        self.saveAsPng(f"plot_first_songs_year_time_{year}.png")
+        self.saveAsPng(f"{self.username}_plot_first_songs_year_time_{year}.png")

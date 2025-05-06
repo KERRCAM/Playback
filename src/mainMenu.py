@@ -77,93 +77,93 @@ class MainMenu:
             data = q.most_streamed(100)
             self.songTable(data)
 
-            if not "plot_top_songs_streaming.png" in fileNames:
+            if not f"{self.username}_plot_top_songs_streaming.png" in fileNames:
                 g.plot_top_songs_streaming(10)
-            self.graph1("results/plot_top_songs_streaming.png")
-            if not "plot_most_common_end_reason.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_top_songs_streaming.png")
+            if not f"{self.username}_plot_most_common_end_reason.png" in fileNames:
                 g.plot_most_common_end_reason()
-            self.graph2("results/plot_most_common_end_reason.png")
-            if not "plot_first_songs_year_time.png" in fileNames:
+            self.graph2(f"results/{self.username}_plot_most_common_end_reason.png")
+            if not f"{self.username}_plot_first_songs_year_time_{int(self.timeFrame.get())}.png" in fileNames:
                 g.plot_first_songs_year_time(10, int(self.timeFrame.get()))
-            self.graph3("results/plot_first_songs_year_time.png")
+            self.graph3(f"results/{self.username}_plot_first_songs_year_time_{int(self.timeFrame.get())}.png")
 
         elif to == "Song" and sb == "Time listened":
             data = q.most_listened(100)
             self.songTable(data)
-            if not "plot_top_songs_listened.png" in fileNames:
+            if not f"{self.username}_plot_top_songs_listened.png" in fileNames:
                 g.plot_top_songs_listened(10)
-            self.graph1("results/plot_top_songs_listened.png")
-            if not "plot_time_of_day.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_top_songs_listened.png")
+            if not f"{self.username}_plot_time_of_day.png" in fileNames:
                 g.plot_time_of_day()
-            self.graph2("results/plot_time_of_day.png")
-            if not "plot_most_skipped_songs.png" in fileNames:
+            self.graph2(f"results/{self.username}_plot_time_of_day.png")
+            if not f"{self.username}_plot_most_skipped_songs.png" in fileNames:
                 g.plot_most_skipped_songs(10)
-            self.graph3("results/plot_most_skipped_songs.png")
+            self.graph3(f"results/{self.username}_plot_most_skipped_songs.png")
 
         elif to == "Episode" and sb == "Time listened":
             data = q.most_played_episodes(100)
             self.podcastTable(data)
-            if not "plot_most_played_episodes.png" in fileNames:
+            if not f"{self.username}_plot_most_played_episodes.png" in fileNames:
                 g.plot_most_played_episodes(10)
-            self.graph1("results/plot_most_played_episodes.png")
-            if not "plot_most_played_podcasts.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_most_played_episodes.png")
+            if not f"{self.username}_plot_most_played_podcasts.png" in fileNames:
                 g.plot_most_played_podcasts(10)
-            self.graph2("results/plot_most_played_podcasts.png")
-            if not "plot_most_played_artists.png" in fileNames:
+            self.graph2(f"results/{self.username}_plot_most_played_podcasts.png")
+            if not f"{self.username}_plot_most_played_artists.png" in fileNames:
                 g.plot_most_played_artists(10)
-            self.graph3("results/plot_most_played_artists.png")
+            self.graph3(f"results/{self.username}_plot_most_played_artists.png")
 
         elif to == "Artist" and sb == "Time listened":
             data = q.most_played_artists(100)
             self.artistTable(data)
-            if not "plot_most_played_artists.png" in fileNames:
+            if not f"{self.username}_plot_most_played_artists.png" in fileNames:
                 g.plot_most_played_artists(10)
-            self.graph1("results/plot_most_played_artists.png")
-            if not "plot_top_songs_streaming.png" in fileNames:
-                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
-            self.graph2("results/plot_top_songs_streaming.png")
-            if not "plot_total_listening_time_country.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_most_played_artists.png")
+            if not f"{self.username}_plot_top_artist_year_{int(self.timeFrame.get())}.png" in fileNames:
+                g.plot_top_artist_year(int(self.timeFrame.get()), 10)
+            self.graph2(f"results/{self.username}_plot_top_artist_year_{int(self.timeFrame.get())}.png")
+            if not f"{self.username}_plot_total_listening_time_country.png" in fileNames:
                 g.plot_total_listening_time_country()
-            self.graph3("results/plot_total_listening_time_country.png")
+            self.graph3(f"results/{self.username}_plot_total_listening_time_country.png")
 
         elif to == "Album" and sb == "Time listened":
             data = q.top_albums(100)
             self.albumsTable(data)
-            if not "plot_top_albums.png" in fileNames:
+            if not f"{self.username}_plot_top_albums.png" in fileNames:
                 g.plot_top_albums(10)
-            self.graph1("results/plot_top_albums.png")
-            if not "plot_top_artist_year.png" in fileNames:
-                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
-            self.graph2("results/plot_top_artist_year.png")
-            if not "plot_first_songs_year_time.png" in fileNames:
-                g.plot_first_songs_year_time(10, int(self.timeFrame.get()))
-            self.graph3("results/plot_first_songs_year_time.png")
+            self.graph1(f"results/{self.username}_plot_top_albums.png")
+            if not f"{self.username}_plot_top_artist_year_{int(self.timeFrame.get())}.png" in fileNames:
+                g.plot_top_artist_year(int(self.timeFrame.get()), 10)
+            self.graph2(f"results/{self.username}_plot_top_artist_year_{int(self.timeFrame.get())}.png")
+            if not f"{self.username}_plot_first_songs_year_time_{int(self.timeFrame.get())}.png" in fileNames:
+                g.plot_first_songs_year_time(int(self.timeFrame.get()), 10)
+            self.graph3(f"results/{self.username}_plot_first_songs_year_time_{int(self.timeFrame.get())}.png")
 
         elif to == "Country" and sb == "Streams":
             data = q.total_listening_time_country()
             self.countryTable(data)
-            if not "plot_total_listening_time_country.png" in fileNames:
+            if not f"{self.username}_plot_total_listening_time_country.png" in fileNames:
                 g.plot_total_listening_time_country()
-            self.graph1("results/plot_total_listening_time_country.png")
-            if not "plot_top_artist_year.png" in fileNames:
-                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
-            self.graph2("results/plot_top_artist_year.png")
-            if not "plot_top_albums.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_total_listening_time_country.png")
+            if not f"{self.username}_plot_top_artist_year_{ int(self.timeFrame.get())}.png" in fileNames:
+                g.plot_top_artist_year(int(self.timeFrame.get()), 10)
+            self.graph2(f"results/{self.username}_plot_top_artist_year_{ int(self.timeFrame.get())}.png")
+            if not f"{self.username}_plot_top_albums.png" in fileNames:
                 g.plot_top_albums(10)
-            self.graph3("results/plot_top_albums.png")
+            self.graph3(f"results/{self.username}_plot_top_albums.png")
 
         elif to == "Show" and sb == "Time listened":
             data = q.most_played_podcast(100)
             self.podcastTable(data)
-            if not "plot_most_played_episodes.png" in fileNames:
+            if not f"{self.username}_plot_most_played_episodes.png" in fileNames:
                 g.plot_most_played_episodes(10)
-            self.graph2("results/plot_most_played_episodes.png")
-            if not "plot_most_played_podcasts.png" in fileNames:
+            self.graph2(f"results/{self.username}_plot_most_played_episodes.png")
+            if not f"{self.username}_plot_most_played_podcasts.png" in fileNames:
                 g.plot_most_played_podcasts(10)
-            self.graph1("results/plot_most_played_podcasts.png")
-            if not "plot_most_played_artists.png" in fileNames:
+            self.graph1(f"results/{self.username}_plot_most_played_podcasts.png")
+            if not f"{self.username}_plot_most_played_artists.png" in fileNames:
                 g.plot_most_played_artists(10)
-            self.graph3("results/plot_most_played_artists.png")
+            self.graph3(f"results/{self.username}_plot_most_played_artists.png")
 
     # ------------------------------------------------------------------------------------------- #
 
