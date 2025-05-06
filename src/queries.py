@@ -92,6 +92,8 @@ class Queries:
 
         return self.cursor.fetchall()
 
+    # ------------------------------------------------------------------------------------------- #
+
     def most_played_episodes(self, limit):
         """
         Most Played Episodes
@@ -210,6 +212,7 @@ class Queries:
             FROM Countries
             WHERE username = %s
             GROUP BY countryCode
+            ORDER BY numberOfStreams DESC
         """, (self.username,))
 
         return self.cursor.fetchall()

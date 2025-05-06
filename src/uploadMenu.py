@@ -40,19 +40,19 @@ class UploadMenu:
         uploadmenu.resizable(width=True, height=True)
 
         # A frame to collect the labels and entry box
-        frame = ctk.CTkFrame(uploadmenu, width=200, height=200, corner_radius=10, border_width=2)
+        frame = ctk.CTkFrame(uploadmenu, width=400, height=400, corner_radius=10, border_width=2)
         frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
         label = ctk.CTkLabel(frame, text="Upload screen", font=("Helvetica", 20))
-        label.grid(row=0, column=0, columnspan=2, pady=10)
+        label.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
 
         mainMenuButton = ctk.CTkButton(frame, text="Drop files", font=("Helvetica", 20), command=self.UploadAction)
-        mainMenuButton.grid(row=1, column=0, pady=10)
+        mainMenuButton.grid(row=1, column=0, padx=10, pady=10)
 
         # # Button to go to the main menu. May need to change the command to the main menu function
-        temp_button = ctk.CTkButton(frame, text="Extract", font=("Helvetica", 20),
+        temp_button = ctk.CTkButton(frame, text="Main menu", font=("Helvetica", 20),
                                     command=self.main_menu_segue)
-        temp_button.grid(row=1, column=1, pady=10)
+        temp_button.grid(row=1, column=1, padx=10, pady=10)
 
         uploadmenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(uploadmenu))
         uploadmenu.mainloop()

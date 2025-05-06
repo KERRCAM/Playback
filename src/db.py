@@ -18,7 +18,7 @@ class DB:
         self.db = mysql.connector.connect(
             host = "localhost",
             user = "root",
-            password = "",
+            password = "seldomsmart456",
             database ="playback"
         )
 

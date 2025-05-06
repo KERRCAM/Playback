@@ -242,7 +242,9 @@ class Graphs:
         plt.gca().invert_yaxis()
         plt.tight_layout()
         self.saveAsPng("plot_most_played_podcasts.png")
+    
     # ------------------------------------------------------------------------------------------- #
+
     def plot_most_played_episodes(self, limit):
 
         shows = self.queries.most_played_episodes(10)

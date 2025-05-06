@@ -33,7 +33,7 @@ class MainMenu:
         mainMenu.geometry("1920x1080")
         mainMenu.resizable(width=True, height=True)
 
-        self.typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country", "Time"], command = self.checkStates)
+        self.typeOption = ctk.CTkComboBox(mainMenu, values=["Song", "Album", "Artist", "Episode", "Show", "Country"], command = self.checkStates)
         self.typeOption.grid(padx=5, pady=5)
         self.typeOption.set("Song")
         self.typeOption.place(x = 10, y = 5)
@@ -80,12 +80,12 @@ class MainMenu:
             if not "plot_top_songs_streaming.png" in fileNames:
                 g.plot_top_songs_streaming(10)
             self.graph1("results/plot_top_songs_streaming.png")
-            if not "plot_top_songs_listened.png" in fileNames:
-                g.plot_top_songs_listened(10)
-            self.graph2("results/plot_top_songs_listened.png")
-            if not "plot_most_played_artists.png" in fileNames:
-                g.plot_most_played_artists(10)
-            self.graph3("results/plot_most_played_artists.png")
+            if not "plot_most_common_end_reason.png" in fileNames:
+                g.plot_most_common_end_reason()
+            self.graph2("results/plot_most_common_end_reason.png")
+            if not "plot_first_songs_year_time.png" in fileNames:
+                g.plot_first_songs_year_time(10, int(self.timeFrame.get()))
+            self.graph3("results/plot_first_songs_year_time.png")
 
         elif to == "Song" and sb == "Time listened":
             data = q.most_listened(100)
@@ -93,25 +93,25 @@ class MainMenu:
             if not "plot_top_songs_listened.png" in fileNames:
                 g.plot_top_songs_listened(10)
             self.graph1("results/plot_top_songs_listened.png")
-            if not "plot_top_songs_streaming.png" in fileNames:
-                g.plot_top_songs_streaming(10)
-            self.graph2("results/plot_top_songs_streaming.png")
-            if not "plot_most_played_artists.png" in fileNames:
-                g.plot_total_listening_time_country()
-            self.graph3("results/plot_total_listening_time_country.png")
+            if not "plot_time_of_day.png" in fileNames:
+                g.plot_time_of_day()
+            self.graph2("results/plot_time_of_day.png")
+            if not "plot_most_skipped_songs.png" in fileNames:
+                g.plot_most_skipped_songs(10)
+            self.graph3("results/plot_most_skipped_songs.png")
 
-        elif to == "Show" and sb == "Streams":
+        elif to == "Episode" and sb == "Time listened":
             data = q.most_played_episodes(100)
             self.podcastTable(data)
             if not "plot_most_played_episodes.png" in fileNames:
                 g.plot_most_played_episodes(10)
-            self.graph1("results/plot_top_songs_listened.png")
+            self.graph1("results/plot_most_played_episodes.png")
             if not "plot_most_played_podcasts.png" in fileNames:
                 g.plot_most_played_podcasts(10)
-            self.graph2("results/plot_top_songs_streaming.png")
+            self.graph2("results/plot_most_played_podcasts.png")
             if not "plot_most_played_artists.png" in fileNames:
-                g.plot_total_listening_time_country()
-            self.graph3("results/plot_total_listening_time_country.png")
+                g.plot_most_played_artists(10)
+            self.graph3("results/plot_most_played_artists.png")
 
         elif to == "Artist" and sb == "Time listened":
             data = q.most_played_artists(100)
@@ -125,6 +125,45 @@ class MainMenu:
             if not "plot_total_listening_time_country.png" in fileNames:
                 g.plot_total_listening_time_country()
             self.graph3("results/plot_total_listening_time_country.png")
+
+        elif to == "Album" and sb == "Time listened":
+            data = q.top_albums(100)
+            self.albumsTable(data)
+            if not "plot_top_albums.png" in fileNames:
+                g.plot_top_albums(10)
+            self.graph1("results/plot_top_albums.png")
+            if not "plot_top_artist_year.png" in fileNames:
+                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
+            self.graph2("results/plot_top_artist_year.png")
+            if not "plot_first_songs_year_time.png" in fileNames:
+                g.plot_first_songs_year_time(10, int(self.timeFrame.get()))
+            self.graph3("results/plot_first_songs_year_time.png")
+
+        elif to == "Country" and sb == "Streams":
+            data = q.total_listening_time_country()
+            self.countryTable(data)
+            if not "plot_total_listening_time_country.png" in fileNames:
+                g.plot_total_listening_time_country()
+            self.graph1("results/plot_total_listening_time_country.png")
+            if not "plot_top_artist_year.png" in fileNames:
+                g.plot_top_artist_year(10, 2025 - int(self.timeFrame.get()))
+            self.graph2("results/plot_top_artist_year.png")
+            if not "plot_top_albums.png" in fileNames:
+                g.plot_top_albums(10)
+            self.graph3("results/plot_top_albums.png")
+
+        elif to == "Show" and sb == "Time listened":
+            data = q.most_played_podcast(100)
+            self.podcastTable(data)
+            if not "plot_most_played_episodes.png" in fileNames:
+                g.plot_most_played_episodes(10)
+            self.graph2("results/plot_most_played_episodes.png")
+            if not "plot_most_played_podcasts.png" in fileNames:
+                g.plot_most_played_podcasts(10)
+            self.graph1("results/plot_most_played_podcasts.png")
+            if not "plot_most_played_artists.png" in fileNames:
+                g.plot_most_played_artists(10)
+            self.graph3("results/plot_most_played_artists.png")
 
     # ------------------------------------------------------------------------------------------- #
 
@@ -144,7 +183,7 @@ class MainMenu:
         table.grid(padx=5, pady=5)
         table.place(x=10, y=37)
 
-        for i in range(0, 100):
+        for i in range(0, len(data)):
             current = data[i]
             table.insert('', i, values=(i + 1, current[0], current[1], current[2], current[3]))
 
@@ -165,7 +204,7 @@ class MainMenu:
         table.grid(padx=5, pady=5)
         table.place(x=10, y=37)
 
-        for i in range(0, 100):
+        for i in range(0, len(data)):
             current = data[i]
             table.insert('', i, values=(i + 1, current[0], current[2], current[1]))
 
@@ -186,7 +225,49 @@ class MainMenu:
         table.grid(padx=5, pady=5)
         table.place(x=10, y=37)
 
-        for i in range(0, 100):
+        for i in range(0, len(data)):
+            current = data[i]
+            table.insert('', i, values=(i + 1, current[0], current[2], current[1]))
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def albumsTable(self, data):
+
+        table = ttk.Treeview(self.window, columns=('rank', 'album', 'seconds', 'streams'), show='headings',
+                                selectmode='browse', height=45, )
+        table.column('rank', width=50, anchor='center')
+        table.heading('rank', text='Rank')
+        table.column('album', width=400, anchor='w')
+        table.heading('album', text='Album')
+        table.column('seconds', width=175, anchor='center')
+        table.heading('seconds', text='Seconds')
+        table.column('streams', width=175, anchor='center')
+        table.heading('streams', text='Streams')
+        table.grid(padx=5, pady=5)
+        table.place(x=10, y=37)
+
+        for i in range(0, len(data)):
+            current = data[i]
+            table.insert('', i, values=(i + 1, current[0], current[1], current[2]))
+
+    # ------------------------------------------------------------------------------------------- #
+
+    def countryTable(self, data):
+
+        table = ttk.Treeview(self.window, columns=('rank', 'country', 'seconds', 'streams'), show='headings',
+                                selectmode='browse', height=45, )
+        table.column('rank', width=50, anchor='center')
+        table.heading('rank', text='Rank')
+        table.column('country', width=200, anchor='center')
+        table.heading('country', text='Country')
+        table.column('seconds', width=275, anchor='center')
+        table.heading('seconds', text='Seconds')
+        table.column('streams', width=275, anchor='center')
+        table.heading('streams', text='Streams')
+        table.grid(padx=5, pady=5)
+        table.place(x=10, y=37)
+
+        for i in range(0, len(data)):
             current = data[i]
             table.insert('', i, values=(i + 1, current[0], current[2], current[1]))
 
