@@ -35,8 +35,12 @@ class SignUpMenu():
         frame = ctk.CTkFrame(signMenu, width=200, height=200, corner_radius=10, border_width=2)
         frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
+        # Playback label
+        PlaybackLabel = ctk.CTkLabel(signMenu, text="Playback", font=("Helvetica", 30))
+        PlaybackLabel.place(relx=0.50, rely=0.25, anchor=ctk.CENTER) 
+
         # Title label
-        label = ctk.CTkLabel(frame, text="Sign-Up screen", font=("Helvetica", 20))
+        label = ctk.CTkLabel(frame, text="Sign-Up", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         # Username and password entry box and label
@@ -56,7 +60,7 @@ class SignUpMenu():
 
         # Button to sign Up
         signUpButton = ctk.CTkButton(frame, text="Submit", command=self.get_user_info)
-        signUpButton.grid(row=3, column=1, padx=10, pady=20, columnspan=2)
+        signUpButton.grid(row=3, column=0, padx=10, pady=20, columnspan=1)
 
         signMenu.protocol("WM_DELETE_WINDOW", lambda: self.close_window(signMenu))
         signMenu.mainloop()

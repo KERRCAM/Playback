@@ -26,13 +26,17 @@ class LoginMenu:
         app.geometry("800x600")
         # Allow resizing
         app.resizable(width=True, height=True)
-
+        
         # A frame to collect the labels and entry box
         frame = ctk.CTkFrame(app, width=200, height=200, corner_radius=10, border_width=2)
         frame.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
 
+        # Playback label
+        PlaybackLabel = ctk.CTkLabel(app, text="Playback", font=("Helvetica", 30))
+        PlaybackLabel.place(relx=0.50, rely=0.25, anchor=ctk.CENTER) 
+
         # App title
-        label = ctk.CTkLabel(frame, text="Login screen", font=("Helvetica", 20))
+        label = ctk.CTkLabel(frame, text="Login to Your Account", font=("Helvetica", 20))
         label.grid(row=0, column=0, columnspan=2, pady=10)
 
         # Username and password label
@@ -51,10 +55,16 @@ class LoginMenu:
 
         # Buttons for login a sign-up - pass function references not calls
         LoginButton = ctk.CTkButton(frame, text="Login", command=self.loginSegue)
-        LoginButton.grid(row=3, column=0, padx=10, pady=20)
+        LoginButton.grid(row=3, column=0, padx=10, pady=20, columnspan=2)
 
-        SignUpButton = ctk.CTkButton(frame, text="Sign up", command=self.signUpSegue)
-        SignUpButton.grid(row=3, column=1, padx=10, pady=20)
+        # Sign-up label
+        SignUpLabel = ctk.CTkLabel(app, text="Don't have an account?", font=("Helvetica", 20))
+        SignUpLabel.place(relx=0.37, rely=0.75, anchor=ctk.CENTER)  # Adjusted rely to place it below the frame
+
+        # Sign-up button
+        SignUpButton = ctk.CTkButton(app, text="Sign up", command=self.signUpSegue)
+        SignUpButton.place(relx=0.6, rely=0.75, anchor=ctk.CENTER)  # Adjusted rely to place it below the label
+
 
     # ------------------------------------------------------------------------------------------- #
 

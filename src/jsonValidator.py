@@ -408,12 +408,12 @@ class JsonValidator:
         validFiles = []
 
         for file in fileNames:
-            if system() == "Windows":
-                if self.validateFile(dirPath + "/" + file):
-                    validFiles.append(file)
+            filePath = os.path.join(dirPath, file)
+            if self.validateFile(filePath):
+                print(f"File {file} is valid.")
+                validFiles.append(file)
             else:
-                if self.validateFile(dirPath + "/" + file):
-                    validFiles.append(file)
+                print(f"File {file} is invalid.")
 
         return validFiles
 

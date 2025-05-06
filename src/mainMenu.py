@@ -111,10 +111,10 @@ class MainMenu:
         tf = self.timeFrame.get()
 
         if to == "Song" and sb == "Streams":
-            data = q.most_streamed
+            data = q.most_streamed()
             self.songTable(data)
         elif to == "Song" and sb == "Time listened":
-            data = q.most_listened
+            data = q.most_listened()
             self.songTable(data)
 
     # ------------------------------------------------------------------------------------------- #
@@ -135,10 +135,9 @@ class MainMenu:
         table.grid(padx=5, pady=5)
         table.place(x=10, y=37)
 
-        for i in range(0, 100):
-            current = data[i]
+        for i, current in enumerate(data):
+            # i is the index of the data, current is the data at that index
             table.insert('', i, values=(i + 1, current[0], current[1], current[2], current[3]))
-
     # ------------------------------------------------------------------------------------------- #
 
     def graph1(self):
