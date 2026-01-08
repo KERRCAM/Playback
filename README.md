@@ -63,4 +63,10 @@ After extraction, you’ll receive a confirmation message.
 Finally, you can view your listening statistics on the main menu. The data can be sorted by Song, Album, Artist, Streaming Time, Most Listened, and other categories.
 <img width="1506" alt="Screenshot 2025-06-05 at 15 21 09" src="https://github.com/user-attachments/assets/62ea87cd-0859-4c49-93c8-1b7fd9a699ef" />
 
+## Other contributors
+- [Ulaaka](https://github.com/Ulaaka)
+- [Usuhbayar-Battur](https://github.com/Usuhbayar-Battur)
+- [Limoko1](https://github.com/Limoko1)
+- [safzal1108](https://github.com/safzal1108)
 
+Since this fresh repository doesn't show all the contributors
